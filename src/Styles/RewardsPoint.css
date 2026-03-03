@@ -1,0 +1,194 @@
+/* ========================= */
+/* Rewards Page */
+/* ========================= */
+
+.rewards-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #f4f7fe;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* ========================= */
+/* Title */
+/* ========================= */
+
+.rewards-container .title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* ========================= */
+/* Reward Balance Card */
+/* ========================= */
+
+.rewards-container .reward-card {
+    background: white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.rewards-container .circle {
+    width: 60px;
+    height: 60px;
+    background-color: #eef2ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.rewards-container .circle img {
+    width: 28px;
+    
+}
+
+.rewards-container .info p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.rewards-container .info h1 {
+    font-size: 22px;
+    margin-top: 5px;
+}
+
+/* ========================= */
+/* Redeem Section */
+/* ========================= */
+
+.rewards-container .redeem-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.rewards-container .redeem-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.rewards-container .redeem-info {
+    background: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rewards-container .redeem-info h4 {
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.rewards-container .redeem-info p {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.rewards-container .redeem-info button {
+    padding: 8px 16px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.rewards-container .redeem-info button:hover {
+    background: #1d4ed8;
+}
+
+/* ========================= */
+/* Table Section */
+/* ========================= */
+
+.rewards-container .table-container {
+    background: white;
+    padding: 30px;
+    border-radius: 14px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    overflow-x: auto; /* mobile scroll */
+}
+
+.rewards-container .table-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+/* Scoped table */
+.rewards-container table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 500px; /* triggers scroll in small screens */
+}
+
+.rewards-container th {
+    background-color: #f1f5f9;
+    padding: 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.rewards-container td {
+    padding: 14px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 14px;
+}
+
+.rewards-container tbody tr:nth-child(even) {
+    background-color: #f9fafb;
+}
+
+/* Points column highlight */
+.rewards-container td:last-child {
+    font-weight: 600;
+    color: #10b981;
+}
+
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+    .rewards-container {
+        padding: 20px;
+    }
+
+    .rewards-container .reward-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rewards-container .redeem-card {
+        grid-template-columns: 1fr;
+    }
+
+    .rewards-container table {
+        min-width: 450px;
+
+    }
+    .redeem-info{
+        display: flex;
+        flex-direction: column;
+        row-gap: 5px;
+        text-align: center;
+    }
+}

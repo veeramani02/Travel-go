@@ -1,0 +1,159 @@
+ .paymenthistory-page {
+  padding: 110px 40px 40px;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+.paymenthistory-title {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 35px;
+  color: var(--primary);
+}
+
+.paymenthistory-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+
+.payment-card {
+  background: white;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: 0.3s ease;
+}
+
+.payment-card:hover {
+  transform: translateY(-4px);
+}
+
+
+.payment-left {
+  flex: 1;
+}
+
+.txn-id {
+  font-size: 13px;
+  font-weight: 600;
+  color: #9ca3af;
+  margin-bottom: 8px;
+  letter-spacing: 0.5px;
+}
+
+.payment-route {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-dark);
+}
+
+.payment-details p {
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #555;
+}
+
+
+.payment-right {
+  text-align: right;
+}
+
+.payment-amount {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
+.payment-status {
+  background: var(--primary);
+  color: white;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+.no-payment-card {
+  background: white;
+  padding: 35px;
+  text-align: center;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+@media (max-width: 768px) {
+  .paymenthistory-page {
+   
+    padding: 90px 20px 30px;
+  }
+
+  .paymenthistory-title {
+    font-size: 22px;
+    margin-bottom: 25px;
+    text-align: center;
+  }
+
+  .payment-card {
+    padding: 20px;
+   
+    gap: 15px;
+  }
+
+
+  .payment-right {
+    text-align: left;
+    width: 100%;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .payment-amount {
+    font-size: 20px;
+    margin-bottom: 0; 
+  }
+
+  .payment-route {
+    font-size: 16px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .paymenthistory-page {
+    padding: 80px 15px 20px;
+  }
+
+  .payment-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .txn-id {
+    font-size: 11px;
+  }
+
+  .payment-details p {
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  
+  .payment-right {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+  }
+}

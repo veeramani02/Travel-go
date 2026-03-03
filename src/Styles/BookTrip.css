@@ -1,0 +1,136 @@
+
+.booktrip-page {
+  padding: 40px 20px;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+
+.booktrip-form {
+  background: white;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 40px;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+
+.booktrip-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.booktrip-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+
+.booktrip-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-dark);
+}
+
+
+.booktrip-group input,
+.booktrip-group select,
+.booktrip-group textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: 0.3s ease;
+  background: #fafafa;
+}
+
+
+.booktrip-group input:focus,
+.booktrip-group select:focus,
+.booktrip-group textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+
+.booktrip-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.booktrip-btn:hover {
+  background: var(--secondary);
+  transform: translateY(-2px);
+}
+
+
+.booktrip-group p {
+  color: var(--accent);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+@media (max-width: 768px) {
+  .booktrip-page {
+   
+    padding: 20px 15px;
+  }
+
+  .booktrip-form {
+  
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+
+  .booktrip-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+
+  .booktrip-group input,
+  .booktrip-group select,
+  .booktrip-group textarea {
+    padding: 10px; 
+    font-size: 16px; }
+
+  .booktrip-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .booktrip-form {
+    padding: 20px 15px;
+    box-shadow: none; 
+    border: 1px solid #eee;
+  }
+
+  .booktrip-title {
+    font-size: 18px;
+  }
+
+  
+  .booktrip-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

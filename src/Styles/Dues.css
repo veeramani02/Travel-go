@@ -1,0 +1,114 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.due-container {
+  padding: 20px;
+}
+
+.due-title {
+  margin-bottom: 20px;
+}
+
+.due-title h1 {
+  font-size: 28px;
+}
+
+.due-title p {
+  color: gray;
+}
+
+/* Total Section */
+
+.due-total {
+  border: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.total-title h2 {
+  margin-top: 5px;
+}
+
+.due-button {
+  background-color: #1971c2;
+  color: white;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.due-button:hover {
+  background-color: #1864ab;
+}
+
+/* Table Section */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;   /* Mobile scroll */
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;   /* Important for responsiveness */
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+}
+
+thead {
+  background-color: #f1f3f5;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #f8f9fa;
+}
+
+.due-status {
+  background-color: #fff5f5;
+  color: #fa5252;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 14px;
+}
+
+.pay-now-btn {
+  background-color:var(--primary);
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pay-now-btn:hover {
+  background-color:rgba(0, 0, 255, 0.499);
+}
+
+/* Mobile Responsive */
+
+@media (max-width: 768px) {
+
+  .due-total {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .due-title h1 {
+    font-size: 22px;
+  }
+
+}

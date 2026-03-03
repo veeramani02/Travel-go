@@ -1,0 +1,132 @@
+ .mytrips-page {
+  padding: 100px 30px 40px;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+.mytrips-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: var(--primary);
+}
+
+.current-trip-section,
+.past-trips-section {
+  margin-bottom: 40px;
+}
+
+.trips-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.trip-card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.trip-card.highlight {
+  border: 2px solid var(--primary);
+}
+
+.trip-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.route {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.status {
+  background: var(--accent);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.active-status {
+  background: var(--primary);
+}
+
+.trip-details p {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.no-trip-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+.track-btn{
+  width:max-content;
+  
+}
+
+@media (max-width: 768px) {
+  .mytrips-page {
+    
+    padding: 80px 15px 30px;
+  }
+
+  .mytrips-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .trip-card {
+    padding: 15px;
+  }
+
+  .trip-header {
+    
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .route {
+    font-size: 15px;
+  }
+
+  .status {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  .track-btn {
+    width: 100%; 
+    margin-top: 15px;
+    padding: 12px;
+    text-align: center;
+    display: block;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .mytrips-page {
+    padding-top: 70px;
+  }
+
+  .trip-details p {
+    font-size: 13px; 
+    display: flex;
+    justify-content: space-between;
+  }
+  
+ 
+  .trip-details p:not(:last-child) {
+    border-bottom: 1px dashed #eee;
+    padding-bottom: 6px;
+  }
+}
