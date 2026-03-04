@@ -128,7 +128,7 @@ button {
 
 /* Button Hover */
 button:hover {
-  background: var(--secondary);
+  opacity: 0.85;
 }
 
 /* Login Link (Bottom Text) */
@@ -149,6 +149,7 @@ button:hover {
 .login-link span:hover {
   text-decoration: underline;
 }
+
 input[type=number]::-webkit-inner-spin-button{
     -webkit-appearance: none;
 }

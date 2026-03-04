@@ -47,7 +47,7 @@
 }
 
 .due-button:hover {
-  background-color: #1864ab;
+  opacity: 0.85;
 }
 
 /* Table Section */

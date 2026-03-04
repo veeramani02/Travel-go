@@ -1,0 +1,172 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.tripview-modal {
+  width: 100%;
+  background-color: rgb(238, 237, 237);
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 1400px;
+  max-height: 95vh;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 25px;
+  scrollbar-width: 1px;
+}
+
+.modal-title{
+  margin-bottom: 15px;
+  color: var(--primary);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.tripview-modal.close{
+  animation: fadeOut 0.2s ease forwards;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+.tripview-modal button {
+  padding: 0px 10px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.closeBtn{
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  width: 20%;
+}
+
+.closeBtn button{
+  width: 100%;
+  padding: 6px 0px;
+}
+
+.tripview-modal button:hover{
+  opacity: 0.85;
+}
+
+.tripview-modal table th{
+  text-align: left;
+}
+
+.status-div{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-div{
+  display: flex;
+  gap: 10px;
+}
+
+.status-div{
+  background-color: white;
+  width: 100%;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.card-container{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  background-color: rgb(238, 237, 237);
+  border-radius: 10px;
+}
+
+.tripview-card{
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.tripview-card p{
+   font-size: 0.9rem;
+}
+
+.card-title {
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.table-title{
+  padding: 10px;
+}
+
+@media (max-width: 768px) {
+
+  .tripview-modal {
+    padding: 18px;
+    max-height: 85vh;
+  }
+
+  .status-div {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .button-div {
+    width: 100%;
+  }
+
+  .button-div button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .tripview-modal {
+    border-radius: 10px;
+    padding: 15px;
+  }
+
+  .tripview-card p {
+    font-size: 0.85rem;
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+  }
+}

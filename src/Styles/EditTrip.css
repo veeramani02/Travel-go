@@ -1,0 +1,102 @@
+.modal{
+    max-width: 850px;
+}
+
+.input-div{
+    display: flex;
+    gap: 15px;
+}
+
+input,
+select{
+    border-radius: 6px; 
+    border: 1px solid rgba(0,0,0,0.2);
+    padding: 6px 8px;
+    width: 100%;
+}
+
+.address-div{
+    display: flex;
+    gap: 15px;
+}
+
+.pickup-input,.drop-input{
+    flex: 1;
+}
+
+.date-div{
+    display: flex;
+    gap: 15px;
+}
+
+.label{
+    margin-bottom: 15px;
+}
+
+h2{
+    color: var(--primary);
+}
+
+.body-title{
+    color: var(--primary);
+    margin: 10px 0;
+}
+
+.btn{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+input,
+select{
+    width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+
+    .modal {
+        width: 95%;
+        max-width: 95%;
+        padding: 18px;
+    }
+
+    .input-div,
+    .address-div,
+    .date-div {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pickup-input,
+    .drop-input {
+        width: 100%;
+    }
+
+    .btn {
+        justify-content: center;
+        flex-direction: column;
+    }
+
+    .btn button {
+        width: 100%;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+
+    h2 {
+        font-size: 1.3rem;
+    }
+
+    .body-title {
+        font-size: 1rem;
+    }
+
+    input,
+    select {
+        padding: 10px;
+    }
+}

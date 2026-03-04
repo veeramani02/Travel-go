@@ -1,7 +1,3 @@
-/* ========================= */
-/* Assigned Trip Section */
-/* ========================= */
-
 .driver-assigned-section {
     display: flex;
     flex-direction: column;
@@ -49,9 +45,9 @@
 }
 
 .driver-route-btn:hover {
-    background-color: 
-    #1d4ed8;
+    background-color: #1d4ed8;
 }
+
 .driver-completed-section {
     display: flex;
     flex-direction: column;
@@ -60,10 +56,9 @@
 }
 
 .driver-completed-table {
-    min-width: 700px; /* enables scroll in mobile */
+    min-width: 700px; 
 }
 
-/* Completed Status Badge */
 .driver-status-completed {
     background-color: #e6f4ea;
     color: #16a34a;
@@ -74,7 +69,6 @@
     display: inline-block;
 }
 
-/* Mobile */
 @media (max-width: 768px) {
 
     .driver-assigned-card {
