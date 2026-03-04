@@ -1,13 +1,16 @@
 import React from "react";
 import "../../Styles/Vehicles.css";
-
+import check from "../../assets/check.png"
+import deliverytruck from "../../assets/deliverytruck.png"
+import speedometer from "../../assets/speedometer.png"
+import tool from "../../assets/tool.png"
 function Vehicles() {
 
   const stats = [
-    { title: "Available", count: 3 },
-    { title: "In Use", count: 0 },
-    { title: "Maintenance", count: 1 },
-    { title: "Total Fleet", count: 4 }
+    { title: "Available", count: 3,img:check },
+    { title: "In Use", count: 0,img:deliverytruck },
+    { title: "Maintenance", count: 1,img:speedometer },
+    { title: "Total Fleet", count: 4,img:tool }
   ];
 
   const filters = [
@@ -40,6 +43,26 @@ function Vehicles() {
       fuel: "80%",
       lastService: "2024-01-20",
       location: "Central Park"
+    },
+     {
+      name: "Merceds Spinter",
+      number: "XYZ-9876",
+      type: "Bus",
+      status: "Available",
+      km: "39,500 Km",
+      fuel: "80%",
+      lastService: "2024-01-20",
+      location: "Central Park"
+    },
+    {
+      name: "Tesla Model 3",
+      number: "XYZ-9876",
+      type: "Bus",
+      status: "Available",
+      km: "39,500 Km",
+      fuel: "80%",
+      lastService: "2024-01-20",
+      location: "Central Park" 
     }
   ];
 
@@ -64,7 +87,8 @@ function Vehicles() {
         {stats.map((item, index) => (
           <div className="stat-card" key={index}>
             <p>{item.title}</p>
-            <h2>{item.count}</h2>
+            <h1>{item.count}</h1>
+            <img src={item.img}></img>
           </div>
         ))}
       </div>
@@ -100,6 +124,7 @@ function Vehicles() {
 
             <div className="vehicle-action">
               <button>View Details</button>
+              
             </div>
 
           </div>

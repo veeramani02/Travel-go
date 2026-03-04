@@ -1,6 +1,6 @@
 .vehicles-page{
 padding:30px;
-font-family:Arial, Helvetica, sans-serif;
+/* font-family:Arial, Helvetica, sans-serif; */
 background:#f6f8fb;
 }
 
@@ -127,4 +127,12 @@ color:white;
 padding:8px;
 border-radius:6px;
 cursor:pointer;
+}
+.filter-container button:active{
+    background-color: black;
+    color:white;
+}
+.stat-card img{
+    width:40px;
+    height:40px;
 }
