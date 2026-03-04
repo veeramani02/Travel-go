@@ -45,14 +45,14 @@ function AssignedTrips() {
           <td>15 Oct 2026</td>
           <td>Chennai → Hyderabad</td>
           <td>₹12,500</td>
-          <td className="driver-status-completed">Completed</td>
+         <td ><span className="driver-status-completed">Completed</span></td>
         </tr>
         <tr>
           <td>45865</td>
           <td>12 Oct 2026</td>
           <td>Bangalore → Mumbai</td>
           <td>₹18,000</td>
-          <td className="driver-status-completed">Completed</td>
+          <td ><span className="driver-status-completed">Completed</span></td>
         </tr>
       </tbody>
     </table>
