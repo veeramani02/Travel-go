@@ -18,6 +18,7 @@ import Salary from "./Pages/Driver/Salary";
 import LoyaltyPoints from "./Pages/Customer/LoyaltyPoints";
 import Dues from "./Pages/Customer/Dues";
 import AssignedTrips from "./Pages/Driver/AssignedTrips"
+import Vechiles from "./Pages/Admin/Vechiles"
 function App() {
   return (
     <BrowserRouter>
@@ -42,6 +43,7 @@ function App() {
           <Route path="/customer/Dues" element={<Dues/>}/>
           {/* Admin */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/vehicles" element={<Vechiles/>}/>
 
           {/* Driver */}
           <Route path="/driver/dashboard" element={<DriverDashboard />} /> 

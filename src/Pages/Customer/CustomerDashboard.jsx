@@ -1,4 +1,3 @@
-import React from 'react'
 import calendar from '../../assets/calendar.png'
 import car from '../../assets/car.png'
 import star from '../../assets/star.png'
@@ -111,7 +110,7 @@ function CustomerDashboard() {
     <h2>Trip History</h2>
 
     <div className="history-card">
-      <table>
+      <table className='customer-table'>
         <thead>
           <tr>
             <th>Date</th>
@@ -190,4 +189,3 @@ function CustomerDashboard() {
 }
 
 export default CustomerDashboard
- 
