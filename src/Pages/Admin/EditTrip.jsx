@@ -19,7 +19,7 @@ export default function EditTrip({ isOpen, onClose, trip, type }) {
   return ( 
     <div className="modal-overlay">
       <div className="modal">
-        <h2>Edit Trip: #{trip.id}</h2>
+        <h2 className="h2">Edit Trip: #{trip.id}</h2>
 
         <div className="body">
             <h4 className="body-title">Passenger Details</h4>
