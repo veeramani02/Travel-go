@@ -60,7 +60,7 @@ function Login() {
   return (
     <div className="auth-wrapper">
     <div className="container">
-      <form onSubmit={handleSubmit}>
+      <form className="login-form" onSubmit={handleSubmit}>
         <h1>Login</h1>
 
         {error && <p className="error">{error}</p>}

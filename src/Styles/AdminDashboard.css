@@ -2,7 +2,6 @@
     width: 100%;
     max-width: 100%;
     min-height: 100vh;
-    background-color: #f4f7fe;
     padding: 10px;
 }
 
@@ -84,7 +83,6 @@ th,td{
     border-radius: 8px;
     color: white;
     cursor: pointer;
-    
 }
 
 button:hover{
@@ -152,7 +150,7 @@ button:hover{
 .title-div select{
     padding: 6px 12px;
     border-radius: 10px;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #f4f7fe;
 }
 
 .status-div{

@@ -17,12 +17,10 @@ import Rewards from "./Pages/Driver/Rewards";
 import Salary from "./Pages/Driver/Salary";
 import LoyaltyPoints from "./Pages/Customer/LoyaltyPoints";
 import Dues from "./Pages/Customer/Dues";
-import AssignedTrips from "./Pages/Driver/AssignedTrips"
-<<<<<<< HEAD
-import Enquiries from './Pages/Admin/Enquiries'
-=======
-import Vechiles from "./Pages/Admin/Vechiles"
->>>>>>> c3f638826a10177202dd0dc99017893c5daa1dae
+import AssignedTrips from "./Pages/Driver/AssignedTrips";
+import Enquiries from './Pages/Admin/Enquiries';
+import Vechiles from "./Pages/Admin/Vechiles";
+import Driver from "./Pages/Admin/Driver";
 function App() {
   return (
     <BrowserRouter>
@@ -32,6 +30,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup/>}/>
+        
         {/* Dashboard Layout Wrapper */}
         <Route element={<DashboardLayout />}>
 
@@ -45,15 +44,12 @@ function App() {
           <Route path="/customer/prefrences" element={<Prefrence/>}/>
           <Route path="/customer/LoyaltyPoints" element={<LoyaltyPoints/>}/>
           <Route path="/customer/Dues" element={<Dues/>}/>
+
           {/* Admin */}
-<<<<<<< HEAD
           <Route path="/admin/dashboard" element={<AdminDashboard />} /> 
           <Route path="/admin/enquiries" element={<Enquiries />} /> 
-
-=======
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/admin/vehicles" element={<Vechiles/>}/>
->>>>>>> c3f638826a10177202dd0dc99017893c5daa1dae
+          <Route path="/admin/Driver" element={<Driver/>}/>
 
           {/* Driver */}
           <Route path="/driver/dashboard" element={<DriverDashboard />} /> 

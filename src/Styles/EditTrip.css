@@ -1,5 +1,24 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
 .modal{
-    max-width: 850px;
+    width: 100%;
+    background-color: rgb(238, 237, 237);
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 800px;
+    max-height: 95vh;
+    overflow: hidden;
+    animation: fadeIn 0.2s ease forwards;
 }
 
 .input-div{

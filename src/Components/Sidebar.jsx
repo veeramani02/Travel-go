@@ -30,7 +30,7 @@ function Sidebar() {
       { name: "Dashboard", path: "/admin/dashboard" },
       { name: "Enquiries", path: "/admin/enquiries" },
       { name: "Trips", path: "/admin/trips" },
-      { name: "Drivers", path: "/admin/drivers" },
+      { name: "Drivers", path: "/admin/driver" },
       { name: "Vehicles", path: "/admin/vehicles" },
     ],
     customer: [
@@ -40,7 +40,7 @@ function Sidebar() {
       { name: "Payments", path: "/customer/paymentsHistory" },
       { name: "Prefrence", path: "/customer/prefrences" },
       { name: "Rewards", path:"/customer/LoyaltyPoints"},
-      { name:"dues",path:"/customer/Dues"}
+      { name: "dues", path:"/customer/Dues"}
     ],
     driver: [
       { name: "Dashboard", path: "/driver/dashboard" },

@@ -132,7 +132,7 @@
 }
 
 .user-dropdown button:hover {
-  background: var(--secondary);
+  opacity: 0.85;
 }
 
 .mobile-toggle {

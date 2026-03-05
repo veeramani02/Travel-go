@@ -16,7 +16,7 @@
 }
 
 
-form {
+.login-form {
   background: white;
   padding: 40px;
   width: 380px;
@@ -25,7 +25,7 @@ form {
 }
 
 
-form h1 {
+.login-form h1 {
   text-align: center;
   margin-bottom: 30px;
   color: var(--primary);
@@ -129,13 +129,13 @@ form h1 {
 
 
 .login-btn:hover {
-  background: var(--secondary);
+  opacity: 0.85;
   transform: translateY(-2px);
 }
 
 
 @media (max-width: 480px) {
-  form {
+  .login-form {
     width: 90%;
     padding: 25px;
   }

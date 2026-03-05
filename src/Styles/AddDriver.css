@@ -1,0 +1,131 @@
+.addDriver-container {
+    min-height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+    padding: 15px; 
+}
+
+.addDriver-body {
+    max-width: 550px;
+    max-height: 90vh;       
+    background-color: rgb(238, 237, 237);
+    padding: 25px;
+    border-radius: 12px;
+    width: 100%;
+    overflow-y: auto;
+    animation: fadeIn 0.2s ease forwards;
+}
+
+.addDriver-title {
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+.personal-details,
+.document-info,
+.vehicle-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;        
+}
+
+.input select,
+.input input {            
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    width: 100%;          
+}
+
+.input {
+    flex: 1;              
+    min-width: 150px;     
+    margin-bottom: 12px;
+}
+
+.input label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.input span {
+    font-size: 0.9rem;
+}
+
+.input button {
+    background-color: var(--primary);
+    border-style: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+.input button:hover {
+    opacity: 0.85;
+}
+
+.btn-div {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 10px;
+    width: 100%;
+}
+
+.btn button {
+    background-color: var(--primary);
+    border-style: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn button:hover {
+    opacity: 0.85;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .addDriver-body {
+        padding: 16px;
+        max-height: 95vh;
+    }
+
+    .personal-details,
+    .document-info,
+    .vehicle-details {
+        flex-direction: column; 
+    }
+
+    .btn-div {
+        flex-direction: column;
+    }
+
+    .btn button {
+        width: 100%;
+    }
+}
