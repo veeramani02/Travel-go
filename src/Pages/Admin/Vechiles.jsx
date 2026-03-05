@@ -4,13 +4,14 @@ import check from "../../assets/check.png"
 import deliverytruck from "../../assets/deliverytruck.png"
 import speedometer from "../../assets/speedometer.png"
 import tool from "../../assets/tool.png"
+import { FaCarSide } from "react-icons/fa6";
 function Vehicles() {
 
   const stats = [
-    { title: "Available", count: 3,img:check },
-    { title: "In Use", count: 0,img:deliverytruck },
-    { title: "Maintenance", count: 1,img:speedometer },
-    { title: "Total Fleet", count: 4,img:tool }
+    { title: "Available", count: 3,img:check  },
+    { title: "InUse", count: 0,img:deliverytruck },
+    { title: "Maintenance", count: 1,img:tool },
+    { title: "TotalFleet", count: 4,img:speedometer,}
   ];
 
   const filters = [
@@ -57,7 +58,7 @@ function Vehicles() {
     {
       name: "Tesla Model 3",
       number: "XYZ-9876",
-      type: "Bus",
+      type: "car",
       status: "Available",
       km: "39,500 Km",
       fuel: "80%",
@@ -72,7 +73,7 @@ function Vehicles() {
       {/* Header */}
       <div className="vehicles-header">
         <div>
-          <h1>Vehicle Management</h1>
+          <h1 >Vehicle Management</h1>
           <p>Manage your vehicles with live location tracking.</p>
         </div>
 
@@ -86,9 +87,13 @@ function Vehicles() {
       <div className="stats-container">
         {stats.map((item, index) => (
           <div className="stat-card" key={index}>
+            <div>
             <p>{item.title}</p>
-            <h1>{item.count}</h1>
-            <img src={item.img}></img>
+            <h1 className={`count-${item.title}`}>{item.count}</h1>
+            </div>
+            <div>
+            <img src={item.img} className={`icon-${item.title}`}/> 
+            </div>
           </div>
         ))}
       </div>
@@ -104,12 +109,14 @@ function Vehicles() {
       <div className="vehicle-list">
         {vehicles.map((vehicle, index) => (
           <div className="vehicle-card" key={index}>
-
+              
             <div className="vehicle-status">
+             
               <span>{vehicle.status}</span>
             </div>
 
             <div className="vehicle-info">
+              <FaCarSide></FaCarSide>
               <h3>{vehicle.name}</h3>
               <p>{vehicle.number}</p>
               <span className="vehicle-type">{vehicle.type}</span>

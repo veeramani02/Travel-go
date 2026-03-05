@@ -136,3 +136,48 @@ cursor:pointer;
     width:40px;
     height:40px;
 }
+.stat-card{
+    display: flex;
+    text-align: center;
+    justify-content: space-around;
+    align-items: center;
+}
+.icon-Available{
+    background-color: #71f2b6;
+    /* color:green; */
+    border-radius:10px;
+   padding: 10px;
+}
+
+.count-Available{
+    color:green;
+}
+.icon-InUse{
+    background-color: rgba(107, 105, 241, 0.825);
+    /* color:rgba(108, 131, 233, 0.587); */
+    border-radius: 10px;
+    padding:5px;
+}
+.count-InUse{
+    color: rgba(107, 105, 241, 0.825);
+}
+.icon-Maintenance{
+     background-color: rgba(241, 180, 105, 0.825);
+    /* color:rgba(108, 131, 233, 0.587); */
+    border-radius: 10px;
+    padding:8px;
+}
+.count-Maintenance{
+    color: rgba(241, 180, 105, 0.825);
+}
+.icon-TotalFleet{
+    background-color: rgb(243, 94, 131);
+    padding:6px;
+    border-radius: 10px;
+}
+.count-TotalFleet{
+    color:  rgb(243, 94, 131);
+}
+.vehicles-header div h1{
+    color:var(--primary)
+}
