@@ -113,7 +113,7 @@ form h1 {
 }
 
 /* Button */
-button {
+.btn button {
   width: 100%;
   padding: 12px;
   background: var(--primary);

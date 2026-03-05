@@ -19,7 +19,7 @@ export default function Driver() {
   const filteredData = Data.filter((item) => {
 
   const matchesSearch =
-    item.name.toLowerCase().startsWith(searchTerm.toLowerCase()) ||
+    item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.id.startsWith(searchTerm);
 
   const matchesStatus =
@@ -62,7 +62,7 @@ export default function Driver() {
         </div>
         <select name="" id=""
                value={statusFilter}
-               onChange={(e) => {setStatusFilter(e.target.value)} }>
+               onChange={(e) => {setStatusFilter(e.target.value); setCurrentPage(1);} }>
             <option value="">All Status</option>
             {status.map((value,index)=>(
                 <option key={index} value={value}>{value}</option>
@@ -105,9 +105,12 @@ export default function Driver() {
       </div>
       <div className="table-footer">
               <div className="totalPage">
-                Showing {indexOfFirstRow + 1} -{" "}
-                {Math.min(indexOfLastRow, filteredData.length)} of{" "}
-                {filteredData.length}
+               {filteredData.length === 0
+                  ? "Showing 0 results"
+                  : `Showing ${indexOfFirstRow + 1} - ${Math.min(
+                      indexOfLastRow,
+                      filteredData.length
+                    )} of ${filteredData.length}`}
               </div>
               <div className="pagination">
                 <button
@@ -119,7 +122,7 @@ export default function Driver() {
                       <span>Page {currentPage} of {totalPages}</span>
                       <button
                         onClick={() => setCurrentPage(prev => prev + 1)}
-                        disabled={currentPage === totalPages}
+                        disabled={currentPage === totalPages || totalPages === 0}
                       >
                         Next
                       </button>
