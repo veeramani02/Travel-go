@@ -3,12 +3,25 @@ import '../../Styles/Driver.css'
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import {Data} from '../../Data/Data'
 import AddDriver from '../../Pages/Admin/AddDriver';
-import PhoneImage from '../../assets/phone-call.png';
 
 export default function Driver() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [openDriver, setOpenDriver] = useState(false);
-  const status = [...new Set(Data.map(value=>value.status))]
+  const status = ['All', 'Active', 'Inactive','On Trip'];
+  const [filterSearch ,setFilterSearch] = useState(Data);
+  const [Active, setActive] = useState('All');
+
+  function handleFilter(filterValue){
+    if(filterValue.toLowerCase() === 'all')
+      setFilterSearch(Data)
+    else
+      setFilterSearch(Data.filter(value=>(value.status === filterValue)))
+  }
+
+  function inputFilter(input){
+    setFilterSearch(Data.filter(value=>(
+      value.name.toLowerCase().trim().includes(input.toLowerCase().trim()
+    ))))
+  }
   
   return (
     <div className='driverManage-container'>
@@ -21,8 +34,7 @@ export default function Driver() {
         <div className='search-div'>
             <FaMagnifyingGlass className="search-icon"/>
             <input type="text" placeholder='Search Driver...'
-               value={searchTerm}
-               onChange={(e) => {setSearchTerm(e.target.value);} }/>
+               onChange={(e) => {inputFilter(e.target.value)}}/> 
         </div>
         <div>
             <button onClick={()=>{setOpenDriver(true)}}>+ Add New Driver</button>
@@ -30,23 +42,31 @@ export default function Driver() {
         </div>
       </div>
       <div className="driver-button-container">
-        <div>
-          <button>All</button>
-        </div>
         {status.map((value,index)=>(
           <div key={index}>
-            <button>{value}</button>
+            <button onClick={()=>
+              {
+                handleFilter(value)
+                setActive(value)
+              }
+              }
+              className={Active === value ? 'active-button': 'non-active-button'}
+              >{value}</button>
           </div>
         ))}
       </div>
       <div className="driver-card-container">
-        {Data.map(value=>(
-          <div key={value.id} className="driver-card-details">
-             <div className="driver-name">
+        
+        {filterSearch.length !== 0 ? (filterSearch.map(value=>(
+          <div key={value.id} className="driver-card-details"> 
+             <div className="driver-info">
+              <div className="driver-image-div">
+                <img src={value.avatar} alt="" />
+             </div>
               <div className="name-block">
                <h3>{value.name}</h3>
                <p className='text-gray'>{value.location}</p>
-               <span  className='rating-star'><span className='star'>★</span>{value.rating}</span>
+               <div><span className='rating-star'><span className='star'>★</span>{value.rating}</span></div>
                </div>
                <div className="bottom-card-block">
                <div className="trip-joined">
@@ -61,14 +81,15 @@ export default function Driver() {
                </div>
                <div className="driver-button-block">
                 <button>Profile</button>
-                <div className='img-div'>
-                <img src={PhoneImage} alt="" />
-                </div>
                </div>
                </div>
              </div>
           </div>
-        ))}
+        ))) : (
+          <div className='driver-data-empty'>
+            <p>"No Drivers Found"</p>
+          </div>
+        )}
       </div>
         <AddDriver
           openDriver={openDriver}

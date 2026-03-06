@@ -12,6 +12,7 @@
     height: 100%;
     z-index: 999;
     padding: 15px; 
+    backdrop-filter: blur(3px);
 }
 
 .addDriver-body {

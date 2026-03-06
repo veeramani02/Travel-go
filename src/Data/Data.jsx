@@ -21,7 +21,7 @@ export const Data = [
     location: "San Francisco, CA",
     joinedDate: "Mar 2023",
     totalTrips: 89,
-    avatar: "https://randomuser.me/api/portraits/men/2.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/6.jpg"
   },
   {
     id: "D-5003",
@@ -57,7 +57,7 @@ export const Data = [
     location: "Miami, FL",
     joinedDate: "July 2023",
     totalTrips: 102,
-    avatar: "https://randomuser.me/api/portraits/men/5.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/9.jpg"
   },
   {
     id: "D-5006",
@@ -69,7 +69,7 @@ export const Data = [
     location: "Seattle, WA",
     joinedDate: "Dec 2022",
     totalTrips: 178,
-    avatar: "https://randomuser.me/api/portraits/men/6.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/7.jpg"
   }
 ];
 
