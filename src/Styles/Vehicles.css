@@ -271,3 +271,47 @@ padding:8px 14px;
 border-radius:6px;
 cursor:pointer;
 }
+.add-vehicle-btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.cancel-btn{
+background:#e5e7eb;
+color:#333;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+.input-error{
+border:1px solid red;
+}
+
+.error-text{
+color:red;
+font-size:12px;
+margin-bottom:5px;
+}
+
+.add-vehicle-btn{
+background:#2563eb;
+color:white;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.cancel-btn{
+background:#e5e7eb;
+color:#333;
+border:none;
+padding:8px 14px;
+border-radius:6px;
+cursor:pointer;
+}
