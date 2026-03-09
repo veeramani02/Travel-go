@@ -16,7 +16,26 @@ function VehicleModal({ onSave, onCancel }) {
     status: "Available",
     insurance: ""
   });
+const [showUpload, setShowUpload] = useState(false);
+const [frontPreview,setFrontPreview] = useState(null);
+const [sidePreview,setSidePreview] = useState(null);
+const [interiorPreview,setInteriorPreview] = useState(null);
+const [backPreview,setBackPreview] = useState(null);
+const[error,setError]=useState({})
+const handleImageUpload = (e,type) => {
 
+const file = e.target.files[0];
+
+if(!file) return;
+
+const previewURL = URL.createObjectURL(file);
+
+if(type==="front") setFrontPreview(previewURL);
+if(type==="side") setSidePreview(previewURL);
+if(type==="interior") setInteriorPreview(previewURL);
+if(type==="back") setBackPreview(previewURL);
+
+};
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -25,8 +44,10 @@ function VehicleModal({ onSave, onCancel }) {
       [name]: type === "checkbox" ? checked : value
     });
   };
-
-  const handleSubmit = () => {
+const handleSubmit = () => {
+    if(!validateForm()){
+return;
+}
     const newVehicle = {
       id: Date.now(),
       name: formData.model,
@@ -41,7 +62,39 @@ function VehicleModal({ onSave, onCancel }) {
 
     onSave(newVehicle);
   };
+const validateForm = () => {
 
+let newErrors = {};
+
+if(formData.model.trim() === ""){
+newErrors.model = "Model is required";
+}
+
+if(formData.license.trim() === ""){
+newErrors.license = "License plate is required";
+}
+
+if(formData.passengers === ""){
+newErrors.passengers = "Passenger capacity required";
+}
+
+if(formData.luggage.trim() === ""){
+newErrors.luggage = "Luggage capacity required";
+}
+if(formData.color.trim() === ""){
+    newErrors.color="color of vehicle is required"
+}
+if(formData.year.trim()===""){
+    newErrors.year="year of manufacturer is required"
+}
+if(formData.insurance.trim()===""){
+    newErrors.insurance="Insurance policy Number is required"
+}
+setError(newErrors);
+
+return Object.keys(newErrors).length === 0;
+
+};
   return (
     <div className="vehicle-modal">
       <div className="vehicle-form-large">
@@ -72,6 +125,8 @@ function VehicleModal({ onSave, onCancel }) {
               onChange={handleChange}
               placeholder="Toyota Hiace"
             />
+
+{error.model && <p className="error-text">{error.model}</p>}
           </div>
 
           <div className="form-field">
@@ -85,7 +140,7 @@ function VehicleModal({ onSave, onCancel }) {
                 onChange={handleChange}
                 placeholder="Type color"
               />
-
+    {error.color && <p className="error-text">{error.color}</p>}
              
             </div>
           </div>
@@ -98,6 +153,7 @@ function VehicleModal({ onSave, onCancel }) {
               value={formData.year}
               onChange={handleChange}
             />
+    {error.year && <p className="error-text">{error.year}</p>}
           </div>
 
           <div className="form-field">
@@ -106,7 +162,9 @@ function VehicleModal({ onSave, onCancel }) {
               name="license"
               value={formData.license}
               onChange={handleChange}
+  
             />
+            {error.license && <p className="error-text">{error.license}</p>}
           </div>
 
         </div>
@@ -124,7 +182,9 @@ function VehicleModal({ onSave, onCancel }) {
               name="passengers"
               value={formData.passengers}
               onChange={handleChange}
+
             />
+            {error.passengers && <p className="error-text">{error.passengers}</p>}
           </div>
 
           <div className="form-field">
@@ -134,6 +194,7 @@ function VehicleModal({ onSave, onCancel }) {
               value={formData.luggage}
               onChange={handleChange}
             />
+            {error.luggage&&<p className="error-text">{error.luggage}</p>}
           </div>
 
           <div className="form-field">
@@ -197,16 +258,103 @@ function VehicleModal({ onSave, onCancel }) {
 
         <h3>Vehicle Images</h3>
 
-        <div className="vehicle-images">
-          <div className="image-box">Front View</div>
-          <div className="image-box">Side View</div>
-          <div className="image-box">Interior</div>
-          <div className="image-box">Upload Image</div>
 
-          <button className="add-img-btn">
-            Add More Images
-          </button>
-        </div>
+<div className="vehicle-images">
+
+<div className="image-box">
+
+<label htmlFor="frontUpload" className="upload-label">
+
+{frontPreview ? (
+  <img src={frontPreview} className="preview-img"/>
+) : (
+  <span className="upload-text">Front View</span>
+)}
+
+</label>
+
+<input
+id="frontUpload"
+type="file"
+className="hidden-file"
+onChange={(e)=>handleImageUpload(e,"front")}
+/>
+
+</div>
+
+
+<div className="image-box">
+
+<label htmlFor="sideUpload" className="upload-label">
+
+{sidePreview ? (
+  <img src={sidePreview} className="preview-img"/>
+) : (
+  <span className="upload-text">Side View</span>
+)}
+
+</label>
+
+<input
+id="sideUpload"
+type="file"
+className="hidden-file"
+onChange={(e)=>handleImageUpload(e,"side")}
+/>
+
+</div>
+
+
+<div className="image-box">
+
+<label htmlFor="interiorUpload"  className="upload-label">
+
+{interiorPreview ?(
+<img src={interiorPreview} className="preview-img"/>
+):(
+<span className="upload-text">Interior</span>
+)}
+
+
+
+</label>
+
+<input
+id="interiorUpload"
+type="file"
+className="hidden-file"
+onChange={(e)=>handleImageUpload(e,"interior")}
+/>
+
+</div>
+
+
+<div className="image-box">
+
+<label htmlFor="backUpload"  className="upload-label">
+
+{backPreview    ? (
+<img src={backPreview} className="preview-img"/>
+):(<span className="upload-text">Back View</span>)}
+
+
+
+</label>
+
+<input
+id="backUpload"
+type="file"
+className="hidden-file"
+onChange={(e)=>handleImageUpload(e,"back")}
+/>
+
+</div>
+{/* 
+<button className="add-img-btn">
+Add More Images
+</button> */}
+
+</div>
 
         {/* STATUS */}
 
@@ -236,6 +384,7 @@ function VehicleModal({ onSave, onCancel }) {
               value={formData.insurance}
               onChange={handleChange}
             />
+    {error.insurance && <p className="error-text">insurance policy number is required</p>}
           </div>
 
         </div>
