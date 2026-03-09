@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import '../../Styles/DriverProfile.css'
+import EditDriver from './EditDriver';
 
 export default function DriverProfile({Open, Data, Close}) {
+   
+   const [openEdit, setOpenEdit] = useState(false);
 
-  if(!Open || !Data) return null
-
-  return (
+    if(!Open || !Data) return null
+    return (
     <div className='Driver-profile-container'>
       <div className='overflow-div'>
       <div className="Driver-profile-body">
@@ -85,11 +87,16 @@ export default function DriverProfile({Open, Data, Close}) {
         </div>
         </div>
           <div className='Driverprofile-button'>
+            <button onClick={()=>{setOpenEdit(true)}}>Edit</button>
             <button onClick={Close}>Close</button>
-            <button>Edit</button>
           </div>
       </div>
       </div>
+      <EditDriver
+      Open = {openEdit}
+      Close = {()=>{setOpenEdit(false)}}
+      Data = {Data}
+      />
     </div>
   )
 }

@@ -26,7 +26,12 @@
     max-height: 90vh;
     scroll-behavior: smooth;
     overflow-y: auto;
+    scrollbar-width: thin;
     animation: modalFade 0.25s ease;
+}
+
+.Driver-profile-body h1{
+    color: var(--primary);
 }
 
 .overflow-div{

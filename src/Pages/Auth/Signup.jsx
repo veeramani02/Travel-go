@@ -207,7 +207,7 @@ function Signup() {
   return (
     <div className="auth-wrapper">
     <div className="container">
-      <form onSubmit={handleSubmit}>
+      <form className="form" onSubmit={handleSubmit}>
         <h1>Sign Up</h1>
 
         {error && <p className="error">{error}</p>}
