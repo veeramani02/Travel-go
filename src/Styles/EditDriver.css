@@ -19,10 +19,12 @@
     padding: 20px;
     width: 420px;
     max-width: 90%;
+    animation: modalPop 0.25s ease;
+}
+
+.editdriver-container form{
     max-height: 90vh;
     overflow-y: auto;
-    scrollbar-width: thin;
-    animation: modalPop 0.25s ease;
 }
 
 @keyframes modalPop{
@@ -69,4 +71,13 @@
 
 .editdriver-input{
     margin-bottom: 15px;
+}
+
+.editdriver-container form::-webkit-scrollbar{
+    width: 6px;
+}
+
+.editdriver-container form::-webkit-scrollbar-thumb{
+    background: #ccc;
+    border-radius: 10px;
 }
