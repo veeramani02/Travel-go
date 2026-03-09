@@ -1,0 +1,186 @@
+.Driver-profile-container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.Driver-profile-body{
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    width: 750px;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 15px;
+    max-height: 90vh;
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    animation: modalFade 0.25s ease;
+}
+
+.overflow-div{
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes modalFade{
+    from{
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+    to{
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.driver-photo-div img{
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    border: 4px solid #e5e7eb;
+    object-fit: cover;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.driver-profile-top-info{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.account-details-div,
+.vehicle-details-div,
+.contact-details-div,
+.performance-details-div{
+    width: 100%;
+    font-size: 14px;
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 6px;
+    background-color: #d8e4ff;
+    padding: 6px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    flex: 1 1 250px;
+}
+
+.driver-account-info,
+.driver-vehicle-info,
+.contact-container-div{
+    background-color: #f4f7fe;
+    padding: 10px;
+    border-radius: 10px;
+    min-width: 180px;
+}
+
+.driver-account-info h3,
+.driver-vehicle-info h3,
+.performance-container-div h3,
+.contact-container-div h3{
+    margin-bottom: 8px;
+}
+
+.Driverprofile-button{
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    justify-content: flex-end;
+}
+
+.Driverprofile-button button{
+    padding: 8px 18px;
+    background-color: var(--primary);
+    cursor: pointer;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    font-weight: 500;
+}
+
+.driver-photo-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.driver-profile-bottom-info{
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 100%;
+}
+
+.performance-details-div{
+    padding: 6px;
+    background-color: rgba(0, 255, 0, 0.2);
+    border-radius: 10px;
+}
+
+
+.performance-container-div{
+    background-color: rgba(0, 255, 0, 0.08);
+    padding: 10px;
+    border-radius: 10px;
+    min-width: 180px;
+}
+
+.performance-container-div,
+.contact-container-div{
+    flex: 1;
+}
+
+@media (max-width: 768px){
+
+    .driver-profile-top-info{
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .driver-photo-container{
+        order: -1;
+        margin-bottom: 10px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .driver-account-info,
+    .driver-vehicle-info{
+        width: 100%;
+    }
+
+    .driver-profile-bottom-info{
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .driver-photo-div img{
+        width: 90px;
+        height: 90px;
+    }
+}

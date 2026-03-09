@@ -77,6 +77,13 @@
     opacity: 0.85;
 }
 
+.file-content{
+    width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .btn-div {
     display: flex;
     gap: 10px;

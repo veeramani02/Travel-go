@@ -87,7 +87,9 @@ export default function AddDriver({openDriver, closeDriver}) {
                 >
                     Upload File
                 </button>
-                {fileName && <p style={{display:"inline", marginLeft: "10px"}}>{fileName}</p>}
+                {fileName && <p style={{display:"inline-block", marginTop:'10px'}} className='file-content'
+                title={fileName}
+                >{fileName}</p>}
             </div>
             <div className="input">
                 <label htmlFor="status">Status</label>

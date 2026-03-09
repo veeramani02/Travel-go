@@ -3,12 +3,15 @@ import '../../Styles/Driver.css'
 import { FaMagnifyingGlass } from 'react-icons/fa6';
 import {Data} from '../../Data/Data'
 import AddDriver from '../../Pages/Admin/AddDriver';
+import DriverProfile from './DriverProfile';
 
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);
   const status = ['All', 'Active', 'Inactive','On Trip'];
   const [filterSearch ,setFilterSearch] = useState(Data);
   const [Active, setActive] = useState('All');
+  const [OpenProfile, setOpenProfile] = useState(false);
+  const [data, setData] = useState(null);
 
   function handleFilter(filterValue){
     if(filterValue.toLowerCase() === 'all')
@@ -80,7 +83,9 @@ export default function Driver() {
                 </div>
                </div>
                <div className="driver-button-block">
-                <button>Profile</button>
+                <button onClick={()=>{setOpenProfile(true);
+                  setData(value)
+                }}>Profile</button>
                </div>
                </div>
              </div>
@@ -94,6 +99,11 @@ export default function Driver() {
         <AddDriver
           openDriver={openDriver}
           closeDriver={ ()=>{setOpenDriver(false)} }
+        />
+        <DriverProfile
+          Open={OpenProfile}
+          Data={data}
+          Close={()=>{setOpenProfile(false)}}
         />
     </div>
   )
