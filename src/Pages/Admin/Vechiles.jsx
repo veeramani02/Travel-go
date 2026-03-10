@@ -7,8 +7,9 @@ import tool from "../../assets/tool.png";
 import { FaCarSide } from "react-icons/fa6";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 import  VechileModal from "../../Components/VechileModal"
+import { useNavigate } from "react-router-dom";
 function Vehicles() {
-
+const navigate=useNavigate()
 const [showForm, setShowForm] = useState(false);
 const [selectedFilter, setSelectedFilter] = useState("All");
 const [search, setSearch] = useState("");
@@ -279,7 +280,7 @@ className={selectedFilter === filter ? "active-filter" : ""}
 
 <div className="vehicle-action">
 
-<button className="view-btn">View Details</button>
+<button className="view-btn" onClick={()=>navigate("/vehicle-details")}>View Details</button>
 
 <HiOutlineWrenchScrewdriver
 className="screwicon"
