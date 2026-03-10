@@ -8,20 +8,46 @@ import DriverProfile from './DriverProfile';
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);
   const status = ['All', 'Active', 'Inactive','On Trip'];
+  const [drivers, setDrivers] = useState(Data);
   const [filterSearch ,setFilterSearch] = useState(Data);
   const [Active, setActive] = useState('All');
   const [OpenProfile, setOpenProfile] = useState(false);
   const [data, setData] = useState(null);
 
+  function handleUpdateDriver(updatedDriver){
+  const updatedList = drivers.map(driver =>
+    driver.id === updatedDriver.id
+      ? { ...driver, ...updatedDriver }
+      : driver
+  );
+
+  setDrivers(updatedList);
+
+  if (Active === "All") {
+    setFilterSearch(updatedList);
+  } else {
+    setFilterSearch(
+      updatedList.filter(driver => driver.status === Active)
+    );
+  }
+
+  const updatedProfile = updatedList.find(
+    driver => driver.id === updatedDriver.id
+  );
+
+  setData(updatedProfile);
+
+}
+
   function handleFilter(filterValue){
     if(filterValue.toLowerCase() === 'all')
-      setFilterSearch(Data)
+      setFilterSearch(drivers)
     else
-      setFilterSearch(Data.filter(value=>(value.status === filterValue)))
+      setFilterSearch(drivers.filter(value=>(value.status === filterValue)))
   }
 
   function inputFilter(input){
-    setFilterSearch(Data.filter(value=>(
+    setFilterSearch(drivers.filter(value=>(
       value.name.toLowerCase().trim().includes(input.toLowerCase().trim()
     ))))
   }
@@ -104,6 +130,7 @@ export default function Driver() {
           Open={OpenProfile}
           Data={data}
           Close={()=>{setOpenProfile(false)}}
+          updateDriver={handleUpdateDriver}
         />
     </div>
   )

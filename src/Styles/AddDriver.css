@@ -129,10 +129,6 @@
         flex-direction: column; 
     }
 
-    .btn-div {
-        flex-direction: column;
-    }
-
     .btn button {
         width: 100%;
     }

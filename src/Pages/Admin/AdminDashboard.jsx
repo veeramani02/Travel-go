@@ -2,12 +2,14 @@ import React from 'react'
 import '../../Styles/AdminDashboard.css'
 import {recentTripActivityData,revenueData, fleetData, Data} from '../../Data/Data'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
 
-const activeDrivers = Data.filter(value =>{ if(value.status.toLocaleLowerCase().trim() === "active") return value })
-const onTrip = Data.filter(value =>{ if(value.status.toLocaleLowerCase().trim() === "on trip") return value })
-const pendingRequest = recentTripActivityData.filter(value=>{if(value.status.toLocaleLowerCase().trim() === "pending") return value})
+const activeDrivers = Data.filter(value =>{ if(value.status.toLocaleLowerCase().trim() === "active") return value });
+const onTrip = Data.filter(value =>{ if(value.status.toLocaleLowerCase().trim() === "on trip") return value });
+const pendingRequest = recentTripActivityData.filter(value=>{if(value.status.toLocaleLowerCase().trim() === "pending") return value});
+const navigate = useNavigate();
 
 const stats = [
   { label: "Total Revenue", value: `Rs.6888.00` },
@@ -31,7 +33,7 @@ function View(){
       <div className="title-div">
        <h1 className='title'>Dashboard Overview</h1>
        <div className='button-div'>
-        <button>+ New Booking</button>
+        <button onClick={()=>navigate("/admin/enquiries")}>+ New Booking</button>
        </div>
        </div>
        <p>Welcome back, Admin. Here's what's happening today.</p>

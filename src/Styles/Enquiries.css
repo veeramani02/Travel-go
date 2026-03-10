@@ -114,6 +114,22 @@ td.datetime {
     transition: all 0.2s ease;
 }
 
+.enquiries-title-button-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.enquiries-title-button-container button{
+    background-color: var(--primary);
+    border-style: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
 .button-container button:hover{
   opacity: 0.85;
 }

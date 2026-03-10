@@ -9,13 +9,14 @@ export default function EditDriver({Open, Close, Data, Onsave}) {
  useEffect(() => {
   if (Data) {
     setFormData({
+      id: Data.id,
       name: Data.name,
       phone: Data.phone,
       email: Data.email,
       status: Data.status,
-      vehiclemodel: Data.vehicleModel,
-      licenseplate: Data.licensePlate,
-      color: Data.vehicleColor
+      vehicleModel: Data.vehicleModel,
+      licensePlate: Data.licensePlate,
+      vehicleColor: Data.vehicleColor
     });
   }
 }, [Data]);
@@ -31,6 +32,7 @@ export default function EditDriver({Open, Close, Data, Onsave}) {
 
   const handleSubmit = (e) => {
   e.preventDefault();
+  Onsave(formData);
   Close();
 };
   if(!Open || !Data) return null;
@@ -43,7 +45,7 @@ export default function EditDriver({Open, Close, Data, Onsave}) {
          <h3>Driver Info</h3>
          <div className="editdriver-input">
             <label htmlFor="name">Name</label>
-            <input type="text" id='name' name='name' value={formData.name || ""} onChange={handleChange} />
+            <input type="text" id='name' name='name' value={formData.name || ""} onChange={handleChange} required />
          </div>
          <div className="editdriver-input">
             <label htmlFor="phone">Phone</label>
@@ -59,20 +61,21 @@ export default function EditDriver({Open, Close, Data, Onsave}) {
                 <option value="">--select--</option>
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
+                <option value="On Trip">On Trip</option>
             </select>
          </div>
          <h3>Vehicle Info</h3> 
          <div className="editdriver-input">
              <label htmlFor="vehiclemodel">Vehicle Model</label>
-             <input type="text" id='vehiclemodel' name='vehiclemodel' value={formData.vehiclemodel || ""} onChange={handleChange} />
+             <input type="text" id='vehiclemodel' name='vehiclemodel' value={formData.vehicleModel || ""} onChange={handleChange} />
          </div>
          <div className="editdriver-input">
              <label htmlFor="licenseplate">License Plate</label>
-             <input type="text" name='licenseplate' id='licenseplate' value={formData.licenseplate || ""} onChange={handleChange}/>
+             <input type="text" name='licenseplate' id='licenseplate' value={formData.licensePlate || ""} onChange={handleChange}/>
          </div>
          <div className="editdriver-input">
              <label htmlFor="color">Color</label>
-             <input type="text" name='color' id='color' value={formData.color || "white"} onChange={handleChange}/>
+             <input type="text" name='color' id='color' value={formData.vehicleColor || "white"} onChange={handleChange}/>
          </div>
          <div className="editdriver-button-div">
             <button type='submit'>Save</button>

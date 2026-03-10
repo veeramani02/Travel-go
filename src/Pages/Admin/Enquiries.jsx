@@ -4,6 +4,7 @@ import { FiSearch, FiUser, FiCalendar, FiCheckCircle } from "react-icons/fi";
 import TripviewDetails from "./TripviewDetails";
 import EditTrip from "./EditTrip";
 import AssignDriver from "./AssignDriver";
+import NewBooking from "./NewBooking";
 
 export default function Enquiries() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,6 +18,7 @@ export default function Enquiries() {
   const [isClosing, setIsClosing] = useState(false);
   const [AssignOpen, setAssignOpen] = useState(false);
   const [AssignClose, setAssignClose] = useState(false);
+  const [newBookingOpen, setNewBookingOpen] = useState(false);
   const tableData = [
   {
     id: "2040",
@@ -378,7 +380,12 @@ export default function Enquiries() {
   
   return (
     <div className='enquiries-container'>
+      <div className="enquiries-title-button-container">
         <h1 className='title'>Enquiries & Trips List</h1>
+        <div>
+        <button onClick={()=>setNewBookingOpen(true)}>+ New Booking</button>
+        </div>
+       </div>
         <div className="table-container">
           <div className="input-section">
             <div className="input-wrapper">
@@ -456,7 +463,7 @@ export default function Enquiries() {
                     <td>{value.id}</td>
                     <td>{value.passenger.name}</td>
                     <td>{value.driver.name}</td>
-                    <td>{value.route.time}</td>
+                    <td>{value.route.path}</td>
                     <td className="datetime">
                       <span className="date">
                         {value.route.time.split(" ")[0]}
@@ -531,6 +538,10 @@ export default function Enquiries() {
               Driver={avaliableDriver}
               trip={selectedRow}
               isClose={AssignClose}
+        />
+        <NewBooking
+        Open={newBookingOpen}
+        Close={()=>setNewBookingOpen(false)}
         />
     </div>
   )

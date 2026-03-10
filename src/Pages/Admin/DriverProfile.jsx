@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import '../../Styles/DriverProfile.css'
 import EditDriver from './EditDriver';
 
-export default function DriverProfile({Open, Data, Close}) {
+export default function DriverProfile({Open, Data, Close, updateDriver}) {
    
    const [openEdit, setOpenEdit] = useState(false);
 
@@ -96,6 +96,7 @@ export default function DriverProfile({Open, Data, Close}) {
       Open = {openEdit}
       Close = {()=>{setOpenEdit(false)}}
       Data = {Data}
+      Onsave = {(value)=>{updateDriver(value)}}
       />
     </div>
   )
