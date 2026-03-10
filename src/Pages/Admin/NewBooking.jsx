@@ -151,12 +151,14 @@ function NewBooking({Open, Close}) {
     <div className="newbooking-container">
     <div className="Newbooking-page">
       <form className="Newbooking-form" onSubmit={handleSubmit} noValidate>
-        <div className="Newbooking-title-div">
+       <div className="Newbooking-title-div">
         <h1 className="Newbooking-title">
           Booking Details
         </h1>
+        <div className="Newbooking-edit-button">
         <button onClick={()=>setIsEdit(prev => !prev)}>Edit</button>
         </div>
+       </div>
 
         <div className="Newbooking-group">
           <label>Customer Name</label>
@@ -308,13 +310,7 @@ function NewBooking({Open, Close}) {
 
         <div className="Newbooking-group">
           <label>Assigned Driver</label>
-          <input
-            type="text"
-            name="assigneddriver"
-            value={formData.AssignedDriver}
-            onChange={handleChange}
-            disabled={!isEdit}
-          />
+          
           {renderError("AssignedDriver")}
         </div>
 

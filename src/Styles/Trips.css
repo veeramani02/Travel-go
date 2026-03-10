@@ -1,0 +1,40 @@
+.trips-title-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trips-title h1{
+    color: var(--primary);
+}
+
+.trips-button button{
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    border: none;
+    background-color: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.trips-button-div{
+    display: flex;
+    gap: 20px;
+}
+
+.trips-group-button-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.trips-group-button-div button{
+    border-style: none;
+    padding: 6px 12px;
+    background-color: white;
+}

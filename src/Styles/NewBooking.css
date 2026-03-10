@@ -117,7 +117,7 @@
     margin-bottom: 10px;
 }
 
-.Newbooking-title-div button{
+.Newbooking-title-div .Newbooking-edit-button button{
     padding: 6px 12px;
     border-radius: 10px;
     font-size: 0.9rem;
@@ -126,6 +126,11 @@
     color: white;
     cursor: pointer;
     transition: 0.3s;
+}
+
+.Newbooking-edit-button{
+    display: flex;
+    align-items: center;
 }
 
 .Newbooking-group input:disabled,
