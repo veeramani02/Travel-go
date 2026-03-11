@@ -22,6 +22,7 @@ import Enquiries from './Pages/Admin/Enquiries';
 import Vechiles from "./Pages/Admin/Vechiles";
 import Driver from "./Pages/Admin/Driver";
 import VehicleDetails from "./Pages/Admin/ViewVehicleDetails";
+import Report from "./Pages/Admin/Report";
 function App() {
   return (
     <BrowserRouter>
@@ -52,6 +53,7 @@ function App() {
           <Route path="/admin/vehicles" element={<Vechiles/>}/>
           <Route path="/admin/Driver" element={<Driver/>}/>
           <Route path="/vehicle-details" element={<VehicleDetails/>}/>
+          <Route path="/admin/report" element={<Report/>}/>
           {/* Driver */}
           <Route path="/driver/dashboard" element={<DriverDashboard />} /> 
             <Route path="/driver/salary" element={<Salary/>}/>
