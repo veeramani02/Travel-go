@@ -22,7 +22,12 @@ import Enquiries from './Pages/Admin/Enquiries';
 import Vechiles from "./Pages/Admin/Vechiles";
 import Driver from "./Pages/Admin/Driver";
 import VehicleDetails from "./Pages/Admin/ViewVehicleDetails";
+<<<<<<< HEAD
 import Report from "./Pages/Admin/Report";
+=======
+import Trips from "./Pages/Admin/Trips";
+
+>>>>>>> fb3ca7f8790b34d4ecf52acac4f50b6ae4d44bdb
 function App() {
   return (
     <BrowserRouter>
@@ -53,7 +58,13 @@ function App() {
           <Route path="/admin/vehicles" element={<Vechiles/>}/>
           <Route path="/admin/Driver" element={<Driver/>}/>
           <Route path="/vehicle-details" element={<VehicleDetails/>}/>
+<<<<<<< HEAD
           <Route path="/admin/report" element={<Report/>}/>
+=======
+          <Route path="/admin/Trips" element={<Trips/>}/>
+
+       
+>>>>>>> fb3ca7f8790b34d4ecf52acac4f50b6ae4d44bdb
           {/* Driver */}
           <Route path="/driver/dashboard" element={<DriverDashboard />} /> 
             <Route path="/driver/salary" element={<Salary/>}/>
