@@ -540,8 +540,8 @@ export default function Enquiries() {
               isClose={AssignClose}
         />
         <NewBooking
-        Open={newBookingOpen}
-        Close={()=>setNewBookingOpen(false)}
+              Open={newBookingOpen}
+              Close={()=>setNewBookingOpen(false)}
         />
     </div>
   )
