@@ -1,17 +1,8 @@
-/* ========================= */
-/* Driver Dashboard */
-/* ========================= */
-
 .driver-container {
     width: 100%;
     min-height: 100vh;
     padding: 40px;
-    background-color: var(--background);
 }
-
-/* ========================= */
-/* Title */
-/* ========================= */
 
 .driver-title {
     font-size: 24px;
@@ -19,10 +10,6 @@
     margin-bottom: 30px;
     color: var(--primary);
 }
-
-/* ========================= */
-/* Summary Cards */
-/* ========================= */
 
 .driver-cards {
     display: grid;
@@ -72,19 +59,12 @@
     color: var(--text-dark);
 }
 
-/* ========================= */
-/* Table Section */
-/* ========================= */
-
-/* 🔥 STACKED LAYOUT (Recent top, Upcoming below) */
-
 .driver-table-section {
     display: flex;
     flex-direction: column;
     gap: 30px;
 }
 
-/* Common Card Style */
 .driver-recent,
 .driver-upcoming {
     background: white;
@@ -93,7 +73,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-/* Titles */
 .driver-recent-title,
 .driver-upcoming-title {
     font-size: 18px;
@@ -101,13 +80,12 @@
     margin-bottom: 20px;
 }
 
-/* ========================= */
-/* Table Styles */
-/* ========================= */
-
 .driver-table-wrapper {
     width: 100%;
-    overflow-x: auto;   /* Enables scroll in mobile */
+    overflow-x: auto;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: white;
 }
 
 .driver-table {
@@ -115,14 +93,8 @@
     border-collapse: collapse;
 }
 
-/* Only Recent table needs forced width */
 .driver-recent-table {
     min-width: 600px;
-}
-
-/* Header */
-.driver-table thead {
-    background-color: #f9fafb;
 }
 
 .driver-table th {
@@ -132,22 +104,16 @@
     padding: 12px 10px;
 }
 
-/* Table Cells */
 .driver-table td {
     padding: 14px 10px;
     font-size: 14px;
     border-top: 1px solid #f1f1f1;
 }
 
-/* Hover */
 .driver-table tbody tr:hover {
     background-color: #f9fafb;
     transition: 0.2s;
 }
-
-/* ========================= */
-/* Responsive */
-/* ========================= */
 
 @media (max-width: 768px) {
     .driver-container {

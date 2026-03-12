@@ -36,8 +36,8 @@ export default function Salary() {
        <h1 className="salary-main-title">Salary Tracking</h1>
        
        <div className="salary-filter-container">
-          <label>Filter by Month:</label>
-          <select value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
+          <p>Filter by Month:</p>
+          <select name='month' value={selectedMonth} onChange={(e) => setSelectedMonth(e.target.value)}>
             {months.map((m) => (
               <option key={m} value={m}>{m}</option>
             ))}

@@ -88,6 +88,8 @@
   padding:4px 10px;
   border-radius:20px;
   font-size:12px;
+  text-align: center;
+  align-content: center;
 }
 
 .bottom-section{
@@ -184,7 +186,17 @@
 }
 
 .destination-card button{
-  background:#2563eb;
+  background:var(--primary);
+  color:white;
+  border:none;
+  padding:8px 15px;
+  margin-bottom:15px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.primary-button button{
+  background:var(--primary);
   color:white;
   border:none;
   padding:8px 15px;
