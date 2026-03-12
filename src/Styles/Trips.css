@@ -1,3 +1,7 @@
+*{
+    box-sizing: border-box;
+}
+
 .trips-title-div{
     display: flex;
     justify-content: space-between;
@@ -24,10 +28,12 @@
     gap: 20px;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .trips-group-button-div{
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
     background-color: white;
@@ -165,6 +171,12 @@
     height: 65vh;
     flex: 1;
     overflow-y: auto;
+    scroll-behavior: smooth;
+}
+
+.trips-card-container-div{
+    width: 100%;
+    max-width: 420px;
 }
 
 .trip-card-div-scroll::-webkit-scrollbar{
@@ -182,6 +194,7 @@
     height: 50px;
     border: 4px solid #e5e7eb;
     object-fit: cover;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .trips-card-driver-icons-name{
@@ -214,17 +227,119 @@
 .trips-card-driver-message-icon:hover,
 .trips-card-driver-threedot-icon:hover{
     color: var(--primary);
-    background-color: rgba(0,0,255,0.05);
+    background-color: rgba(0,0,0,0.05);
     border-radius: 10px;
 }
 
 .p-trip-pickup-drop{
-    color:gray;
-    font-size: 1rem;
-    font-weight: 500;
+    color: #6b7280;
+    font-size: 0.95rem;
 }
 
 .p-trips-driver-name{
     font-size: 1rem;
     font-weight: 600;
+    color: #111827;
+}
+
+/* Tablet */
+@media (max-width: 1024px){
+
+    .tripcard-container{
+        align-items: center;
+    }
+
+    .trips-card-container-div{
+        max-width: 100%;
+    }
+
+}
+
+
+/* Mobile */
+@media (max-width: 768px){
+
+    .trips-title-div{
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .trips-button-div{
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .trips-group-button-div{
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .trips-group-button-div button{
+        flex: 1;
+        font-size: 0.85rem;
+        padding: 6px;
+    }
+
+    .trips-body-container-div{
+        flex-direction: column;
+    }
+
+    .trips-map-container{
+        width: 100%;
+    }
+
+    .trips-card-icons{
+        justify-content: flex-start;
+    }
+
+    .trips-pickup,
+    .trips-dropoff{
+        gap: 10px;
+    }
+
+    .trip-card-div-scroll{
+        height: auto;
+        max-height: 70vh;
+    }
+
+}
+
+
+@media (max-width: 400px){
+
+    .trips-title-div{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .trips-button-div{
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .trips-button button{
+        font-size: 0.8rem;
+        padding: 5px 10px;
+    }
+
+    .trips-group-button-div{
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .trips-group-button-div button{
+        flex: unset;
+        font-size: 0.8rem;
+        padding: 5px 8px;
+    }
+
+    .trips-card-container-div{
+        padding: 15px;
+        gap: 18px;
+    }
+
 }
