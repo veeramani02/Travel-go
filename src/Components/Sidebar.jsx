@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FiHome, FiMap, FiClock, FiCreditCard, FiSettings, FiUsers, FiTruck, FiDollarSign, FiAward, FiMenu,FiCalendar } from "react-icons/fi";
 import { TbReportAnalytics } from "react-icons/tb";
+import { IoSettingsOutline } from "react-icons/io5";
 import "../Styles/Sidebar.css";
 
 function Sidebar() {
@@ -23,7 +24,8 @@ function Sidebar() {
     Salary: <FiDollarSign />,
     Rewards: <FiAward />,
     dues:<FiCalendar/>,
-    Report:<TbReportAnalytics/>
+    Report:<TbReportAnalytics/>,
+    Settings:<IoSettingsOutline />
   };
 
   const menu = {
@@ -33,7 +35,8 @@ function Sidebar() {
       { name: "Trips", path: "/admin/trips" },
       { name: "Drivers", path: "/admin/driver" },
       { name: "Vehicles", path: "/admin/vehicles" },  
-      { name:"Report",path:"/admin/report"}
+      { name:"Report",path:"/admin/report"},
+      {name:"Settings", path:"/admin/settings"}
     ],
     customer: [
       { name: "Dashboard", path: "/customer/dashboard" },

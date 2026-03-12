@@ -24,6 +24,7 @@ import Driver from "./Pages/Admin/Driver";
 import VehicleDetails from "./Pages/Admin/ViewVehicleDetails";
 import Report from "./Pages/Admin/Report";
 import Trips from "./Pages/Admin/Trips";
+import Settings from "./Components/Settings";
 function App() {
   return (
     <BrowserRouter>
@@ -56,6 +57,7 @@ function App() {
           <Route path="/vehicle-details" element={<VehicleDetails/>}/>
           <Route path="/admin/report" element={<Report/>}/>
           <Route path="/admin/Trips" element={<Trips/>}/>
+          <Route path="/admin/settings" element={<Settings/>}/>
 
           {/* Driver */}
           <Route path="/driver/dashboard" element={<DriverDashboard />} /> 
