@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import '../../Styles/Trips.css'
 import { LiaCarSideSolid } from "react-icons/lia";
 import { GoDotFill } from "react-icons/go";
@@ -17,6 +17,8 @@ export default function Trips() {
   
   const status = ['All', 'Active', 'Pending', 'Completed'];
   const [Active, setActive] = useState('All');
+  const [place, setPlace] = useState("");
+  const [coords, setCoords] = useState(null);
   const DateStyle = {
     color: "gray",
     fontSize: "0.7rem"
@@ -27,6 +29,44 @@ export default function Trips() {
   const getCustomerDetails = (id) => {
     return Customers.find(customer => customer.id === id);
   };
+
+ const getCoordinates = async (value) => {
+  try {
+    const sourceUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.source}`;
+    const destinationUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.destination}`;
+    const sourceRes = await fetch(sourceUrl, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const destinationRes = await fetch(destinationUrl, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+
+    const sourceData = await sourceRes.json();
+    const destinationData = await destinationRes.json();
+    if (sourceData.length > 0 && destinationData.length > 0) {
+      setCoords({
+        source: {
+          lat: parseFloat(sourceData[0].lat),
+          lon: parseFloat(sourceData[0].lon)
+        },
+        destination: {
+          lat: parseFloat(destinationData[0].lat),
+          lon: parseFloat(destinationData[0].lon)
+        }
+      });
+    } else {
+      console.log("Location not found");
+    }
+
+  } catch (error) {
+    console.error("Geocoding error:", error);
+  }
+};
 
 
   return (
@@ -59,7 +99,7 @@ export default function Trips() {
         <div className="tripcard-container">
          {
          recentTripActivityData.map((value)=>(
-          <div key={value.tripId} className="trips-card-container-div">
+          <div key={value.tripId} className="trips-card-container-div" onClick={()=>{getCoordinates(value)}}>
              <div className="trips-card-title-div">
               <div className="trips-card-icons">
                <div className='trips-icons'><LiaCarSideSolid className='trips-car-icons'/></div>
@@ -79,7 +119,7 @@ export default function Trips() {
                    <FaRegCircleDot style={{color:"#087f5b"}}/>
                  </div>
                  <div className="trip-pickup-content">
-                   <p style={{color:"gray", fontSize:"1rem", fontWeight:"600"}}>PICKUP</p>
+                   <p className='p-trip-pickup-drop'>PICKUP</p>
                    <p style={{fontWeight:"bold", fontSize:"0.9rem"}}>{value.source}</p>
                  </div>
               </div>
@@ -89,7 +129,7 @@ export default function Trips() {
                    <FaRegCircleDot style={{color:"#fa5252"}}/>
                  </div>
                  <div className="trip-dropoff-content">
-                   <p style={{color:"gray", fontSize:"1rem",fontWeight:"600"}}>DROPOFF</p>
+                   <p className='p-trip-pickup-drop'>DROPOFF</p>
                    <p style={{fontWeight:"bold", fontSize:"0.9rem"}}>{value.destination}</p>
                  </div>
               </div>
@@ -101,8 +141,8 @@ export default function Trips() {
                     <img src={getDriverDetails(value.driverId)?.avatar} alt="" /> 
                 </div>
                 <div className="trips-card-driver-name">
-                  <p>Driver</p>
-                  <p>{getDriverDetails(value.driverId)?.name}</p>
+                  <p style={{fontSize:"0.9rem",color:"gray"}}>Driver</p>
+                  <p className='p-trips-driver-name'>{getDriverDetails(value.driverId)?.name}</p>
                 </div>
               </div>
               <div className="trips-card-driver-info-icons">
@@ -113,7 +153,7 @@ export default function Trips() {
              </div>
              <div className="trips-card-customer-details">
               <div className="trips-card-customer-name">
-                <p>Customer: {getCustomerDetails(value.customerId).name}</p>
+                <p style={{fontSize:"0.9rem",color:"gray"}}>Customer: {getCustomerDetails(value.customerId).name}</p>
               </div>
               <div className="trips-card-customer-cost">
 
@@ -125,7 +165,9 @@ export default function Trips() {
       </div>
       </div>
       <div className="trips-map-container">
-           <TripMap/>
+           <TripMap
+           Coords = {coords}
+           />
       </div>
       </div>
     </div>
