@@ -28,9 +28,11 @@ function Preferences() {
 
   return (
     <div className="preferences-page">
-      <h1 >Trip Preferences</h1>
+     
 
       <div className="preferences-card">
+
+         <h1 >Trip Preferences</h1>
 {/* 
         <div className="form-group">
           <label>Name</label>

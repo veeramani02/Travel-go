@@ -160,20 +160,6 @@ export const recentTripActivityData = [
     status: "Completed",
     vehicleModel: "Honda Accord",
     licensePlate: "TN-01-7890"
-  },
-  {
-    tripId: "1290003",
-    driverId: "D-5005",
-    customerId: "C-9004",
-    user: "Kevin Smith",
-    driverName: "Grant Allen",
-    source: "Thanjavur",
-    destination: "Chennai",
-    date: "Mar 15, 2026",
-    time: "08:20 PM",
-    status: "Completed",
-    vehicleModel: "Honda Accord",
-    licensePlate: "TN-01-7890"
   }
   
 ];

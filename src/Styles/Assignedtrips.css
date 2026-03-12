@@ -37,15 +37,11 @@
 .driver-route-btn {
     padding: 10px 18px;
     border: none;
-    background-color: #2563eb;
+    background-color: var(--primary);
     color: white;
     border-radius: 6px;
     cursor: pointer;
     transition: 0.2s ease;
-}
-
-.driver-route-btn:hover {
-    background-color: #1d4ed8;
 }
 
 .driver-completed-section {

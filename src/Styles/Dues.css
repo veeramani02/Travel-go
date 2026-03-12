@@ -20,10 +20,8 @@
   color: gray;
 }
 
-/* Total Section */
-
 .due-total {
-  border: 1px solid #ddd;
+  background-color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -31,6 +29,7 @@
   border-radius: 8px;
   margin-bottom: 20px;
   flex-wrap: wrap;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .total-title h2 {
@@ -38,7 +37,7 @@
 }
 
 .due-button {
-  background-color: #1971c2;
+  background-color: var(--primary);
   color: white;
   border: none;
   padding: 8px 18px;
@@ -50,17 +49,16 @@
   opacity: 0.85;
 }
 
-/* Table Section */
 
 .table-container {
   width: 100%;
-  overflow-x: auto;   /* Mobile scroll */
+  overflow-x: auto;  
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;   /* Important for responsiveness */
+  min-width: 700px;   
 }
 
 th, td {
@@ -82,6 +80,7 @@ tbody tr:nth-child(odd) {
   border-radius: 20px;
   padding: 4px 10px;
   font-size: 14px;
+  border: 1px solid #fa5252;
 }
 
 .pay-now-btn {
@@ -92,12 +91,6 @@ tbody tr:nth-child(odd) {
   border-radius: 6px;
   cursor: pointer;
 }
-
-.pay-now-btn:hover {
-  background-color:rgba(0, 0, 255, 0.499);
-}
-
-/* Mobile Responsive */
 
 @media (max-width: 768px) {
 

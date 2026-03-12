@@ -45,10 +45,8 @@ export default function Driver() {
 
       </div>
 
-      {/* Table Section */}
       <div className='driver-table-section'>
 
-        {/* Recent Trips */}
         <div className='driver-recent'>
           <p className="driver-recent-title">Recent Trips</p>
 

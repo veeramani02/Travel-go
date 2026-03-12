@@ -19,6 +19,7 @@ export default function Trips() {
   const [Active, setActive] = useState('All');
   const [place, setPlace] = useState("");
   const [coords, setCoords] = useState(null);
+  const [filterData ,setFilterData] = useState(recentTripActivityData);
   const DateStyle = {
     color: "gray",
     fontSize: "0.7rem"
@@ -29,6 +30,13 @@ export default function Trips() {
   const getCustomerDetails = (id) => {
     return Customers.find(customer => customer.id === id);
   };
+
+  function handleFilterChange(status){
+    if(status.toLowerCase() == 'all')
+      setFilterData(recentTripActivityData);
+    else
+      setFilterData(recentTripActivityData.filter(value=>(value.status === status)))
+  }
 
  const getCoordinates = async (value) => {
   try {
@@ -85,7 +93,9 @@ export default function Trips() {
               status.map((value,index)=>(
                 <div key={index}>
                    <button className={Active === value ? "trip-active-button": ""}
-                   onClick={()=>{setActive(value)}}
+                   onClick={()=>{setActive(value)
+                    handleFilterChange(value)
+                   }}
                    >{value}</button>
                 </div>
               )
@@ -98,7 +108,7 @@ export default function Trips() {
         <div className="trip-card-div-scroll">
         <div className="tripcard-container">
          {
-         recentTripActivityData.map((value)=>(
+         filterData.map((value)=>(
           <div key={value.tripId} className="trips-card-container-div" onClick={()=>{getCoordinates(value)}}>
              <div className="trips-card-title-div">
               <div className="trips-card-icons">
