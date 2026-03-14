@@ -21,13 +21,23 @@
     gap:20px;
     padding:30px;
     border-radius:14px;
-    box-shadow:0 4px 12px rgba(0,0,0,0.05);
+}
+
+.reward-card,
+.redeem-info{
+    transition: 0.3s ease;
+}
+
+.reward-card:hover,
+.redeem-info:hover{
+    transform: translateY(-4px);
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
 }
 
 .circle {
     width:60px;
     height:60px;
-    background-color:#eef2ff;
+    background-color: var(--secondary);
     display:flex;
     align-items:center;
     justify-content:center;
@@ -66,10 +76,10 @@
     border-radius:14px;
     box-shadow:0 4px 12px rgba(0,0,0,0.05);
     display:flex;
-    justify-content:space-between;
-    align-items:center;
     flex-direction: column;
     gap:10px;
+    align-items:flex-start;
+    text-align:left;
 }
 
 .redeem-info h4{
@@ -164,6 +174,7 @@
     display:flex;
     flex-direction:column;
     row-gap:5px;
+    align-items:center;
     text-align:center;
 }
 

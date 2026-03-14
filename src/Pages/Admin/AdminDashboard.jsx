@@ -31,12 +31,15 @@ function View(){
   return (
     <div className='admin-container'>
       <div className="title-div">
+       <div>
        <h1 className='title'>Dashboard Overview</h1>
+       <p>Welcome back, Admin. Here's what's happening today.</p>
+       </div>
        <div className='button-div'>
         <button onClick={()=>navigate("/admin/enquiries")}>+ New Booking</button>
        </div>
        </div>
-       <p>Welcome back, Admin. Here's what's happening today.</p>
+       
        <div className="card-container">
             {stats.map((item, index) => (
                 <div className="card-div" key={index}>

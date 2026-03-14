@@ -10,7 +10,6 @@ export default function TripMap({ Coords }) {
   let destPos = null;
 
   if (Coords) {
-    if (Coords) {
     sourcePos = [
       parseFloat(Coords.source.lat),
       parseFloat(Coords.source.lon)
@@ -21,7 +20,8 @@ export default function TripMap({ Coords }) {
       parseFloat(Coords.destination.lon)
     ];
   }
-  }
+
+  if (!Coords) return <h1>Loading map...</h1>;
 
   return (
     <MapContainer
@@ -58,8 +58,8 @@ function Route({ coords }) {
 
     const routingControl = L.Routing.control({
       waypoints: [
-        L.latLng(coords.source.lat, coords.source.lon),
-        L.latLng(coords.destination.lat, coords.destination.lon)
+        L.latLng(parseFloat(coords.source.lat), parseFloat(coords.source.lon)),
+        L.latLng(parseFloat(coords.destination.lat), parseFloat(coords.destination.lon))
       ],
       lineOptions: {
         styles: [{ color: "blue", weight: 5 }]
@@ -70,8 +70,8 @@ function Route({ coords }) {
       fitSelectedRoutes: true   
     }).addTo(map);
 
-    return () => map.removeControl(routingControl);
-
+    return () =>{ map.removeControl(routingControl);
+    }
   }, [coords, map]);
 
   return null;

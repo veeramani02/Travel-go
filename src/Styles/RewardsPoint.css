@@ -29,7 +29,7 @@
 .rewards-container .circle {
     width: 60px;
     height: 60px;
-    background-color: #eef2ff;
+    background-color: var(--secondary);
     display: flex;
     align-items: center;
     justify-content: center;

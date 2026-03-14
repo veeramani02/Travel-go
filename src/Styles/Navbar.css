@@ -111,7 +111,8 @@
   padding: 15px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
   text-align: center;
-  animation: fade 0.2s ease forwards;
+  z-index: 999;
+  animation: fade 0.3s ease forwards;
 }
 
 .user-dropdown span {

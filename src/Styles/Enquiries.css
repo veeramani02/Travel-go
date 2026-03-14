@@ -13,8 +13,6 @@
 
 .title{
     color: var(--primary);
-    padding: 10px;
-    margin-left: 12px;
 }
 
 .input-section{
@@ -101,17 +99,17 @@ td.datetime {
     display: flex;
     justify-content: center;
     gap: 10px;
-    flex-wrap: wrap;
 }
 
 .button-container button{
     background-color: var(--primary);
     border-style: none;
     padding: 8px 12px;
-    border-radius: 8px;
+    font-size: 0.8rem;
+    border-radius: 10px;
     color: white;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
 .enquiries-title-button-container{
@@ -131,7 +129,7 @@ td.datetime {
 }
 
 .button-container button:hover{
-  opacity: 0.85;
+    opacity: 0.85;
 }
 
 .status-pill {

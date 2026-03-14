@@ -3,7 +3,6 @@ import '../../Styles/Enquiries.css'
 import { FiSearch, FiUser, FiCalendar, FiCheckCircle } from "react-icons/fi";
 import TripviewDetails from "./TripviewDetails";
 import EditTrip from "./EditTrip";
-import AssignDriver from "./AssignDriver";
 import NewBooking from "./NewBooking";
 
 export default function Enquiries() {
@@ -480,8 +479,7 @@ export default function Enquiries() {
                                   setSelectedRow(value);
                                   setIsModalOpen(true);
                                 }}>View Details
-                          </button>  
-                         <button onClick={()=>{setAssignOpen(true); setSelectedRow(value);}}>Assign Driver</button>
+                          </button>
                          </div>
                     </td>
                   </tr>
@@ -530,14 +528,6 @@ export default function Enquiries() {
               onClose={() => setEditOpen(false)}
               trip={selectedRow}
               type={type}
-        />
-
-        <AssignDriver
-              isOpen={AssignOpen}
-              onClose={handleAssignClose}
-              Driver={avaliableDriver}
-              trip={selectedRow}
-              isClose={AssignClose}
         />
         <NewBooking
               Open={newBookingOpen}
