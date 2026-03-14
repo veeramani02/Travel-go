@@ -1,27 +1,49 @@
-import { MapContainer, TileLayer, Marker, Popup, useMap, Polyline } from "react-leaflet";
-import { useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup, Polyline, useMap } from "react-leaflet";
+import { useEffect, useState } from "react";
 import L from "leaflet";
-import "leaflet-routing-machine";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
 export default function TripMap({ Coords }) {
 
-  let sourcePos = [10.8155, 78.6965];
-  let destPos = null;
+  const [route, setRoute] = useState([]);
 
-  if (Coords) {
-    sourcePos = [
-      parseFloat(Coords.source.lat),
-      parseFloat(Coords.source.lon)
-    ];
+  useEffect(() => {
+    if (!Coords) return;
 
-    destPos = [
-      parseFloat(Coords.destination.lat),
-      parseFloat(Coords.destination.lon)
-    ];
-  }
+    const getRoute = async () => {
+      try {
+        const res = await fetch(
+          `https://router.project-osrm.org/route/v1/driving/${Coords.source.lon},${Coords.source.lat};${Coords.destination.lon},${Coords.destination.lat}?overview=full&geometries=geojson`
+        );
 
-  if (!Coords) return <h1>Loading map...</h1>;
+        const data = await res.json();
+
+        const coordinates = data.routes[0].geometry.coordinates.map(
+          coord => [coord[1], coord[0]]
+        );
+
+        setRoute(coordinates);
+
+      } catch (err) {
+        console.error("Route fetch error:", err);
+      }
+    };
+
+    getRoute();
+
+  }, [Coords]);
+
+  // 🛑 Prevent crash
+  if (!Coords) return <p>Map Loading...</p>;
+
+  const sourcePos = [
+    parseFloat(Coords.source.lat),
+    parseFloat(Coords.source.lon)
+  ];
+
+  const destPos = [
+    parseFloat(Coords.destination.lat),
+    parseFloat(Coords.destination.lon)
+  ];
 
   return (
     <MapContainer
@@ -29,6 +51,7 @@ export default function TripMap({ Coords }) {
       zoom={12}
       style={{ height: "400px", width: "100%", borderRadius: "10px" }}
     >
+
       <TileLayer
         attribution="&copy; OpenStreetMap contributors"
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -38,41 +61,37 @@ export default function TripMap({ Coords }) {
         <Popup>Source</Popup>
       </Marker>
 
-      {destPos && (
-        <Marker position={destPos}>
-          <Popup>Destination</Popup>
-        </Marker>
-      )}
+      <Marker position={destPos}>
+        <Popup>Destination</Popup>
+      </Marker>
 
-      <Route coords={Coords} />
+      {route.length > 0 && (
+        <>
+          <Polyline
+            positions={route}
+            pathOptions={{ color: "#3b82f6", weight: 5 }}
+          />
+          <FitRoute route={route} />
+        </>
+      )}
 
     </MapContainer>
   );
 }
 
-function Route({ coords }) {
+function FitRoute({ route }) {
   const map = useMap();
 
   useEffect(() => {
-    if (!coords) return;
+    if (!route || route.length === 0) return;
 
-    const routingControl = L.Routing.control({
-      waypoints: [
-        L.latLng(parseFloat(coords.source.lat), parseFloat(coords.source.lon)),
-        L.latLng(parseFloat(coords.destination.lat), parseFloat(coords.destination.lon))
-      ],
-      lineOptions: {
-        styles: [{ color: "blue", weight: 5 }]
-      },
-      show: false,
-      addWaypoints: false,
-      routeWhileDragging: false,
-      fitSelectedRoutes: true   
-    }).addTo(map);
+    const bounds = L.latLngBounds(route);
+        map.flyToBounds(bounds, {
+            padding: [40, 40],
+            duration: 1.5
+          });
 
-    return () =>{ map.removeControl(routingControl);
-    }
-  }, [coords, map]);
+  }, [route, map]);
 
   return null;
 }

@@ -17,16 +17,17 @@ export default function Trips() {
   
   const status = ['All', 'Active', 'Pending', 'Completed'];
   const [Active, setActive] = useState('All');
-  const [place, setPlace] = useState("");
   const [coords, setCoords] = useState(null);
   const [filterData ,setFilterData] = useState(recentTripActivityData);
   const DateStyle = {
     color: "gray",
     fontSize: "0.7rem"
   }
+
   const getDriverDetails = (id) => {
     return Data.find(driver => driver.id === id);
   };
+
   const getCustomerDetails = (id) => {
     return Customers.find(customer => customer.id === id);
   };
@@ -75,6 +76,10 @@ export default function Trips() {
     console.error("Geocoding error:", error);
   }
 };
+
+ useEffect(() => {
+    getCoordinates(filterData[0])
+  }, []);
 
 
   return (

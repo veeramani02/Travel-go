@@ -40,6 +40,7 @@ function AssignedTrips() {
               lon: parseFloat(destinationData[0].lon)
             }
           });
+          setOpenMap(true)
         } else {
           console.log("Location not found");
         }
@@ -55,7 +56,7 @@ return (
         <h1 className='assigned-map-title'>Map View</h1>
         {coords && <TripMap Coords={coords} />}
         <div className='assigned-map-button'>
-          <button onClick={()=>setOpenMap(false)}>← Back To Main</button>
+          <button onClick={()=>{setOpenMap(false); setCoords(null)}}>← Back To Main</button>
         </div>
       </div>
       )
@@ -75,10 +76,7 @@ return (
 
     <div className="driver-assigned-actions">
       <button className="driver-route-btn"
-                      onClick={()=>{
-                        getCoordinates(value)
-                        setOpenMap(true)
-                      }}
+         onClick={()=>getCoordinates(value)}
       >
         View Route
       </button>
