@@ -24,7 +24,7 @@ export default function NavBar() {
         !userRef.current.contains(e.target)
       ) {
         setIsMenuOpen(false);
-      }
+        }
 
       if (
         notifyRef.current &&

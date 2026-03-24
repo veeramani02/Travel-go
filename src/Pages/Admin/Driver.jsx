@@ -88,7 +88,7 @@ export default function Driver() {
         
         {filterSearch.length !== 0 ? (filterSearch.map(value=>(
           <div key={value.id} className="driver-card-details"> 
-             <div className="driver-info">
+             <div className="driver-info-container">
               <div className="driver-image-div">
                 <img src={value.avatar} alt="" />
              </div>
