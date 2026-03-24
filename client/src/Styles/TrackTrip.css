@@ -1,0 +1,116 @@
+ .track-page {
+  padding: 100px 30px 40px;
+  background: var(--background);
+  min-height: 100vh;
+}
+
+.track-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: var(--primary);
+}
+
+
+.trip-info-card {
+  background: white;
+  padding: 20px;
+  border-radius: 14px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  margin-bottom: 25px;
+  display: grid;
+  gap: 12px;
+}
+
+.trip-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.trip-row span {
+  color: #555;
+}
+
+.trip-row strong {
+  color: var(--text-dark);
+}
+
+.driver-status {
+  color: var(--accent);
+}
+
+
+.map-container {
+  height: 450px;
+  width: 100%;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+
+.leaflet-routing-container {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .track-page {
+    
+    padding: 80px 15px 20px; 
+  }
+
+  .track-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: center; 
+  }
+
+ 
+  .trip-info-card {
+    padding: 15px;
+   
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .trip-row {
+    flex-direction: column;
+    gap: 2px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 8px;
+  }
+
+  .trip-row:last-child {
+    border-bottom: none;
+  }
+
+  .trip-row span {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .trip-row strong {
+    font-size: 15px;
+  }
+
+ 
+  .map-container {
+    height: 350px; 
+    border-radius: 12px;
+    margin-top: 10px;
+  }
+}
+
+
+@media (max-width: 480px) {
+  .map-container {
+    height: 300px; 
+  }
+  
+  .track-page {
+    padding-top: 70px;
+  }
+}
