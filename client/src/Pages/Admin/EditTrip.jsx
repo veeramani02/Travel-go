@@ -144,7 +144,7 @@ export default function EditTrip({ isOpen, onClose, trip, type }) {
                 <button onClick={onClose}>Cancel</button>
             </div>
             <div>
-                <button>Save Changes</button>
+                <button onClick={onClose}>Save Changes</button>
             </div>
          </div>
       </div>

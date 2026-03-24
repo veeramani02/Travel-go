@@ -1,3 +1,5 @@
+export const PORT = 3000;
+
 export const Data = [
   {
     id: "D-5001",
@@ -267,3 +269,74 @@ export const Customers = [
     avatar: "https://randomuser.me/api/portraits/men/52.jpg"
   }
 ];
+
+export const getDriver = async () => {
+    let res = await fetch(`http://localhost:${PORT}/Driver`);
+    let data = await res.json();
+    return data;
+  };
+
+export const addDriver = (formData) => {
+fetch(`http://localhost:${PORT}/add`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+            name: formData.fullName,
+            phone: formData.phone,
+            email: formData.email,
+            profile: formData.profile,
+            vehicle: formData.licensePlate,
+            rating: formData.rating,
+            status: formData.status,
+            joinedDate: new Date().toISOString().split("T")[0],
+        })
+    });
+};
+
+export const deleteDriver = async (_id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete?");
+    if (!confirmDelete) return;
+      await fetch(`http://localhost:${PORT}/delete/${_id}`, {
+        method: "DELETE"
+      });
+  };
+
+
+ export function getAvatarColor(name) {
+    let hash = 0;
+
+    for (let i = 0; i < name.length; i++) {
+     hash += name.charCodeAt(i);
+    }
+
+    const hue = hash % 360;
+
+    return `hsl(${hue}, 65%, 55%)`;
+  }
+
+
+import React from 'react';
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+
+export default function CustomizedSnackbars({ open, message, severity, onClose }) {
+  return (
+    <Snackbar
+      open={open}
+      autoHideDuration={3000} // duration in ms
+      onClose={onClose}
+      anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+    >
+      <Alert
+        onClose={onClose}
+        severity={severity || 'success'} // default to success
+        variant="filled"
+        sx={{ width: '100%' }}
+      >
+        {message || 'Operation completed successfully!'}
+      </Alert>
+    </Snackbar>
+  );
+}

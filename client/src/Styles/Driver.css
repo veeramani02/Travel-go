@@ -116,14 +116,14 @@
     border-radius: 14px;
     background: white;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: 0.2s ease;
+    transition: 0.3s ease;
     text-align: center;
     animation: fadeInUp 0.5s ease;
 }
 
 .driver-card-details:hover{
-    transform: translateY(-4px);
-    box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 @keyframes fadeInUp{
@@ -156,6 +156,17 @@
     padding: 8px;
 }
 
+.driver-trip-card span:last-child,
+.driver-join-card span:last-child{
+    font-weight: 550;
+}
+
+.driver-DeleteButton{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
 .driver-button-block{
     margin-top: 15px;
     display: flex;
@@ -164,7 +175,7 @@
     align-items: center;
 }
 
-.driver-button-block button{
+.driver-button-block .button-profile{
     background-color: var(--primary);
     padding: 10px 14px;
     color: white;
@@ -181,6 +192,7 @@
     border-radius: 8px;
     padding: 3px;
     font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .star{
@@ -192,7 +204,7 @@
     font-size: 0.8rem;
 }
 
-.driver-info{
+.driver-info-container{
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -209,6 +221,64 @@
     height: 110px;
     border: 4px solid #e5e7eb;
     object-fit: cover;
+    animation: popIn 0.4s ease;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.driver-image-no-div{
+    border-radius: 50%;
+    width: 110px;
+    height: 110px;
+    border: 4px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    text-transform: uppercase;
+    animation: popIn 0.4s ease;
+}
+
+.driver-image-no-div span{
+    font-size: 2.8rem;
+    color: white;
+    line-height: 1;
+}
+
+
+.btnDelete{
+    font-size: 1.5rem;
+    padding: 6px;
+    color: #ef4444;
+    cursor: pointer;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: transform 0.3s ease, background-color 0.2s ease;
+}
+
+.btnDelete:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.btnDelete:active {
+    transform: scale(0.95);
 }
 
 .name-block{

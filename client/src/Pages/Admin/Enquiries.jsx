@@ -518,8 +518,7 @@ export default function Enquiries() {
               onClose={handleClose}
               isClosing={isClosing}
               onPrint={handlePrintInvoice}
-              onEdit={() => {
-                      setIsModalOpen(false);   
+              onEdit={() => {  
                       setEditOpen(true);       
                     }}
         />

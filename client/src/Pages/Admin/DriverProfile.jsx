@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import '../../Styles/DriverProfile.css'
 import EditDriver from './EditDriver';
+import { getAvatarColor } from '../../Data/Data';
 
 export default function DriverProfile({Open, Data, Close, updateDriver}) {
    
@@ -17,7 +18,10 @@ export default function DriverProfile({Open, Data, Close, updateDriver}) {
         <div className="driver-profile-top-info">
           <div className="driver-photo-container">
                <div className="driver-photo-div">
-                 <img src={Data?.avatar} alt="" />
+                 { Data.avatar ? <img src={Data.avatar} alt="" /> : (<div 
+                 style={{backgroundColor: getAvatarColor(Data.name)}}
+                 className='driver-image-no-div'>
+                <span>{Data.name.split(" ").map(w => w[0]).join("").slice(0,2)}</span></div>)}
                </div>
                  <h3>{Data?.name}</h3>
           </div>
@@ -29,7 +33,7 @@ export default function DriverProfile({Open, Data, Close, updateDriver}) {
                 </div>
                 <div className='account-details-div'>
                   <p>Joined Date:</p>
-                  <p>{Data?.joinedDate}</p>
+                  <p>{Data?.joinedDate.split("T")[0]}</p>
                 </div>
                 <div className='account-details-div'>
                   <p>Status:</p>
