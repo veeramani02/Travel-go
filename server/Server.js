@@ -7,6 +7,12 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import multer from "multer";
 import Driver from "./models/Driver.js";
+import path from "path";
+import file from "fs";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dotenv.config()
 const app=express();
@@ -48,8 +54,17 @@ app.get("/driver", async (req, res) => {
 app.delete("/delete/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    await Driver.findByIdAndDelete(id);
+    let driver = await Driver.findByIdAndDelete(id);
+    console.log('driver data',driver)
+    const fileName = driver.profile.split("/uploads/")[1];
+    const filePath = path.join(__dirname, "uploads", fileName);
     res.send("Driver deleted");
+    if (file.existsSync(filePath)) {
+      file.unlinkSync(filePath);
+      console.log("File deleted");
+    } else {
+      console.log("File not found");
+    }
   } catch (err) {
     console.log(err);
     res.status(500).send("Error deleting driver");
