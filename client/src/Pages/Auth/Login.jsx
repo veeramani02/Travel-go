@@ -1,7 +1,10 @@
 import "../../Styles/Login.css";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "../../Context/AuthContext";
+
 function Login() {
+  const{setUser}=useAuth()
   const navigate = useNavigate();
 const [formData, setFormData] = useState({
     email: "",
@@ -44,7 +47,8 @@ try {
       localStorage.setItem("role", role);
 
       // redirect based on role
-      window.location.href=(`/${role}/dashboard`);
+      setUser(data.user)
+      navigate(`/${role}/dashboard`);
     } catch (err) {
       console.log(err);
       setError("Something went wrong");

@@ -1,82 +1,8 @@
-// import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-// import Login from "./Pages/Auth/Login";
-// import LandingPage from "./Pages/LandingPage";
-// import DashboardLayout from "./Layouts/DashboardLayout";
-// import Signup from './Pages/Auth/Signup'
-// import CustomerDashboard from "./Pages/Customer/CustomerDashboard";
-// import BookTrip from "./Pages/Customer/BookTrip";
-// import PaymentsHistory from "./Pages/Customer/PaymentsHistory";
-// import Payments from "./Pages/Customer/Payment";
-// import AdminDashboard from "./Pages/Admin/AdminDashboard";
-// import DriverDashboard from "./Pages/Driver/DriverDashboard";
-// import MyTrips from "./Pages/Customer/MyTrips";
-// import TrackTrip from "./Pages/Customer/TrackTrips";
-// import Prefrence from "./Pages/Customer/Prefrences";
-// import Rewards from "./Pages/Driver/Rewards";
-// import Salary from "./Pages/Driver/Salary";
-// import LoyaltyPoints from "./Pages/Customer/LoyaltyPoints";
-// import Dues from "./Pages/Customer/Dues";
-// import AssignedTrips from "./Pages/Driver/AssignedTrips";
-// import Enquiries from './Pages/Admin/Enquiries';
-// import Vechiles from "./Pages/Admin/Vechiles";
-// import Driver from "./Pages/Admin/Driver";
-// import VehicleDetails from "./Pages/Admin/ViewVehicleDetails";
-// import Report from "./Pages/Admin/Report";
-// import Trips from "./Pages/Admin/Trips";
-// import Settings from "./Components/Settings";
-// function App() {
-//   return (
-//     <BrowserRouter>
-//       <Routes>
-
-//         {/* Public Pages */}
-//         <Route path="/" element={<LandingPage />} />
-//         <Route path="/login" element={<Login />} />
-//         <Route path="/signup" element={<Signup/>}/>
-        
-//         {/* Dashboard Layout Wrapper */}
-//         <Route element={<DashboardLayout />}>
-
-//           {/* Customer */}
-//           <Route path="/customer/dashboard" element={<CustomerDashboard />} />
-//           <Route path="/customer/book-trip" element={<BookTrip />} />
-//           <Route path="/customer/payment" element={<Payments/>}/>
-//           <Route path="/customer/paymentsHistory" element={<PaymentsHistory />} />
-//           <Route path="/customer/my-trips" element={<MyTrips />} />
-//           <Route path="/customer/track/:id" element={<TrackTrip />} />
-//           <Route path="/customer/prefrences" element={<Prefrence/>}/>
-//           <Route path="/customer/LoyaltyPoints" element={<LoyaltyPoints/>}/>
-//           <Route path="/customer/Dues" element={<Dues/>}/>
-
-//           {/* Admin */}
-//           <Route path="/admin/dashboard" element={<AdminDashboard />} /> 
-//           <Route path="/admin/enquiries" element={<Enquiries />} /> 
-//           <Route path="/admin/vehicles" element={<Vechiles/>}/>
-//           <Route path="/admin/Driver" element={<Driver/>}/>
-//           <Route path="/vehicle-details" element={<VehicleDetails/>}/>
-//           <Route path="/admin/report" element={<Report/>}/>
-//           <Route path="/admin/Trips" element={<Trips/>}/>
-//           <Route path="/admin/settings" element={<Settings/>}/>
-
-//           {/* Driver */}
-//           <Route path="/driver/dashboard" element={<DriverDashboard />} /> 
-//             <Route path="/driver/salary" element={<Salary/>}/>
-//             <Route path="/driver/rewards" element={<Rewards/>}/>
-//             <Route path="/driver/trips" element={<AssignedTrips/>}/>
-//           </Route>
-          
-       
-//       </Routes>
-//     </BrowserRouter>
-//   );
-// }
-
-// export default App;
-
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useAuth } from "./Context/AuthContext";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
+// Pages
 import Login from "./Pages/Auth/Login";
 import LandingPage from "./Pages/LandingPage";
 import DashboardLayout from "./Layouts/DashboardLayout";
@@ -110,33 +36,7 @@ import Salary from "./Pages/Driver/Salary";
 import AssignedTrips from "./Pages/Driver/AssignedTrips";
 
 function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // 🔥 AUTO LOGIN CHECK
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/user/profile", {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          setUser(data.user);
-        } else {
-          setUser(null);
-        }
-      } catch (err) {
-        setUser(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkUser();
-  }, []);
+  const { user, loading } = useAuth();
 
   if (loading) return <h2>Loading...</h2>;
 
@@ -144,45 +44,216 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* 🔓 Public */}
+        {/* 🔓 Public Routes */}
         <Route path="/" element={<LandingPage />} />
 
         <Route
           path="/login"
-          element={!user ? <Login /> : <Navigate to={`/${user.role}/dashboard`} />}
+          element={
+            !user ? (
+              <Login />
+            ) : (
+              <Navigate to={`/${user.role}/dashboard`} />
+            )
+          }
         />
 
         <Route path="/signup" element={<Signup />} />
 
         {/* 🔐 Protected Layout */}
-        <Route element={user ? <DashboardLayout /> : <Navigate to="/login" />}>
+        <Route element={<DashboardLayout />}>
 
           {/* Customer */}
-          <Route path="/customer/dashboard" element={<CustomerDashboard />} />
-          <Route path="/customer/book-trip" element={<BookTrip />} />
-          <Route path="/customer/payment" element={<Payments />} />
-          <Route path="/customer/paymentsHistory" element={<PaymentsHistory />} />
-          <Route path="/customer/my-trips" element={<MyTrips />} />
-          <Route path="/customer/track/:id" element={<TrackTrip />} />
-          <Route path="/customer/prefrences" element={<Prefrence />} />
-          <Route path="/customer/LoyaltyPoints" element={<LoyaltyPoints />} />
-          <Route path="/customer/Dues" element={<Dues />} />
+          <Route
+            path="/customer/dashboard"
+            element={
+              <ProtectedRoute role="customer">
+                <CustomerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/book-trip"
+            element={
+              <ProtectedRoute role="customer">
+                <BookTrip />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/payment"
+            element={
+              <ProtectedRoute role="customer">
+                <Payments />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/paymentsHistory"
+            element={
+              <ProtectedRoute role="customer">
+                <PaymentsHistory />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/my-trips"
+            element={
+              <ProtectedRoute role="customer">
+                <MyTrips />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/track/:id"
+            element={
+              <ProtectedRoute role="customer">
+                <TrackTrip />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/prefrences"
+            element={
+              <ProtectedRoute role="customer">
+                <Prefrence />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/LoyaltyPoints"
+            element={
+              <ProtectedRoute role="customer">
+                <LoyaltyPoints />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/customer/Dues"
+            element={
+              <ProtectedRoute role="customer">
+                <Dues />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin */}
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/enquiries" element={<Enquiries />} />
-          <Route path="/admin/vehicles" element={<Vechiles />} />
-          <Route path="/admin/Driver" element={<Driver />} />
-          <Route path="/vehicle-details" element={<VehicleDetails />} />
-          <Route path="/admin/report" element={<Report />} />
-          <Route path="/admin/Trips" element={<Trips />} />
-          <Route path="/admin/settings" element={<Settings />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute role="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/enquiries"
+            element={
+              <ProtectedRoute role="admin">
+                <Enquiries />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/vehicles"
+            element={
+              <ProtectedRoute role="admin">
+                <Vechiles />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/Driver"
+            element={
+              <ProtectedRoute role="admin">
+                <Driver />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/vehicle-details"
+            element={
+              <ProtectedRoute role="admin">
+                <VehicleDetails />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/report"
+            element={
+              <ProtectedRoute role="admin">
+                <Report />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/Trips"
+            element={
+              <ProtectedRoute role="admin">
+                <Trips />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/admin/settings"
+            element={
+              <ProtectedRoute role="admin">
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Driver */}
-          <Route path="/driver/dashboard" element={<DriverDashboard />} />
-          <Route path="/driver/salary" element={<Salary />} />
-          <Route path="/driver/rewards" element={<Rewards />} />
-          <Route path="/driver/trips" element={<AssignedTrips />} />
+          <Route
+            path="/driver/dashboard"
+            element={
+              <ProtectedRoute role="driver">
+                <DriverDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/driver/salary"
+            element={
+              <ProtectedRoute role="driver">
+                <Salary />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/driver/rewards"
+            element={
+              <ProtectedRoute role="driver">
+                <Rewards />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/driver/trips"
+            element={
+              <ProtectedRoute role="driver">
+                <AssignedTrips />
+              </ProtectedRoute>
+            }
+          />
 
         </Route>
 
