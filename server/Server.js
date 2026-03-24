@@ -69,13 +69,30 @@ const upload = multer({ storage });
 
 app.use("/uploads", express.static("uploads"));
 
-app.post("/upload", upload.single("file"), (req, res) => {
-  try{
-  const fileUrl = `http://localhost:${PORT}/uploads/${req.file.filename}`;
-  res.json({
-    url: fileUrl,
-  });
-}catch(e){
-  console.log(e.message)
-}
+app.post("/upload", upload.fields([
+  { name: "profileFile", maxCount: 1 },
+  { name: "licenseFile", maxCount: 1 }
+]), (req, res) => {
+  try {
+    let profileUrl = "";
+    let licenseUrl = "";
+
+    if (req.files["profileFile"]) {
+      const file = req.files["profileFile"][0];
+      profileUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+    }
+
+    if (req.files["licenseFile"]) {
+      const file = req.files["licenseFile"][0];
+      licenseUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+    }
+
+    res.json({
+      profileUrl,
+      licenseUrl
+    });
+
+  } catch (e) {
+    console.log(e.message);
+  }
 });

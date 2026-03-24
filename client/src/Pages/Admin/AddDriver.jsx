@@ -27,29 +27,28 @@ export default function AddDriver({openDriver, closeDriver}) {
 };
 
 const handleSubmit = async () => {
-    let {imageurl, lisenceurl} = ""
+    let imageurl = "";
+    let lisenceurl = "";
+    const data = new FormData();
     try {
         if (profileFile) {
-            const data = new FormData();
             data.append("profileFile", profileFile);
-            const res = await fetch(`http://localhost:${PORT}/upload`, {
-            method: "POST",
-            body: data,
-        });
-            const result = await res.json();
-            imageurl = result.url;
         }
         if (lisenceFile) {
-            const data = new FormData();
             data.append("licenseFile", lisenceFile);
-            const res = await fetch(`http://localhost:${PORT}/upload`, {
-            method: "POST",
-            body: data,
-        });
-            const result = await res.json();
-            imageurl = result.url;
         } 
          
+        if (profileFile || lisenceFile) {
+            const res = await fetch(`http://localhost:${PORT}/upload`, {
+                method: "POST",
+                body: data,
+            });
+
+            const result = await res.json();
+
+            imageurl = result.profileUrl;
+            lisenceurl = result.licenseUrl;
+        }
         
         const newData = {
             ...formData,
