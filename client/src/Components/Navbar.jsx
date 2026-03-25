@@ -8,6 +8,7 @@ import { useAuth } from "../Context/AuthContext";
 
 export default function NavBar() {
   const {setUser}=useAuth()
+const {user}=useAuth()
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -98,7 +99,7 @@ export default function NavBar() {
 
           {isMenuOpen && (
             <div className="user-dropdown" ref={popupRef}>
-              <span>John Doe</span>
+              <span>{user?.name||"user"}</span>
 
               {/* 🔥 UPDATED LOGOUT */}
               <button onClick={handleLogout}>Logout</button>
