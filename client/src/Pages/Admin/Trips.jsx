@@ -5,7 +5,7 @@ import { GoDotFill } from "react-icons/go";
 import { FaRegCircleDot } from "react-icons/fa6";
 import "leaflet/dist/leaflet.css";
 import TripMap from './TripMap';
-import { Data, recentTripActivityData, Customers } from '../../Data/Data';
+import { Data, recentTripActivityData, Customers } from '../../../../server/controllers/DriverController.js';
 import { FiPhone } from "react-icons/fi";
 import { FiMessageSquare } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";

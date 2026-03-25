@@ -1,11 +1,11 @@
 import React,{useEffect, useState} from 'react'
 import '../../Styles/Driver.css'
 import { FaMagnifyingGlass } from 'react-icons/fa6';
-import CustomizedSnackbars, {deleteDriver, getDriver} from '../../Data/Data'
+import {deleteDriver, getDriver, getAvatarColor} from '../../services/driverService.js'
 import AddDriver from '../../Pages/Admin/AddDriver';
 import DriverProfile from './DriverProfile';
 import { MdDelete } from "react-icons/md";
-import { getAvatarColor } from '../../Data/Data';
+import CustomizedSnackbars from '../../Components/CustomizedSnackbars.jsx';
 
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);

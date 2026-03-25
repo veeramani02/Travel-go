@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import '../../Styles/DriverProfile.css'
 import EditDriver from './EditDriver';
-import { getAvatarColor } from '../../Data/Data';
+import { getAvatarColor } from '../../services/driverService';
 
 export default function DriverProfile({Open, Data, Close, updateDriver}) {
    

@@ -5,6 +5,7 @@ const driverSchema = new mongoose.Schema({
   phone: Number,
   email: String,
   profile: String,
+  license: String,
   vehicle: String,
   rating: String,
   status: String,
