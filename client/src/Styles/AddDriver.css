@@ -140,13 +140,20 @@
     gap: 10px;
 }
 
-.addDriver-upload-button{
+.addDriver-upload-button,
+.addDriver-remove-button{
     background-color: var(--primary);
     border-style: none;
     padding: 6px 12px;
     border-radius: 8px;
     color: white;
     cursor: pointer;
+}
+
+
+.upload-remove-container-div{
+    display: flex;
+    gap: 10px;
 }
 
 @media (max-width: 768px) {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import "../../Styles/Assignedtrips.css"
-import { recentTripActivityData } from '../../Data/Data'
+import { recentTripActivityData } from '../../../../server/controllers/DriverController.js'
 import TripMap from '../Admin/TripMap';
 
 function AssignedTrips() {

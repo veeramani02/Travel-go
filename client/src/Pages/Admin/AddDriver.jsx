@@ -1,14 +1,15 @@
 import React,{useState,useRef, useEffect} from 'react'
 import '../../Styles/AddDriver.css'
-import { addDriver, PORT } from '../../Data/Data';
+import { addDriver, PORT, VEHICLE_TYPES } from '../../services/driverService';
 import { CgProfile } from "react-icons/cg";
 
 export default function AddDriver({openDriver, closeDriver}) {
     const [isOn, setIsOn] = useState(true);
+    const [loading, setLoading] = useState(false);
     const Profileref = useRef();
-    const Lisenceref = useRef();
-    const [lisenceFile, setLisenceFile] = useState("");
-    const [profileFile, setProfileFile] = useState("");
+    const LicenseRef = useRef();
+    const [licenseFile, setLisenceFile] = useState(null);
+    const [profileFile, setProfileFile] = useState(null);
     const [profilePreview, setProfilePreview] = useState(null);
     const [formData, setFormData] = useState({
     fullName: "",
@@ -19,7 +20,7 @@ export default function AddDriver({openDriver, closeDriver}) {
     licensePlate: "",
     drivingLicense: "",
     status: true,
-});
+    });
 
 
   const handleChange = (e) => {
@@ -27,6 +28,7 @@ export default function AddDriver({openDriver, closeDriver}) {
 };
 
 const handleSubmit = async () => {
+    setLoading(true);
     let imageurl = "";
     let lisenceurl = "";
     const data = new FormData();
@@ -34,11 +36,11 @@ const handleSubmit = async () => {
         if (profileFile) {
             data.append("profileFile", profileFile);
         }
-        if (lisenceFile) {
-            data.append("licenseFile", lisenceFile);
+        if (licenseFile) {
+            data.append("licenseFile", licenseFile);
         } 
          
-        if (profileFile || lisenceFile) {
+        if (profileFile || licenseFile) {
             const res = await fetch(`http://localhost:${PORT}/upload`, {
                 method: "POST",
                 body: data,
@@ -53,20 +55,23 @@ const handleSubmit = async () => {
         const newData = {
             ...formData,
             profile: imageurl,
-            lisence: lisenceurl, 
+            license: lisenceurl, 
             status: isOn ? "Active" : "Inactive"
         };
 
-        addDriver(newData);
+        await addDriver(newData);
         closeDriver(newData);
+        resetForm();
         console.log(newData)
 
     } catch (err) {
         console.error(err);
+    }finally{
+        setLoading(false);
     }
   };
 
-    const handleLisenceFile = (e) => {
+    const handleLicenseFile = (e) => {
         const file = e.target.files[0];
         if (!file) return;
         const maxSize = 2 * 1024 * 1024;
@@ -98,6 +103,33 @@ const handleSubmit = async () => {
         };
     }, [profilePreview]);
 
+    const resetForm = () => {
+            setFormData({
+                fullName: "",
+                phone: "",
+                email: "",
+                profile: "",
+                vehicleType: "",
+                licensePlate: "",
+                drivingLicense: "",
+                status: true,
+            });
+            setProfilePreview(null);
+            setProfileFile(null);
+            setLisenceFile(null);
+            setIsOn(true);
+    };
+
+   function handleRemoveProfileFile(){
+       setProfilePreview(null);
+       setProfileFile(null);
+       if (profilePreview) URL.revokeObjectURL(profilePreview);
+   }
+
+   function handleRemoveLicenseFile(){
+      setLisenceFile(null);
+   }
+
   if(!openDriver) return null
   return (
     <div className='addDriver-container'>
@@ -111,7 +143,8 @@ const handleSubmit = async () => {
             </div>
             <div className="input">
                 <label htmlFor="phone">Phone Number</label>
-                <input type="number" id='phone' name='phone' placeholder='e.g 987654321' value={formData.phone} onChange={handleChange}/>
+                <input type="tel" id='phone' name='phone' placeholder='e.g 987654321' value={formData.phone} onChange={handleChange} 
+                />
             </div>
             <div className="input">
                 <label htmlFor="email">Email Address</label>
@@ -130,8 +163,12 @@ const handleSubmit = async () => {
                         ref={Profileref}
                         style={{ display: "none" }}
                         onChange={handleProfileFile}
+                        accept="image/*"
                         />
-                        <button className='addDriver-upload-button' onClick={() => Profileref.current.click()}>Upload Profile</button>
+                        <div className='upload-remove-container-div'>
+                            <button className='addDriver-upload-button' onClick={() => Profileref.current.click()}>Upload Profile</button>
+                            <button className='addDriver-remove-button' onClick={() => handleRemoveProfileFile()}>Remove</button>
+                        </div>
                         <p style={{fontSize:"0.9rem", color:"gray"}}>Recommended: Square image, max 2MB</p>
                      </div>
                  </div>
@@ -141,8 +178,14 @@ const handleSubmit = async () => {
         <div className="vehicle-details">
             <div className="input">
                 <label htmlFor="vehicleType">Vehicle Type</label>
-                <select name="vehicleType" id="vehicleType">
+                <select name="vehicleType" id="vehicleType"
+                    value={formData.vehicleType}
+                    onChange={handleChange}
+                >
                     <option value="">--Select--</option>
+                    {VEHICLE_TYPES.map((value, index)=>(
+                         <option value={value} key={index}>{value}</option>  
+                    ))}
                 </select>
             </div>
             <div className="input">
@@ -158,17 +201,21 @@ const handleSubmit = async () => {
                 <input type="file"
                 id='dl'
                 name='dl'
-                ref={Lisenceref}
+                ref={LicenseRef}
                 style={{ display: "none" }}
-                onChange={handleLisenceFile}/>
+                onChange={handleLicenseFile}
+                accept="image/*"/>
+                <div className='upload-remove-container-div'>
                 <button
-                    onClick={() => Lisenceref.current.click()}
+                    onClick={() => LicenseRef.current.click()}
                 >
                     Upload File
                 </button>
-                {lisenceFile && <p style={{display:"inline-block", marginTop:'10px'}} className='file-content'
-                title={lisenceFile}
-                >{lisenceFile}</p>}
+                <button className='addDriver-remove-button' onClick={() => handleRemoveLicenseFile()}>Remove</button>
+                </div>
+                {licenseFile && <p style={{display:"inline-block", marginTop:'10px'}} className='file-content'
+                title={licenseFile}
+                >{licenseFile.name}</p>}
             </div>
             <div className="input">
                 <label htmlFor="status">Status</label>
@@ -203,11 +250,14 @@ const handleSubmit = async () => {
         </div>
         <div className="btn-div">
             <div className="btn">
-                <button onClick={()=>closeDriver(null)}>Cancel</button>
+                <button onClick={()=>{closeDriver(null)
+                    resetForm()
+                }}>Cancel</button>
             </div>
             <div className="btn">
-                <button onClick={
-                    ()=>{handleSubmit()}}>Add Driver</button>
+                <button  
+                disabled={loading}
+                onClick={()=>{handleSubmit()}}>{loading ? ("Adding...") : ("Add Driver")}</button>
             </div>
         </div>
       </div>
