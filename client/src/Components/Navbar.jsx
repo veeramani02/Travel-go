@@ -8,7 +8,7 @@ import { useAuth } from "../Context/AuthContext";
 
 export default function NavBar() {
   const {setUser}=useAuth()
-const {user}=useAuth()
+  const {user}=useAuth()
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
