@@ -9,7 +9,7 @@ import { PORT } from "../../client/src/services/driverService.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-//  multer setup (OUTSIDE object)
+//  multer setup
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads/");

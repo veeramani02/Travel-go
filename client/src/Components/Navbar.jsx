@@ -20,7 +20,7 @@ export default function NavBar() {
   const notifyRef = useRef(null);
   const userRef = useRef(null);
 
-  // 🔥 LOGOUT FUNCTION
+  //  LOGOUT FUNCTION
   const handleLogout = async () => {
     try {
       await fetch("http://localhost:3000/api/auth/logout", {

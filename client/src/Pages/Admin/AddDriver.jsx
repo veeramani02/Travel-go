@@ -29,7 +29,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
   const handleSubmit = async () => {
     setLoading(true);
     let imageurl = "";
-    let lisenceurl = "";
+    let licenseurl = "";
     const data = new FormData();
     try {
       if (profileFile) {
@@ -45,17 +45,17 @@ export default function AddDriver({ openDriver, closeDriver }) {
           body: data,
           credentials: "include",
         });
-        
+        if (!res.ok) throw new Error("Upload failed");
         const result = await res.json();
 
         imageurl = result.profileUrl;
-        lisenceurl = result.licenseUrl;
+        licenseurl = result.licenseUrl;
       }
 
       const newData = {
         ...formData,
         profile: imageurl,
-        license: lisenceurl,
+        license: licenseurl,
         status: isOn ? "Active" : "Inactive",
       };
        console.log(newData.profile, newData.license)
@@ -108,6 +108,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       phone: "",
       email: "",
       profile: "",
+      
       vehicleType: "",
       licensePlate: "",
       drivingLicense: "",
