@@ -1,0 +1,54 @@
+
+.adddriver-modal{
+  width: 100%;
+  background-color: rgb(238, 237, 237);
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 800px;
+  max-height: 95vh;
+  overflow: hidden;
+  animation: fadeIn 0.2s ease forwards;
+}
+
+.btn{
+    margin-top: 20px;
+}
+
+.btn button:hover{
+  opacity: 0.85;
+}
+
+.assign-content{
+    color: var(--primary);
+}
+
+.input-driver{
+    margin-top: 10px;
+}
+
+@media screen and (max-width: 728px) {
+
+  .adddriver-modal {
+    width: 95%;
+    padding: 15px;
+  }
+
+  .assign-content {
+    font-size: 18px;
+    text-align: center;
+  }
+
+  .btn {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn button {
+    width: 100%;
+  }
+
+  .input-driver select {
+    width: 100%;
+  }
+}
