@@ -1,0 +1,167 @@
+.newbooking-container{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeBg 0.2s ease;
+}
+
+@keyframes fadeBg{
+    from{
+        opacity:0
+    }
+    to{
+        opacity:1
+    }
+}
+
+.Newbooking-page{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.Newbooking-title{
+    color: var(--primary);
+}
+
+.Newbooking-form{
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 420px;
+    max-width: 95%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    animation: formPop 0.25s ease;
+}
+
+.Newbooking-group{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 14px;
+}
+
+.Newbooking-group label{
+    font-size: 14px;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.Newbooking-group input,
+.Newbooking-group select,
+.Newbooking-group textarea{
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.Newbooking-group input:focus,
+.Newbooking-group select:focus,
+.Newbooking-group textarea:focus{
+    outline: none;
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 2px rgba(79,70,229,0.15);
+}
+
+.Newbooking-button-div{
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.Newbooking-btn{
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.Newbooking-btn:hover{
+    opacity: 0.85;
+}
+
+.Newbooking-form::-webkit-scrollbar{
+    width: 6px;
+}
+
+.Newbooking-form::-webkit-scrollbar-thumb{
+    background: #ccc;
+    border-radius: 10px;
+}
+
+@keyframes formPop{
+    from{
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to{
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.Newbooking-title-div{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.Newbooking-title-div .Newbooking-edit-button button{
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    border: none;
+    background-color: var(--primary);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.Newbooking-edit-button{
+    display: flex;
+    align-items: center;
+}
+
+.Newbooking-group input:disabled,
+.Newbooking-group select:disabled,
+.Newbooking-group textarea:disabled{
+    background: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.Newbooking-form{
+    overflow-y: auto;
+    padding-right: 20px;
+}
+
+
+@media (max-width:480px){
+
+    .Newbooking-form{
+        width: 95%;
+        padding: 18px;
+    }
+
+    .Newbooking-title{
+        font-size: 1.1rem;
+    }
+
+    .Newbooking-button-div{
+        flex-direction: column;
+    }
+
+    .Newbooking-btn{
+        width: 100%;
+    }
+}
