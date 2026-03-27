@@ -113,7 +113,7 @@ export default function Driver() {
         ))}
       </div>
       <div className="driver-card-container">
-        {filteredDrivers.length !== 0 ? (
+        {filteredDrivers?.length !== 0 ? (
           filteredDrivers.map((value) => (
             <div key={value._id} className="driver-card-details">
               <div className="driver-DeleteButton">
@@ -121,6 +121,10 @@ export default function Driver() {
                   className="btnDelete"
                   title="Delete Driver"
                   onClick={async () => {
+                    const confirmDelete = window.confirm(
+                      "Are you sure you want to delete?",
+                    );
+                    if (!confirmDelete) return;
                     await deleteDriver(value._id);
                     setDrivers((prev) =>
                       prev.filter((d) => d._id !== value._id),

@@ -18,7 +18,11 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
             <div className="driver-photo-container">
               <div className="driver-photo-div">
                 {Data.profile ? (
-                  <img src={Data.profile} alt="" />
+                  <img
+                    src={Data.profile}
+                    alt=""
+                    className="driver-image-no-div"
+                  />
                 ) : (
                   <div
                     style={{ backgroundColor: getAvatarColor(Data.name) }}
@@ -40,7 +44,7 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
               <h3>Account Info</h3>
               <div className="account-details-div">
                 <p>Driver ID:</p>
-                <p>{Data?.id}</p>
+                <p>{Data?._id.slice(0,4).toUpperCase() || 'Nill'}</p>
               </div>
               <div className="account-details-div">
                 <p>Joined Date:</p>
@@ -55,7 +59,7 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
               <h3>Vehicles Info</h3>
               <div className="vehicle-details-div">
                 <p>Vehicle Model:</p>
-                <p>{Data?.vehicleModel}</p>
+                <p>{Data?.vehicleType}</p>
               </div>
               <div className="vehicle-details-div">
                 <p>License Plate:</p>

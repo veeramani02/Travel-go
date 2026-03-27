@@ -1,6 +1,6 @@
 import React from 'react'
 import '../../Styles/AdminDashboard.css'
-import {recentTripActivityData,revenueData, fleetData, Data} from '../../../../server/controllers/DriverController.js'
+import {recentTripActivityData,revenueData, fleetData, Data} from '../../Data/Data'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useNavigate } from "react-router-dom";
 
