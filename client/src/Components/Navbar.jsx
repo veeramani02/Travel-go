@@ -25,16 +25,15 @@ export default function NavBar() {
     try {
       await fetch("http://localhost:3000/api/auth/logout", {
         method: "POST",
-        credentials: "include", // 🍪 important
+        credentials: "include", 
       });
 
-      // optional cleanup
-      localStorage.removeItem("role");
+     
 
       // redirect
       setUser(null)
       navigate("/login");
-      // window.location.href="/login"
+      
     } catch (error) {
       console.log(error);
     }
@@ -69,7 +68,7 @@ export default function NavBar() {
       </div>
 
       <div className="nav-right">
-        {/* 🔔 Notifications */}
+        {/* Notifications */}
         <div
           className="notification-wrapper"
           ref={notifyRef}
@@ -88,7 +87,7 @@ export default function NavBar() {
           )}
         </div>
 
-        {/* 👤 User */}
+        {/*  User */}
         <div className="user-section">
           <img
             src={UserImage}
@@ -101,13 +100,13 @@ export default function NavBar() {
             <div className="user-dropdown" ref={popupRef}>
               <span>{user?.name||"user"}</span>
 
-              {/* 🔥 UPDATED LOGOUT */}
+              {/*   LOGOUT */}
               <button onClick={handleLogout}>Logout</button>
             </div>
           )}
         </div>
 
-        {/* 📱 Mobile */}
+        {/*  Mobile */}
         <div
           className="mobile-toggle"
           onClick={() => setIsMobileOpen(!isMobileOpen)}

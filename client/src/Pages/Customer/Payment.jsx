@@ -1,58 +1,84 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../Styles/Payments.css"
-
+import "../../Styles/Payments.css";
 
 function Payments() {
   const navigate = useNavigate();
+
   const [trip, setTrip] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
-  const[points,setPoints]=useState(0)
+  const [points, setPoints] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  // Fetch latest trip from backend
   useEffect(() => {
-    const storedTrip = JSON.parse(localStorage.getItem("pendingTrip"));
-    if (storedTrip) {
-      setTrip(storedTrip);
-    }
+    const fetchTrip = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/trip/latest", {
+          credentials: "include",
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.message);
+
+        setTrip(data);
+      } catch (err) {
+        console.error("Fetch Trip Error:", err);
+      }
+    };
+
+    fetchTrip();
   }, []);
-//  const currentPoints = Number(localStorage.getItem("loyaltyPoints")) || 0;
-// const updatedTotal = currentPoints + randomPoints;
-// localStorage.setItem("loyaltyPoints", updatedTotal);
 
- const handlePayment = () => {
-  if (!trip) return;
-  const randomPoints = Math.floor(Math.random() * 200) + 1;
-  setPoints(randomPoints);
+  //  Handle Payment API
+  const handlePayment = async () => {
+    if (!trip) return;
 
-  const completedTrip = {
-    id: "TRIP_" + Date.now(), 
-    ...trip,
-    status: "Assigned",      
-    paymentMethod,
-    paidAt: new Date().toISOString(),
-    LoyaltyPoints:randomPoints
+    setLoading(true);
+
+    try {
+      const res = await fetch("http://localhost:3000/api/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", //  cookie send
+        body: JSON.stringify({
+          tripId: trip._id,
+          amount: 1000,
+          paymentMethod,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message);
+
+      //  Loyalty points (frontend display only)
+      const randomPoints = Math.floor(Math.random() * 200) + 1;
+      setPoints(randomPoints);
+
+      setPaymentSuccess(true);
+    } catch (err) {
+      console.error("Payment Error:", err);
+      alert("Payment Failed ");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const existingTrips =
-    JSON.parse(localStorage.getItem("tripHistory")) || [];
-
-  localStorage.setItem(
-    "tripHistory",
-    JSON.stringify([...existingTrips, completedTrip])
-  );
-
-  localStorage.removeItem("pendingTrip");
-
-  setPaymentSuccess(true);
-};
-
+  //  SUCCESS 
   if (paymentSuccess) {
     return (
       <div className="payment-page">
         <div className="payment-card success-card">
           <h1>Payment Successful 🎉</h1>
           <p>Your trip has been successfully booked.</p>
-          <p><strong>{points}</strong> ⭐ loyalty points added </p>
+          <p>
+            <strong>{points}</strong> ⭐ loyalty points added
+          </p>
 
           <div className="success-buttons">
             <button
@@ -74,7 +100,7 @@ function Payments() {
     );
   }
 
-
+  //  NO TRIP
   if (!trip) {
     return (
       <div className="payment-page">
@@ -91,7 +117,7 @@ function Payments() {
     );
   }
 
- 
+  //  PAYMENT PAGE
   return (
     <div className="payment-page">
       <div className="payment-card">
@@ -106,7 +132,7 @@ function Payments() {
           </p>
           <p>
             <strong>Date:</strong>{" "}
-            {new Date(trip.travelDate).toLocaleString()}
+            {new Date(trip.dateAndTime).toLocaleString()}
           </p>
           <p>
             <strong>Passengers:</strong> {trip.passengers}
@@ -150,8 +176,12 @@ function Payments() {
           </label>
         </div>
 
-        <button className="pay-btn" onClick={handlePayment}>
-          Confirm & Pay
+        <button
+          className="pay-btn"
+          onClick={handlePayment}
+          disabled={loading}
+        >
+          {loading ? "Processing..." : "Confirm & Pay"}
         </button>
       </div>
     </div>

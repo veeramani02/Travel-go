@@ -7,6 +7,7 @@ import cors from "cors";
 import triprouter from "./routes/tripRoutes.js";
 import cookieParser from "cookie-parser";
 import driverRouter from "./routes/driverRoutes.js";
+import PaymentRouter from "./routes/PaymentRoutes.js";
 
 dotenv.config();
 const app = express();
@@ -32,7 +33,7 @@ app.use("/api/user", userRouter);
 app.use("/api/trip", triprouter);
 app.use("/uploads", express.static("uploads"));
 app.use("/api/driver", driverRouter);
-
+app.use("/api/payments",PaymentRouter)
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });

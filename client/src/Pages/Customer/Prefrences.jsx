@@ -33,38 +33,7 @@ function Preferences() {
       <div className="preferences-card">
 
          <h1 >Trip Preferences</h1>
-{/* 
-        <div className="form-group">
-          <label>Name</label>
-          <input 
-            type="text"
-            name="name"
-            value={profile.name}
-            onChange={handleChange}
-          />
-        </div>
 
-        <div className="form-group">
-          <label>Email</label>
-          <input 
-            type="email"
-            name="email"
-            value={profile.email}
-            onChange={handleChange}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Phone</label>
-          <input 
-            type="tel"
-            name="phone"
-            value={profile.phone}
-            onChange={handleChange}
-          />
-        </div> */}
-
-        {/* <hr /> */}
 
         <div className="form-group">
           <label>Preferred Vehicle</label>

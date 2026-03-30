@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { createSearchParams, useNavigate } from "react-router-dom";
 import { State, City } from "country-state-city";
 import "../../Styles/BookTrip.css";
 
@@ -71,69 +71,131 @@ function BookTrip() {
     setDestinationCities(cities);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    let validationErrors = {};
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   let validationErrors = {};
 
-    if (formData.name.trim().length < 3) {
-      validationErrors.name = "Name must be at least 3 characters.";
-    }
+  //   if (formData.name.trim().length < 3) {
+  //     validationErrors.name = "Name must be at least 3 characters.";
+  //   }
 
-    if (!phoneRegex.test(formData.phone)) {
-      validationErrors.phone = "Invalid Phone Number.";
-    }
+  //   if (!phoneRegex.test(formData.phone)) {
+  //     validationErrors.phone = "Invalid Phone Number.";
+  //   }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      validationErrors.email = "Please enter valid email.";
-    }
+  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //   if (!emailRegex.test(formData.email)) {
+  //     validationErrors.email = "Please enter valid email.";
+  //   }
 
-    if (!formData.pickupState) {
-      validationErrors.pickupState = "Select pickup state.";
-    }
+  //   if (!formData.pickupState) {
+  //     validationErrors.pickupState = "Select pickup state.";
+  //   }
 
-    if (!formData.pickupCity) {
-      validationErrors.pickupCity = "Select pickup city.";
-    }
+  //   if (!formData.pickupCity) {
+  //     validationErrors.pickupCity = "Select pickup city.";
+  //   }
 
-    if (!formData.destinationState) {
-      validationErrors.destinationState = "Select destination state.";
-    }
+  //   if (!formData.destinationState) {
+  //     validationErrors.destinationState = "Select destination state.";
+  //   }
 
-    if (!formData.destinationCity) {
-      validationErrors.destinationCity = "Select destination city.";
-    }
+  //   if (!formData.destinationCity) {
+  //     validationErrors.destinationCity = "Select destination city.";
+  //   }
 
-    const selectedDate = new Date(formData.travelDate);
-    if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
-      validationErrors.travelDate = "Select future date & time.";
-    }
+  //   const selectedDate = new Date(formData.travelDate);
+  //   if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
+  //     validationErrors.travelDate = "Select future date & time.";
+  //   }
 
-    if (!formData.vehicleType) {
-      validationErrors.vehicleType = "Select vehicle type.";
-    }
+  //   if (!formData.vehicleType) {
+  //     validationErrors.vehicleType = "Select vehicle type.";
+  //   }
 
-    if (!formData.passengers || parseInt(formData.passengers) <= 0) {
-      validationErrors.passengers = "Minimum 1 passenger required.";
-    }
+  //   if (!formData.passengers || parseInt(formData.passengers) <= 0) {
+  //     validationErrors.passengers = "Minimum 1 passenger required.";
+  //   }
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  //   if (Object.keys(validationErrors).length > 0) {
+  //     setErrors(validationErrors);
+  //     return;
+  //   }
+  //  navigate("/customer/payment");
+  // };
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    localStorage.setItem(
-      "pendingTrip",
-      JSON.stringify({
+  let validationErrors = {};
+
+  if (formData.name.trim().length < 3) {
+    validationErrors.name = "Name must be at least 3 characters.";
+  }
+
+  if (!phoneRegex.test(formData.phone)) {
+    validationErrors.phone = "Invalid Phone Number.";
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    validationErrors.email = "Please enter valid email.";
+  }
+
+  if (!formData.pickupState) validationErrors.pickupState = "Select pickup state.";
+  if (!formData.pickupCity) validationErrors.pickupCity = "Select pickup city.";
+  if (!formData.destinationState) validationErrors.destinationState = "Select destination state.";
+  if (!formData.destinationCity) validationErrors.destinationCity = "Select destination city.";
+
+  const selectedDate = new Date(formData.travelDate);
+  if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
+    validationErrors.travelDate = "Select future date & time.";
+  }
+
+  if (!formData.vehicleType) validationErrors.vehicleType = "Select vehicle type.";
+  if (!formData.passengers || parseInt(formData.passengers) <= 0) {
+    validationErrors.passengers = "Minimum 1 passenger required.";
+  }
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("token");
+
+    const response = await fetch ("http://localhost:3000/api/trip/create", {
+      method: "POST",
+      headers: {
+  "Content-Type": "application/json"
+},
+      credentials:"include",
+      body: JSON.stringify({
         ...formData,
-        status: "Pending",
-        createdAt: new Date().toISOString(),
-      })
-    );
+        dateAndTime: formData.travelDate
+      }),
+    });
 
-    navigate("/customer/payment");
-  };
+    const data = await response.json();
 
+    console.log("API Response:", data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Trip creation failed");
+    }
+
+    const tripId = data.trip._id;
+
+    console.log("Trip Created:", tripId);
+
+    // 👉 send tripId to payment page
+    navigate("/customer/payment", { state: { tripId } });
+
+  } catch (error) {
+    console.error("ERROR:", error);
+    alert(error.message);
+  }
+};
   const renderError = (field) =>
     errors[field] ? (
       <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
@@ -305,3 +367,4 @@ function BookTrip() {
 }
 
 export default BookTrip;
+

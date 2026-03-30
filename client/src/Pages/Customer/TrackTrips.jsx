@@ -13,9 +13,7 @@ function TrackTrip() {
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(true);
 
-  /* ===============================
-     GET TRIP FROM LOCAL STORAGE
-  =================================*/
+
   useEffect(() => {
     const trips = JSON.parse(localStorage.getItem("tripHistory")) || [];
     const selectedTrip = trips.find((t) => t.id === id);
@@ -27,9 +25,8 @@ function TrackTrip() {
     setLoading(false);
   }, [id]);
 
-  /* ===============================
-     GET LAT/LNG FROM CITY NAME
-  =================================*/
+  
+    /*  GET LAT/LNG FROM CITY NAME*/
   const getCoordinates = async (city) => {
     try {
       const res = await fetch(
@@ -47,9 +44,7 @@ function TrackTrip() {
     }
   };
 
-  /* ===============================
-     LOAD MAP + ROUTE
-  =================================*/
+  /* LOAD MAP + ROUTE*/
   useEffect(() => {
     if (!trip) return;
 
@@ -100,11 +95,7 @@ function TrackTrip() {
       if (map) map.remove();
     };
   }, [trip]);
-
-  /* ===============================
-     LOADING
-  =================================*/
-  if (loading) {
+ if (loading) {
     return (
       <div className="track-page">
         <h2>Loading Trip...</h2>

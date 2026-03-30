@@ -60,3 +60,17 @@ export const createTrip=async (req,res)=>{
             })
     }
 }
+export const getLatestTrip = async (req, res) => {
+  try {
+    const trip = await Trip.findOne({ userId: req.user._id })
+      .sort({ createdAt: -1 });
+
+    if (!trip) {
+      return res.status(404).json({ message: "No trips found" });
+    }
+
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

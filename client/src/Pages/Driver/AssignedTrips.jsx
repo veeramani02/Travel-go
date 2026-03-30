@@ -116,61 +116,7 @@ return (
 </div>
 </div>)}
     </>
-//  <div className="driver-assigned-section">
 
-//   <h2 className="driver-section-title">Assigned Trip</h2>
-
-//   <div className="driver-assigned-card">
-
-//     <div className="driver-assigned-info">
-//       <p><strong>Trip ID:</strong> 45892</p>
-//       <p><strong>Pickup:</strong> Chennai</p>
-//       <p><strong>Destination:</strong> Bangalore</p>
-//       <p><strong>Date:</strong> 20 Oct 2026</p>
-//       <p><strong>Status:</strong> Assigned</p>
-//     </div>
-
-//     <div className="driver-assigned-actions">
-//       <button className="driver-route-btn"
-//         onClick={()=>{setOpenMap(true)}}
-//       >
-//         View Route
-//       </button>
-//     </div>
-
-//   </div>
-//   <div className="driver-completed-section">
-
-//   <h2 className="driver-section-title">Completed Trips</h2>
-
-//   <div className="driver-table-wrapper">
-//     <table className="driver-table driver-completed-table">
-//       <thead>
-//         <tr>
-//           <th>Trip ID</th>
-//           <th>Date</th>
-//           <th>Route</th>
-//           <th>Earnings</th>
-//           <th>Status</th>
-//         </tr>
-//       </thead>
-
-//       <tbody>
-//          {
-//           recentTripActivityData.map(value=>(<tr key={value.tripId}>
-//               <td>{value.tripId}</td>
-//               <td>{value.date}</td>
-//               <td>{value.source.split(" ")[0]} → {value.destination.split(", ")[0]}</td>
-//               <td>200</td>
-//               <td><span className={`status-pill ${value.status.toLowerCase()}`}>{value.status}</span></td>
-//           </tr>))
-//          }
-//       </tbody>
-//     </table>
-//   </div>
-
-// </div>
-// </div>
   )
 }
 

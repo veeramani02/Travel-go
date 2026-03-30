@@ -23,4 +23,4 @@ paymentStatus:{type:String,enum:["pending","paid","failed"],default:"pending"},
 amount:{type:Number,default:0,},
 },{timestamps:true}
 );
-export default mongoose.model("trip",tripSchema)
+export default mongoose.model("Trip",tripSchema)
