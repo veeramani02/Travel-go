@@ -25,12 +25,12 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
                   />
                 ) : (
                   <div
-                    style={{ backgroundColor: getAvatarColor(Data.name) }}
+                    style={{ backgroundColor: getAvatarColor(Data?.name) }}
                     className="driver-image-no-div"
                   >
                     <span>
-                      {Data.name
-                        .split(" ")
+                      {Data?.name
+                        ?.split(" ")
                         .map((w) => w[0])
                         .join("")
                         .slice(0, 2)}
@@ -44,11 +44,13 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
               <h3>Account Info</h3>
               <div className="account-details-div">
                 <p>Driver ID:</p>
-                <p>{Data?._id.slice(0,4).toUpperCase() || 'Nill'}</p>
+                <p>{Data?._id ? Data._id.slice(0, 4).toUpperCase() : "Nil"}</p>
               </div>
               <div className="account-details-div">
                 <p>Joined Date:</p>
-                <p>{Data?.joinedDate.split("T")[0]}</p>
+                <p>
+                  {Data?.joinedDate ? Data.joinedDate.split("T")[0] : "N/A"}
+                </p>
               </div>
               <div className="account-details-div">
                 <p>Status:</p>
@@ -58,16 +60,16 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
             <div className="driver-vehicle-info">
               <h3>Vehicles Info</h3>
               <div className="vehicle-details-div">
-                <p>Vehicle Model:</p>
-                <p>{Data?.vehicleType}</p>
+                <p>Vehicle Type:</p>
+                <p>{Data?.vehicleType || "Nil"}</p>
               </div>
               <div className="vehicle-details-div">
                 <p>License Plate:</p>
-                <p>{Data?.licensePlate}</p>
+                <p>{Data?.vehicleNo || "Nil"}</p>
               </div>
               <div className="vehicle-details-div">
                 <p>Color:</p>
-                <p>{Data?.vehicleColor}</p>
+                <p>{Data?.vehicleColor || "Not Mentioned yet"}</p>
               </div>
             </div>
           </div>
@@ -76,11 +78,11 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
               <h3>Performance Stats</h3>
               <div className="performance-details-div">
                 <p>Total Trip:</p>
-                <p>{Data?.totalTrips}</p>
+                <p>{Data?.totalTrips || 0}</p>
               </div>
               <div className="performance-details-div">
                 <p>Ratings:</p>
-                <p>{Data?.rating}/5</p>
+                <p>{Data?.rating ? `${Data.rating}/5` : "No rating"}</p>
               </div>
               <div className="performance-details-div">
                 <p>Cancellation Rate:</p>
@@ -100,7 +102,12 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
               </div>
               <div className="contact-details-div">
                 <p>License Expiry:</p>
-                <p>{Data?.licenseExpiry}</p>
+                <p>
+                  {" "}
+                  {Data?.licenseExpiry
+                    ? Data.licenseExpiry.split("T")[0]
+                    : "N/A"}
+                </p>
               </div>
             </div>
           </div>

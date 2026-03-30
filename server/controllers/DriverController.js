@@ -28,7 +28,7 @@ const driverController = {
     try {
       const driver = new Driver(req.body);
       await driver.save();
-      res.send("Driver added");
+      res.json({ message: "Driver added" });
     } catch (err) {
       res.status(500).send(err.message);
     }
@@ -44,6 +44,19 @@ const driverController = {
     }
   },
 
+  updateDriver: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const drivers = await Driver.findByIdAndUpdate(id, req.body);
+      if (!drivers) {
+        return res.status(404).json({ message: "Driver not found" });
+      }
+      res.json(drivers);
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
+
   // DELETE
   deleteDriver: async (req, res) => {
     try {
@@ -53,7 +66,6 @@ const driverController = {
       if (!driver) {
         return res.status(404).send("Driver not found");
       }
-      console.log(driver.profile, driver.license)
       if (driver.profile) {
         const fileName = driver.profile.split("/uploads/")[1];
         const filePath = path.join(__dirname, "../uploads", fileName);

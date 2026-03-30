@@ -21,30 +21,52 @@ export const addDriver = async (formData) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        name: formData.fullName,
+        name: formData.name,
         phone: formData.phone,
         email: formData.email,
         profile: formData.profile,
         license: formData.license,
-        vehicle: formData.licensePlate,
+        vehicleNo: formData.licensePlate,
+        vehicleType: formData.vehicleType,
+        vehicleColor: formData.vehicleColor,
         rating: formData.rating,
         status: formData.status,
         joinedDate: new Date().toISOString().split("T")[0],
       }),
       credentials: "include",
     });
-    return await res.json();
+    return await res.json({ message: "Driver added" });
   } catch (err) {
     console.error(err);
   }
 };
 
+export const updateDriver = async (_id, data) => {
+  const res = await fetch(`http://localhost:${PORT}/api/driver/update/${_id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to update driver");
+  }
+
+  return res.json();
+};
+
 export const deleteDriver = async (_id) => {
   try {
-    await fetch(`http://localhost:${PORT}/api/driver/delete/${_id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
+    const res = await fetch(
+      `http://localhost:${PORT}/api/driver/delete/${_id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
 
     if (!res.ok) throw new Error("Delete failed");
   } catch (e) {

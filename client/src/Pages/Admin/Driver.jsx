@@ -5,6 +5,7 @@ import {
   deleteDriver,
   getDriver,
   getAvatarColor,
+  updateDriver,
 } from "../../services/driverService.js";
 import AddDriver from "../../Pages/Admin/AddDriver";
 import DriverProfile from "./DriverProfile";
@@ -23,12 +24,21 @@ export default function Driver() {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [searchText, setSearchText] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getDriver();
-      setDrivers(data);
-      setFilteredDrivers(data);
+      try {
+        setLoading(true);
+        const data = await getDriver();
+        setDrivers(data);
+      } catch (err) {
+        setSnackbarMessage("Failed to load drivers");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -37,24 +47,53 @@ export default function Driver() {
     handleFilter(active, searchText);
   }, [drivers, active, searchText]);
 
-  function handleUpdateDriver(updatedDriver) {
-    const updatedList = drivers.map((driver) =>
-      driver._id === updatedDriver._id
-        ? { ...driver, ...updatedDriver }
-        : driver,
-    );
+  async function handleUpdateDriver(updatedvalue) {
+    try {
+      const oldvalue = drivers.find((d) => d._id === updatedvalue._id);
+      const fields = [
+        "name",
+        "phone",
+        "email",
+        "profile",
+        "status",
+        "vehicleType",
+        "vehicleNo",
+      ];
 
-    setDrivers(updatedList);
+      const isChange = fields.some(
+        (field) => oldvalue[field] !== updatedvalue[field],
+      );
+      if (isChange) {
+        await updateDriver(updatedvalue._id, updatedvalue);
 
-    const updatedProfile = updatedList.find(
-      (driver) => driver._id === updatedDriver._id,
-    );
+        const updated = drivers.map((driver) => {
+          if (driver._id === updatedvalue._id) {
+            return { ...driver, ...updatedvalue };
+          } else {
+            return driver;
+          }
+        });
 
-    setData(updatedProfile);
+        setDrivers(updated);
+        setData(updatedvalue);
+
+        setSnackbarMessage("Driver updated successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+      } else {
+        setSnackbarMessage("No changes made");
+        setSnackbarSeverity("info");
+        setSnackbarOpen(true);
+      }
+    } catch (err) {
+      setSnackbarMessage(err?.message || "Update failed");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
   }
 
   function handleFilter(active, search) {
-    let filter = drivers;
+    let filter = [...drivers];
     if (search)
       filter = filter.filter((d) =>
         d.name.toLowerCase().includes(search.toLowerCase().trim()),
@@ -79,6 +118,7 @@ export default function Driver() {
             <input
               type="text"
               placeholder="Search Driver..."
+              value={searchText}
               onChange={(e) => {
                 let value = e.target.value;
                 setSearchText(value);
@@ -113,7 +153,11 @@ export default function Driver() {
         ))}
       </div>
       <div className="driver-card-container">
-        {filteredDrivers?.length !== 0 ? (
+        {loading ? (
+          <div className="driver-data-empty">
+            <p>Loading drivers...</p>
+          </div>
+        ) : filteredDrivers?.length > 0 ? (
           filteredDrivers.map((value) => (
             <div key={value._id} className="driver-card-details">
               <div className="driver-DeleteButton">
@@ -125,18 +169,23 @@ export default function Driver() {
                       "Are you sure you want to delete?",
                     );
                     if (!confirmDelete) return;
-                    await deleteDriver(value._id);
-                    setDrivers((prev) =>
-                      prev.filter((d) => d._id !== value._id),
-                    );
-                    setFilteredDrivers((prev) =>
-                      prev.filter((d) => d._id !== value._id),
-                    );
-                    setSnackbarMessage(
-                      `Driver "${value?.name || "Unknown"}" Deleted successfully!`,
-                    );
-                    setSnackbarSeverity("success");
-                    setSnackbarOpen(true);
+                    try {
+                      await deleteDriver(value._id);
+                      setDrivers((prev) =>
+                        prev.filter((d) => d._id !== value._id),
+                      );
+                      setSnackbarMessage(
+                        `Driver "${value?.name || "Unknown"}" Deleted successfully!`,
+                      );
+                      setSnackbarSeverity("success");
+                      setSnackbarOpen(true);
+                    } catch (err) {
+                      setSnackbarMessage(
+                        err?.message || "Failed to delete driver",
+                      );
+                      setSnackbarSeverity("error");
+                      setSnackbarOpen(true);
+                    }
                   }}
                 >
                   <MdDelete />
@@ -144,26 +193,28 @@ export default function Driver() {
               </div>
               <div className="driver-info-container">
                 <div className="driver-image-div">
-                  {value.profile ? (
+                  {value?.profile ? (
                     <img src={value.profile} alt="" />
                   ) : (
                     <div
-                      style={{ backgroundColor: getAvatarColor(value.name) }}
+                      style={{ backgroundColor: getAvatarColor(value?.name) }}
                       className="driver-image-no-div"
                     >
                       <span>
-                        {value.name
-                          ?.split(" ")
-                          .map((w) => w[0])
-                          .join("")
-                          .slice(0, 2)}
+                        {value?.name
+                          ? value.name
+                              .split(" ")
+                              .map((w) => w[0])
+                              .join("")
+                              .slice(0, 2)
+                          : "NA"}
                       </span>
                     </div>
                   )}
                 </div>
                 <div className="name-block">
-                  <h2>{value.name}</h2>
-                  <p className="text-gray">{value.location}</p>
+                  <h2>{value?.name}</h2>
+                  <p className="text-gray">{value?.location}</p>
                   <div>
                     <span className="rating-star">
                       <span className="star">★</span>
@@ -176,7 +227,7 @@ export default function Driver() {
                     <div className="driver-trip-card">
                       <span className="text-gray">TRIP</span>
                       {value.totalTrips ? (
-                        <span>{value.totalTrips}</span>
+                        <span>{value?.totalTrips}</span>
                       ) : (
                         <span>0</span>
                       )}
@@ -185,7 +236,7 @@ export default function Driver() {
                       <span className="text-gray">JOINED</span>
                       <span>
                         {value.joinedDate
-                          ? value.joinedDate.split("T")[0]
+                          ? value?.joinedDate.split("T")[0]
                           : "N/A"}
                       </span>
                     </div>
@@ -207,7 +258,11 @@ export default function Driver() {
           ))
         ) : (
           <div className="driver-data-empty">
-            <p>"No Drivers Found"</p>
+            <p>
+              {searchText
+                ? `No results for "${searchText}"`
+                : "No Drivers Found"}
+            </p>
           </div>
         )}
       </div>
@@ -215,11 +270,11 @@ export default function Driver() {
         openDriver={openDriver}
         closeDriver={async (value) => {
           setOpenDriver(false);
-          const data = await getDriver();
-          setDrivers(data);
           if (value) {
+            const data = await getDriver();
+            setDrivers(data);
             setSnackbarMessage(
-              `Driver "${value.fullName || "Unknown"}" added successfully!`,
+              `Driver "${value.name || "Unknown"}" added successfully!`,
             );
             setSnackbarSeverity("success");
             setSnackbarOpen(true);
@@ -232,7 +287,9 @@ export default function Driver() {
         Close={() => {
           setOpenProfile(false);
         }}
-        updateDriver={handleUpdateDriver}
+        updateDriver={(v) => {
+          handleUpdateDriver(v);
+        }}
       />
       <CustomizedSnackbars
         open={snackbarOpen}

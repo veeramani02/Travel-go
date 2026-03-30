@@ -8,18 +8,19 @@ export default function AddDriver({ openDriver, closeDriver }) {
   const [loading, setLoading] = useState(false);
   const Profileref = useRef();
   const LicenseRef = useRef();
-  const [licenseFile, setLisenceFile] = useState(null);
+  const [licenseFile, setLicenseFile] = useState(null);
   const [profileFile, setProfileFile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     phone: "",
     email: "",
     profile: "",
     vehicleType: "",
     licensePlate: "",
-    drivingLicense: "",
-    status: true,
+    license: "",
+    vehicleColor: "",
+    status: "Active",
   });
 
   const handleChange = (e) => {
@@ -54,17 +55,15 @@ export default function AddDriver({ openDriver, closeDriver }) {
 
       const newData = {
         ...formData,
-        profile: imageurl,
-        license: licenseurl,
+        profile: imageurl || formData.profile,
+        license: licenseurl || formData.license,
         status: isOn ? "Active" : "Inactive",
       };
-       console.log(newData.profile, newData.license)
       await addDriver(newData);
       closeDriver(newData);
       resetForm();
-      console.log(newData);
     } catch (err) {
-      console.error(err);
+      console.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -78,7 +77,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       alert("File size must be less than 2MB");
       return;
     }
-    setLisenceFile(file);
+    setLicenseFile(file);
   };
   const handleProfileFile = (e) => {
     const file = e.target.files[0];
@@ -88,10 +87,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
       alert("File size must be less than 2MB");
       return;
     }
-    if (file) {
-      setProfileFile(file);
-      setProfilePreview(URL.createObjectURL(file));
-    }
+
+    setProfileFile(file);
+    setProfilePreview(URL.createObjectURL(file));
   };
 
   useEffect(() => {
@@ -104,30 +102,32 @@ export default function AddDriver({ openDriver, closeDriver }) {
 
   const resetForm = () => {
     setFormData({
-      fullName: "",
+      name: "",
       phone: "",
       email: "",
       profile: "",
-      
       vehicleType: "",
       licensePlate: "",
-      drivingLicense: "",
-      status: true,
+      license: "",
+      vehicleColor: "",
+      status: "Active",
     });
     setProfilePreview(null);
     setProfileFile(null);
-    setLisenceFile(null);
+    setLicenseFile(null);
     setIsOn(true);
+    Profileref.current.value = "";
+    LicenseRef.current.value = "";
   };
 
   function handleRemoveProfileFile() {
     setProfilePreview(null);
     setProfileFile(null);
-    if (profilePreview) URL.revokeObjectURL(profilePreview);
+    //if (profilePreview) URL.revokeObjectURL(profilePreview);
   }
 
   function handleRemoveLicenseFile() {
-    setLisenceFile(null);
+    setLicenseFile(null);
   }
 
   if (!openDriver) return null;
@@ -138,13 +138,13 @@ export default function AddDriver({ openDriver, closeDriver }) {
         <p>Personal Details</p>
         <div className="personal-details">
           <div className="input">
-            <label htmlFor="fullName">Full Name</label>
+            <label htmlFor="name">Full Name</label>
             <input
               type="text"
-              id="fullName"
-              name="fullName"
+              id="name"
+              name="name"
               placeholder="e.g John Doe"
-              value={formData.fullName}
+              value={formData.name}
               onChange={handleChange}
             />
           </div>
@@ -194,12 +194,14 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 />
                 <div className="upload-remove-container-div">
                   <button
+                    type="button"
                     className="addDriver-upload-button"
                     onClick={() => Profileref.current.click()}
                   >
                     Upload Profile
                   </button>
                   <button
+                    type="button"
                     className="addDriver-remove-button"
                     onClick={() => handleRemoveProfileFile()}
                   >
@@ -242,6 +244,17 @@ export default function AddDriver({ openDriver, closeDriver }) {
               onChange={handleChange}
             />
           </div>
+          <div className="input">
+            <label htmlFor="vehicleColor">Vehicle Color</label>
+            <input
+              type="text"
+              placeholder="e.g White"
+              value={formData.vehicleColor}
+              id="vehicleColor"
+              name="vehicleColor"
+              onChange={handleChange}
+            />
+          </div>
         </div>
         <p>Document & Status</p>
         <div className="document-info">
@@ -257,10 +270,11 @@ export default function AddDriver({ openDriver, closeDriver }) {
               accept="image/*"
             />
             <div className="upload-remove-container-div">
-              <button onClick={() => LicenseRef.current.click()}>
+              <button type="button" onClick={() => LicenseRef.current.click()}>
                 Upload File
               </button>
               <button
+                type="button"
                 className="addDriver-remove-button"
                 onClick={() => handleRemoveLicenseFile()}
               >
@@ -313,6 +327,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
         <div className="btn-div">
           <div className="btn">
             <button
+              type="button"
               onClick={() => {
                 closeDriver(null);
                 resetForm();
@@ -323,6 +338,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
           </div>
           <div className="btn">
             <button
+              type="button"
               disabled={loading}
               onClick={() => {
                 handleSubmit();

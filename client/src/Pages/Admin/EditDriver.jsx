@@ -1,8 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "../../Styles/EditDriver.css";
+import {
+  getAvatarColor,
+  VEHICLE_TYPES,
+  PORT,
+} from "../../services/driverService";
 
 export default function EditDriver({ Open, Close, Data, Onsave }) {
-  const [formData, setFormData] = useState({});
+  const Profileref = useRef();
+  const LicenseRef = useRef();
+  const [profileFile, setProfileFile] = useState(null);
+  const [profilePreview, setProfilePreview] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    phone: "",
+    email: "",
+    profile: "",
+    vehicleType: "",
+    vehicleNo: "",
+    license: "",
+    vehicleColor: "",
+    status: "Active",
+  });
+
+  useEffect(() => {
+    return () => {
+      if (profilePreview) URL.revokeObjectURL(profilePreview);
+    };
+  }, [profilePreview]);
 
   useEffect(() => {
     if (Data) {
@@ -11,13 +36,39 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
         name: Data.name,
         phone: Data.phone,
         email: Data.email,
+        profile: Data.profile,
         status: Data.status,
-        vehicleModel: Data.vehicleModel,
-        licensePlate: Data.licensePlate,
+        vehicleType: Data.vehicleType,
+        vehicleNo: Data.vehicleNo,
+        license: Data.license,
         vehicleColor: Data.vehicleColor,
       });
     }
   }, [Data]);
+
+  const handleProfileFile = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      alert("File size must be less than 2MB");
+      return;
+    }
+    setProfileFile(file);
+    setProfilePreview(URL.createObjectURL(file));
+  };
+
+  function handleRemoveProfileFile() {
+    setProfilePreview(null);
+    setProfileFile(null);
+    setFormData((prev) => ({
+      ...prev,
+      profile: "",
+    }));
+    if (Profileref.current) {
+      Profileref.current.value = "";
+    }
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,11 +79,35 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    Onsave(formData);
+    const data = new FormData();
+    let profileurl = "";
+    let licenseurl = "";
+    if (profileFile) {
+      data.append("profileFile", profileFile);
+    }
+
+    if (profileFile) {
+      const res = await fetch(`http://localhost:${PORT}/api/driver/uploads`, {
+        method: "POST",
+        body: data,
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Upload failed");
+      const result = await res.json();
+      profileurl = result.profileUrl;
+      licenseurl = result.licenseUrl;
+    }
+    const newData = {
+      ...formData,
+      profile: profileurl || formData.profile,
+      license: licenseurl || formData.license,
+    };
+    Onsave(newData);
     Close();
   };
+
   if (!Open || !Data) return null;
   return (
     <div className="editdriver-container-div">
@@ -40,6 +115,54 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
         <form onSubmit={handleSubmit}>
           <h1>Edit Driver Profile</h1>
           <h3>Driver Info</h3>
+          <div className="editdriver-input">
+            <div className="editdriver-photo-div">
+              <div>
+                {profilePreview ? (
+                  <img src={profilePreview} className="driver-image-no-div" />
+                ) : formData.profile ? (
+                  <img
+                    src={formData.profile}
+                    alt=""
+                    className="driver-image-no-div"
+                  />
+                ) : (
+                  <div
+                    style={{ backgroundColor: getAvatarColor(formData?.name) }}
+                    className="driver-image-no-div"
+                  >
+                    <span>
+                      {formData?.name
+                        ?.split(" ")
+                        .map((w) => w[0])
+                        .join("")
+                        .slice(0, 2)}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="editdriver-upload-remove-button">
+                <input
+                  type="file"
+                  id="pf"
+                  name="pf"
+                  ref={Profileref}
+                  style={{ display: "none" }}
+                  onChange={handleProfileFile}
+                  accept="image/*"
+                />
+                <button
+                  type="button"
+                  onClick={() => Profileref.current.click()}
+                >
+                  Upload
+                </button>
+                <button type="button" onClick={() => handleRemoveProfileFile()}>
+                  Remove
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="editdriver-input">
             <label htmlFor="name">Name</label>
             <input
@@ -87,32 +210,38 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
           </div>
           <h3>Vehicle Info</h3>
           <div className="editdriver-input">
-            <label htmlFor="vehiclemodel">Vehicle Model</label>
+            <label htmlFor="vehicleType">Vehicle Type</label>
+            <select
+              name="vehicleType"
+              id="vehicleType"
+              value={formData.vehicleType || ""}
+              onChange={handleChange}
+            >
+              <option value="">Not selected</option>
+              {VEHICLE_TYPES.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="editdriver-input">
+            <label htmlFor="vehicleNo">Vehicle No</label>
             <input
               type="text"
-              id="vehiclemodel"
-              name="vehiclemodel"
-              value={formData.vehicleModel || ""}
+              name="vehicleNo"
+              id="vehicleNo"
+              value={formData.vehicleNo || ""}
               onChange={handleChange}
             />
           </div>
           <div className="editdriver-input">
-            <label htmlFor="licenseplate">License Plate</label>
+            <label htmlFor="vehicleColor">vehicle Color</label>
             <input
               type="text"
-              name="licenseplate"
-              id="licenseplate"
-              value={formData.licensePlate || ""}
-              onChange={handleChange}
-            />
-          </div>
-          <div className="editdriver-input">
-            <label htmlFor="color">Color</label>
-            <input
-              type="text"
-              name="color"
-              id="color"
-              value={formData.vehicleColor || "white"}
+              name="vehicleColor"
+              id="vehicleColor"
+              value={formData.vehicleColor || ""}
               onChange={handleChange}
             />
           </div>

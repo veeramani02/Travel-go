@@ -5,12 +5,12 @@ export const protect = async (req, res, next) => {
   try {
     let token;
 
-    // ✅ 1. Check Header (Bearer)
+    //Check Header (Bearer)
     if (req.headers.authorization?.startsWith("Bearer")) {
       token = req.headers.authorization.split(" ")[1];
     }
 
-    // ✅ 2. Check Cookie (fallback)
+    //Check Cookie (fallback)
     if (!token && req.cookies?.token) {
       token = req.cookies.token;
     }

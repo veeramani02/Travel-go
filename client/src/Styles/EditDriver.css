@@ -1,92 +1,113 @@
-.editdriver-container-div{
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0,0,0,0.08);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(4px);
-    z-index: 1000;
+.editdriver-container-div {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  z-index: 1000;
 }
 
-.editdriver-container-div h1{
-    color: var(--primary);
+.editdriver-container-div h1 {
+  color: var(--primary);
 }
 
-.editdriver-container{
-    background-color: white;
-    border-radius: 10px;
-    padding: 20px;
-    width: 420px;
-    max-width: 90%;
-    animation: modalPop 0.25s ease;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+.editdriver-container {
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 420px;
+  max-width: 90%;
+  animation: modalPop 0.25s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.editdriver-container form{
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 15px;
+.editdriver-container form {
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 15px;
 }
 
-@keyframes modalPop{
-    from{
-        transform: scale(0.95);
-        opacity: 0;
-    }
-    to{
-        transform: scale(1);
-        opacity: 1;
-    }
+@keyframes modalPop {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .editdriver-input input,
-.editdriver-input select{
-    padding: 6px 8px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    width: 100%;
+.editdriver-input select {
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  width: 100%;
 }
 
 .editdriver-input input:focus,
-.editdriver-input select:focus{
-    outline: none;
-    border-color: var(--primary);
+.editdriver-input select:focus {
+  outline: none;
+  border-color: var(--primary);
 }
 
-.editdriver-button-div{
-    display: flex;
-    gap: 10px;
-    width: 100%;
-    align-items: center;
-    margin-top: 10px;
-    justify-content: flex-end;
+.editdriver-button-div {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  align-items: center;
+  margin-top: 10px;
+  justify-content: flex-end;
 }
 
-.editdriver-button-div button{
-    background-color: var(--primary);
-    color: white;
-    border-radius: 10px;
-    padding: 6px 12px;
-    border-style: none;
-    cursor: pointer;
+.editdriver-button-div button {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 10px;
+  padding: 6px 12px;
+  border-style: none;
+  cursor: pointer;
 }
 
-.editdriver-input{
-    margin-bottom: 15px;
+.editdriver-input {
+  margin-bottom: 15px;
 }
 
-.editdriver-container form::-webkit-scrollbar{
-    width: 6px;
+.editdriver-container form::-webkit-scrollbar {
+  width: 6px;
 }
 
-.editdriver-container form::-webkit-scrollbar-thumb{
-    background: #ccc;
-    border-radius: 10px;
+.editdriver-container form::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
 }
 
-@media (max-width: 480px){
-    .editdriver-container{
-        padding: 15px;
-    }
+.editdriver-photo-div {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.editdriver-upload-remove-button {
+  display: flex;
+  gap: 10px;
+}
+
+.editdriver-upload-remove-button button {
+  background-color: var(--primary);
+  color: white;
+  border-radius: 10px;
+  padding: 6px 12px;
+  border-style: none;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .editdriver-container {
+    padding: 15px;
+  }
 }
