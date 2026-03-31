@@ -1,4 +1,135 @@
 
+// import React, { useEffect, useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import "../../Styles/MyTrips.css";
+
+// function MyTrips() {
+//   const navigate = useNavigate();
+
+//   const [currentTrip, setCurrentTrip] = useState(null);
+//   const [pastTrips, setPastTrips] = useState([]);
+
+//   useEffect(() => {
+//     const trips = JSON.parse(localStorage.getItem("tripHistory")) || [];
+
+//     if (trips.length > 0) {
+//       const sortedTrips = [...trips].reverse();
+
+//       const latestTrip = sortedTrips[0];
+
+//       // Active trip logic
+//       if (
+//         latestTrip.status === "Assigned" ||
+//         latestTrip.status === "Booked"
+//       ) {
+//         setCurrentTrip(latestTrip);
+//         setPastTrips(sortedTrips.slice(1));
+//       } else {
+//         setPastTrips(sortedTrips);
+//       }
+//     }
+//   }, []);
+
+//   return (
+//     <div className="mytrips-page">
+//       <h1 className="mytrips-title">My Trips</h1>
+
+//       {/*  CURRENT TRIP  */}
+//       {currentTrip && (
+//         <div className="current-trip-section">
+//           <h2>Current Trip</h2>
+
+//           <div className="trip-card highlight">
+//             <div className="trip-header">
+//               <span className="route">
+//                 {currentTrip.pickupCity} ({currentTrip.pickupState}) →{" "}
+//                 {currentTrip.destinationCity} ({currentTrip.destinationState})
+//               </span>
+
+//               <span className={`status active-status`}>
+//                 {currentTrip.status}
+//               </span>
+//             </div>
+
+//             <div className="trip-details">
+//               <p>
+//                 <strong>Date:</strong>{" "}
+//                 {new Date(currentTrip.travelDate).toLocaleString()}
+//               </p>
+//               <p>
+//                 <strong>Passengers:</strong> {currentTrip.passengers}
+//               </p>
+//               <p>
+//                 <strong>Vehicle:</strong> {currentTrip.vehicleType}
+//               </p>
+//               <p>
+//                 <strong>Payment:</strong> {currentTrip.paymentMethod}
+//               </p>
+//             </div>
+
+//             {/* ✅ TRACK BUTTON */}
+//             {(currentTrip.status === "Assigned" ||
+//               currentTrip.status === "Booked") && (
+//               <button
+//                 className="track-btn"
+//                 onClick={() =>
+//                   navigate(`/customer/track/${currentTrip.id}`)
+//                 }
+//               >
+//                 Track My Trip
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       )}
+
+//       {/* ================= PAST TRIPS ================= */}
+//       <div className="past-trips-section">
+//         <h2>Past Trips</h2>
+
+//         {pastTrips.length === 0 ? (
+//           <div className="no-trip-card">
+//             <p>No past trips available.</p>
+//           </div>
+//         ) : (
+//           <div className="trips-wrapper">
+//             {pastTrips.map((trip, index) => (
+//               <div className="trip-card" key={trip.id || index}>
+//                 <div className="trip-header">
+//                   <span className="route">
+//                     {trip.pickupCity} ({trip.pickupState}) →{" "}
+//                     {trip.destinationCity} ({trip.destinationState})
+//                   </span>
+
+//                   <span className="status">{trip.status}</span>
+//                 </div>
+
+//                 <div className="trip-details">
+//                   <p>
+//                     <strong>Date:</strong>{" "}
+//                     {new Date(trip.travelDate).toLocaleString()}
+//                   </p>
+//                   <p>
+//                     <strong>Passengers:</strong> {trip.passengers}
+//                   </p>
+//                   <p>
+//                     <strong>Vehicle:</strong> {trip.vehicleType}
+//                   </p>
+//                   <p>
+//                     <strong>Payment:</strong> {trip.paymentMethod}
+//                   </p>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default MyTrips;
+
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/MyTrips.css";
@@ -8,33 +139,58 @@ function MyTrips() {
 
   const [currentTrip, setCurrentTrip] = useState(null);
   const [pastTrips, setPastTrips] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const trips = JSON.parse(localStorage.getItem("tripHistory")) || [];
+    const fetchTrips = async () => {
+      try {
+        // 🟢 CURRENT TRIP
+        const latestRes = await fetch(
+          "http://localhost:3000/api/trip/latest",
+          {
+            credentials: "include",
+          }
+        );
 
-    if (trips.length > 0) {
-      const sortedTrips = [...trips].reverse();
+        const latestData = await latestRes.json();
 
-      const latestTrip = sortedTrips[0];
+        console.log("Latest Trip:", latestData); // 🔥 debug
 
-      // Active trip logic
-      if (
-        latestTrip.status === "Assigned" ||
-        latestTrip.status === "Booked"
-      ) {
-        setCurrentTrip(latestTrip);
-        setPastTrips(sortedTrips.slice(1));
-      } else {
-        setPastTrips(sortedTrips);
+        if (latestRes.ok && latestData) {
+          setCurrentTrip(latestData); // 🔥 direct set (no condition)
+        }
+
+        // 🟡 PAST TRIPS
+        const pastRes = await fetch(
+          "http://localhost:3000/api/trip/past-trips",
+          {
+            credentials: "include",
+          }
+        );
+
+        const pastData = await pastRes.json();
+
+        if (pastRes.ok) {
+          setPastTrips(pastData);
+        }
+
+      } catch (err) {
+        console.error("Fetch Trips Error:", err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    fetchTrips();
   }, []);
+
+  if (loading) return <h2>Loading trips...</h2>;
 
   return (
     <div className="mytrips-page">
       <h1 className="mytrips-title">My Trips</h1>
 
-      {/* ================= CURRENT TRIP ================= */}
+      {/* 🟢 CURRENT TRIP */}
       {currentTrip && (
         <div className="current-trip-section">
           <h2>Current Trip</h2>
@@ -46,7 +202,7 @@ function MyTrips() {
                 {currentTrip.destinationCity} ({currentTrip.destinationState})
               </span>
 
-              <span className={`status active-status`}>
+              <span className="status active-status">
                 {currentTrip.status}
               </span>
             </div>
@@ -54,7 +210,7 @@ function MyTrips() {
             <div className="trip-details">
               <p>
                 <strong>Date:</strong>{" "}
-                {new Date(currentTrip.travelDate).toLocaleString()}
+                {new Date(currentTrip.dateAndTime).toLocaleString()}
               </p>
               <p>
                 <strong>Passengers:</strong> {currentTrip.passengers}
@@ -62,28 +218,27 @@ function MyTrips() {
               <p>
                 <strong>Vehicle:</strong> {currentTrip.vehicleType}
               </p>
-              <p>
-                <strong>Payment:</strong> {currentTrip.paymentMethod}
-              </p>
             </div>
 
-            {/* ✅ TRACK BUTTON */}
-            {(currentTrip.status === "Assigned" ||
-              currentTrip.status === "Booked") && (
-              <button
-                className="track-btn"
-                onClick={() =>
-                  navigate(`/customer/track/${currentTrip.id}`)
-                }
-              >
-                Track My Trip
-              </button>
-            )}
+            {/* 🚀 TRACK BUTTON → MAP PAGE */}
+            <button
+              className="track-btn"
+              onClick={() =>
+                navigate(`/customer/track/${currentTrip._id}`, {
+                  state: {
+                    pickupCoords: currentTrip.pickupCoordinates,
+                    destinationCoords: currentTrip.destinationCoordinates,
+                  },
+                })
+              }
+            >
+              Track My Trip
+            </button>
           </div>
         </div>
       )}
 
-      {/* ================= PAST TRIPS ================= */}
+      {/* 🟡 PAST TRIPS */}
       <div className="past-trips-section">
         <h2>Past Trips</h2>
 
@@ -93,8 +248,8 @@ function MyTrips() {
           </div>
         ) : (
           <div className="trips-wrapper">
-            {pastTrips.map((trip, index) => (
-              <div className="trip-card" key={trip.id || index}>
+            {pastTrips.map((trip) => (
+              <div className="trip-card" key={trip._id}>
                 <div className="trip-header">
                   <span className="route">
                     {trip.pickupCity} ({trip.pickupState}) →{" "}
@@ -107,16 +262,13 @@ function MyTrips() {
                 <div className="trip-details">
                   <p>
                     <strong>Date:</strong>{" "}
-                    {new Date(trip.travelDate).toLocaleString()}
+                    {new Date(trip.dateAndTime).toLocaleString()}
                   </p>
                   <p>
                     <strong>Passengers:</strong> {trip.passengers}
                   </p>
                   <p>
                     <strong>Vehicle:</strong> {trip.vehicleType}
-                  </p>
-                  <p>
-                    <strong>Payment:</strong> {trip.paymentMethod}
                   </p>
                 </div>
               </div>

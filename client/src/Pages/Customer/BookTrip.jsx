@@ -188,7 +188,7 @@ const handleSubmit = async (e) => {
 
     console.log("Trip Created:", tripId);
 
-    // 👉 send tripId to payment page
+    //  send tripId to payment page
     navigate("/customer/payment", { state: { tripId } });
 
   } catch (error) {

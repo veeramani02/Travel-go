@@ -23,9 +23,8 @@ export const createTrip=async (req,res)=>{
         const baseprice=500
         const amount=baseprice*passengers
        const trip = await Trip.create({
-  userId: req.user.id,
-
-  name,
+               userId: req.user.id,
+               name,
   phone,
   email,
   pickupState,
@@ -74,3 +73,16 @@ export const getLatestTrip = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+export const getPastTrips=async(req,res)=>{
+  try{
+    const userId=req.user._id;
+    const pastTrips=await Trip.find({userId})
+    .sort({createdAt:-1})
+    .skip(1).limit(5)
+    res.json(pastTrips)
+  }
+  catch(err){
+    console.log("GET PAST TRIPS ERROR",err)
+    res.status(500).json({message:err.message})
+  }
+}

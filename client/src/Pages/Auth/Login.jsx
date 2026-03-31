@@ -31,7 +31,7 @@ try {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // 🔥 cookie important
+        credentials: "include",
         body: JSON.stringify(formData),
       });
   const data = await res.json();

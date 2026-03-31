@@ -6,53 +6,73 @@ import "leaflet-routing-machine";
 import "../../Styles/TrackTrip.css";
 
 function TrackTrip() {
-  const { id } = useParams();
+  const { tripId } = useParams();
 
   const [trip, setTrip] = useState(null);
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(true);
 
-
+  //  GET TRIP FROM BACKEND
   useEffect(() => {
-    const trips = JSON.parse(localStorage.getItem("tripHistory")) || [];
-    const selectedTrip = trips.find((t) => t.id === id);
+    const fetchTrip = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/trip/latest`,
+          {
+            credentials: "include",
+          }
+        );
 
-    if (selectedTrip) {
-      setTrip(selectedTrip);
-    }
+        const data = await res.json();
 
-    setLoading(false);
-  }, [id]);
+        if (res.ok) {
+          setTrip(data);
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  
-    /*  GET LAT/LNG FROM CITY NAME*/
-  const getCoordinates = async (city) => {
+    fetchTrip();
+  }, [tripId]);
+
+  //  CITY → COORDINATES
+  const getCoordinates = async (place) => {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${city}&format=json`
+        `https://nominatim.openstreetmap.org/search?q=${place}&format=json`
       );
+
       const data = await res.json();
 
-      if (data && data.length > 0) {
+      if (data.length > 0) {
         return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
       }
+
       return null;
-    } catch (error) {
-      console.error("Geocoding error:", error);
+    } catch (err) {
+      console.error("Geo Error:", err);
       return null;
     }
   };
 
-  /* LOAD MAP + ROUTE*/
+  //  MAP + ROUTE
   useEffect(() => {
     if (!trip) return;
 
     let map;
 
     const loadMap = async () => {
-      const pickupCoords = await getCoordinates(trip.pickupCity);
-      const destCoords = await getCoordinates(trip.destinationCity);
+      const pickupCoords = await getCoordinates(
+        `${trip.pickupCity}, ${trip.pickupState}, India`
+      );
+
+      const destCoords = await getCoordinates(
+        `${trip.destinationCity}, ${trip.destinationState}, India`
+      );
 
       if (!pickupCoords || !destCoords) {
         console.error("Coordinates not found");
@@ -65,6 +85,7 @@ function TrackTrip() {
         attribution: "© OpenStreetMap contributors",
       }).addTo(map);
 
+      //  REAL ROAD ROUTE
       L.Routing.control({
         waypoints: [
           L.latLng(pickupCoords[0], pickupCoords[1]),
@@ -73,6 +94,7 @@ function TrackTrip() {
         routeWhileDragging: false,
         show: false,
         addWaypoints: false,
+        draggableWaypoints: false,
       })
         .on("routesfound", function (e) {
           const route = e.routes[0];
@@ -95,7 +117,8 @@ function TrackTrip() {
       if (map) map.remove();
     };
   }, [trip]);
- if (loading) {
+
+  if (loading) {
     return (
       <div className="track-page">
         <h2>Loading Trip...</h2>

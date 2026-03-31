@@ -7,14 +7,16 @@ import ooty from"../../assets/ooty.jpg"
 import kodaikanal from '../../assets/kodaikanal.jpg'
 import mahabalipuram from '../../assets/mahabalipuram.jpg'
 import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../../Context/AuthContext'
 function CustomerDashboard() {
   const navigate=useNavigate()
+  const {user}=useAuth()
   return (
     <div>
       <main>
       
       <section className='dashboard-header'>
-        <p className='welcome-text'>Welcome back</p>
+        <p className='welcome-text'>Welcome back ,{user?.name || user?.username || "User"} 👋</p>
         <div className='primary-button'>
         <button onClick={()=>navigate("/customer/book-trip")}> 
           Book New Trip
