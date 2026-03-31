@@ -26,36 +26,55 @@ export const addDriver = async (formData) => {
         email: formData.email,
         profile: formData.profile,
         license: formData.license,
-        vehicleNo: formData.licensePlate,
+        vehicleNo: formData.vehicleNo,
         vehicleType: formData.vehicleType,
         vehicleColor: formData.vehicleColor,
         rating: formData.rating,
         status: formData.status,
+        state: formData.state,
+        city: formData.city,
         joinedDate: new Date().toISOString().split("T")[0],
       }),
       credentials: "include",
     });
-    return await res.json({ message: "Driver added" });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw data.errors || { general: "Something went wrong" };
+    }
+    return data;
   } catch (err) {
-    console.error(err);
+    console.log(err);
+    throw err;
   }
 };
 
-export const updateDriver = async (_id, data) => {
-  const res = await fetch(`http://localhost:${PORT}/api/driver/update/${_id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-    credentials: "include",
-  });
+export const updateDriver = async (_id, updatedData) => {
+  try {
+    const res = await fetch(
+      `http://localhost:${PORT}/api/driver/update/${_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+        credentials: "include",
+      },
+    );
 
-  if (!res.ok) {
-    throw new Error("Failed to update driver");
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw data.errors || { general: "Something went wrong" };
+    }
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
   }
-
-  return res.json();
 };
 
 export const deleteDriver = async (_id) => {
