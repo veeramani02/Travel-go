@@ -64,7 +64,7 @@ export default function DriverProfile({ Open, Data, Close, updateDriver }) {
                 <p>{Data?.vehicleType || "Nil"}</p>
               </div>
               <div className="vehicle-details-div">
-                <p>License Plate:</p>
+                <p>Vehicle No:</p>
                 <p>{Data?.vehicleNo || "Nil"}</p>
               </div>
               <div className="vehicle-details-div">

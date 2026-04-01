@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import "../../Styles/Driver.css";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import {
@@ -11,6 +11,7 @@ import AddDriver from "../../Pages/Admin/AddDriver";
 import DriverProfile from "./DriverProfile";
 import { MdDelete } from "react-icons/md";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars.jsx";
+import AlertDialogSlide from "../../Components/AlertDialogSlide.jsx";
 
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);
@@ -25,6 +26,8 @@ export default function Driver() {
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [searchText, setSearchText] = useState("");
   const [loading, setLoading] = useState(true);
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [DeleteData, setDeletedata] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,7 +89,32 @@ export default function Driver() {
         setSnackbarOpen(true);
       }
     } catch (err) {
-      setSnackbarMessage(err?.message || "Update failed");
+      let message = "Something went wrong";
+      if (typeof err === "string") {
+        message = err;
+      } else if (err?.general) {
+        message = err.general;
+      } else if (err && typeof err === "object") {
+        message = Object.values(err)[0];
+      }
+      setSnackbarMessage(message || "Update failed");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    }
+  }
+
+  async function handleDeleteDriver(value) {
+    if (!value) return null;
+    try {
+      await deleteDriver(value._id);
+      setDrivers((prev) => prev.filter((d) => d._id !== value._id));
+      setSnackbarMessage(
+        `Driver "${value?.name || "Unknown"}" Deleted successfully!`,
+      );
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
+    } catch (err) {
+      setSnackbarMessage(err?.message || "Failed to delete driver");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
@@ -164,28 +192,9 @@ export default function Driver() {
                 <button
                   className="btnDelete"
                   title="Delete Driver"
-                  onClick={async () => {
-                    const confirmDelete = window.confirm(
-                      "Are you sure you want to delete?",
-                    );
-                    if (!confirmDelete) return;
-                    try {
-                      await deleteDriver(value._id);
-                      setDrivers((prev) =>
-                        prev.filter((d) => d._id !== value._id),
-                      );
-                      setSnackbarMessage(
-                        `Driver "${value?.name || "Unknown"}" Deleted successfully!`,
-                      );
-                      setSnackbarSeverity("success");
-                      setSnackbarOpen(true);
-                    } catch (err) {
-                      setSnackbarMessage(
-                        err?.message || "Failed to delete driver",
-                      );
-                      setSnackbarSeverity("error");
-                      setSnackbarOpen(true);
-                    }
+                  onClick={() => {
+                    setDeletedata(value);
+                    setAlertDialogOpen(true);
                   }}
                 >
                   <MdDelete />
@@ -214,7 +223,10 @@ export default function Driver() {
                 </div>
                 <div className="name-block">
                   <h2>{value?.name}</h2>
-                  <p className="text-gray">{value?.location}</p>
+                  <p className="text-gray">
+                    {value.state}
+                    {value.city ? `, ${value.city}` : ""}
+                  </p>
                   <div>
                     <span className="rating-star">
                       <span className="star">★</span>
@@ -296,6 +308,14 @@ export default function Driver() {
         message={snackbarMessage}
         severity={snackbarSeverity}
         onClose={() => setSnackbarOpen(false)}
+      />
+      <AlertDialogSlide
+        open={alertDialogOpen}
+        onClose={() => setAlertDialogOpen(false)}
+        onConfirm={() => {
+          setAlertDialogOpen(false);
+          handleDeleteDriver(DeleteData);
+        }}
       />
     </div>
   );

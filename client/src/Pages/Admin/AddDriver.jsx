@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import "../../Styles/AddDriver.css";
 import { addDriver, VEHICLE_TYPES, PORT } from "../../services/driverService";
 import { CgProfile } from "react-icons/cg";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { State, City } from "country-state-city";
 
 export default function AddDriver({ openDriver, closeDriver }) {
   const [isOn, setIsOn] = useState(true);
@@ -11,17 +13,31 @@ export default function AddDriver({ openDriver, closeDriver }) {
   const [licenseFile, setLicenseFile] = useState(null);
   const [profileFile, setProfileFile] = useState(null);
   const [profilePreview, setProfilePreview] = useState(null);
+  const [state, setState] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     profile: "",
     vehicleType: "",
-    licensePlate: "",
+    vehicleNo: "",
     license: "",
     vehicleColor: "",
     status: "Active",
+    state: "",
+    city: "",
   });
+
+  useEffect(() => {
+    const indiaStates = State.getStatesOfCountry("IN");
+    setState(indiaStates);
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -46,7 +62,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
           body: data,
           credentials: "include",
         });
-        if (!res.ok) throw new Error("Upload failed");
+        if (!res.ok) throw { message: "Upload failed" };
         const result = await res.json();
 
         imageurl = result.profileUrl;
@@ -60,10 +76,27 @@ export default function AddDriver({ openDriver, closeDriver }) {
         status: isOn ? "Active" : "Inactive",
       };
       await addDriver(newData);
+      setSnackbar({
+        open: true,
+        message: "Driver added successfully",
+        severity: "success",
+      });
       closeDriver(newData);
       resetForm();
     } catch (err) {
-      console.error(err.message);
+      let message = "Something went wrong";
+      if (typeof err === "string") {
+        message = err;
+      } else if (err?.general) {
+        message = err.general;
+      } else if (err && typeof err === "object") {
+        message = Object.values(err)[0];
+      }
+      setSnackbar({
+        open: true,
+        message: message || "something went wrong",
+        severity: "error",
+      });
     } finally {
       setLoading(false);
     }
@@ -74,7 +107,12 @@ export default function AddDriver({ openDriver, closeDriver }) {
     if (!file) return;
     const maxSize = 2 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert("File size must be less than 2MB");
+      setSnackbar({
+        open: true,
+        message: "File size must be less than 2MB",
+        severity: "info",
+      });
+      LicenseRef.current.value = "";
       return;
     }
     setLicenseFile(file);
@@ -84,10 +122,14 @@ export default function AddDriver({ openDriver, closeDriver }) {
     if (!file) return;
     const maxSize = 2 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert("File size must be less than 2MB");
+      setSnackbar({
+        open: true,
+        message: "File size must be less than 2MB",
+        severity: "info",
+      });
+      Profileref.current.value = "";
       return;
     }
-
     setProfileFile(file);
     setProfilePreview(URL.createObjectURL(file));
   };
@@ -107,10 +149,12 @@ export default function AddDriver({ openDriver, closeDriver }) {
       email: "",
       profile: "",
       vehicleType: "",
-      licensePlate: "",
+      vehicleNo: "",
       license: "",
       vehicleColor: "",
       status: "Active",
+      state: "",
+      city: "",
     });
     setProfilePreview(null);
     setProfileFile(null);
@@ -118,6 +162,11 @@ export default function AddDriver({ openDriver, closeDriver }) {
     setIsOn(true);
     Profileref.current.value = "";
     LicenseRef.current.value = "";
+    setSnackbar({
+      open: false,
+      message: "",
+      severity: "success",
+    });
   };
 
   function handleRemoveProfileFile() {
@@ -128,6 +177,18 @@ export default function AddDriver({ openDriver, closeDriver }) {
 
   function handleRemoveLicenseFile() {
     setLicenseFile(null);
+  }
+
+  function handlestateChange(e) {
+    const state = e.target.value;
+
+    setFormData({
+      ...formData,
+      state: state,
+      city: "",
+    });
+    const cities = City.getCitiesOfState("IN", state);
+    setCities(cities);
   }
 
   if (!openDriver) return null;
@@ -146,6 +207,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
               placeholder="e.g John Doe"
               value={formData.name}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="input">
@@ -157,6 +219,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
               placeholder="e.g 987654321"
               value={formData.phone}
               onChange={handleChange}
+              required
             />
           </div>
           <div className="input">
@@ -213,6 +276,41 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 </p>
               </div>
             </div>
+            <div className="adddriver-location-details">
+              <div className="input">
+                <label htmlFor="state">State</label>
+                <select
+                  name="state"
+                  id="state"
+                  value={formData.state}
+                  onChange={handlestateChange}
+                >
+                  <option value="">--select--</option>
+                  {state.map((value, index) => (
+                    <option value={value.isoCode} key={index}>
+                      {value.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="input">
+                <label htmlFor="city">City</label>
+                <select
+                  name="city"
+                  id="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  disabled={!formData.state ? true : false}
+                >
+                  <option value="">--select--</option>
+                  {cities.map((value, index) => (
+                    <option value={value.name} key={index}>
+                      {value.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
           </div>
         </div>
         <p>Vehicle Information</p>
@@ -234,14 +332,15 @@ export default function AddDriver({ openDriver, closeDriver }) {
             </select>
           </div>
           <div className="input">
-            <label htmlFor="licensePlate">License Plate Number</label>
+            <label htmlFor="vehicleNo">Vehicle No</label>
             <input
               type="text"
-              id="licensePlate"
-              name="licensePlate"
+              id="vehicleNo"
+              name="vehicleNo"
               placeholder="e.g TN-01-XXXX"
               value={formData.licensePlate}
               onChange={handleChange}
+              disabled={!formData.vehicleType ? true : false}
             />
           </div>
           <div className="input">
@@ -253,6 +352,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
               id="vehicleColor"
               name="vehicleColor"
               onChange={handleChange}
+              disabled={!formData.vehicleType ? true : false}
             />
           </div>
         </div>
@@ -349,6 +449,17 @@ export default function AddDriver({ openDriver, closeDriver }) {
           </div>
         </div>
       </div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() =>
+          setSnackbar((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
     </div>
   );
 }

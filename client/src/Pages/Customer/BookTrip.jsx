@@ -70,123 +70,75 @@ function BookTrip() {
     const cities = City.getCitiesOfState("IN", stateCode);
     setDestinationCities(cities);
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   let validationErrors = {};
+    let validationErrors = {};
 
-  //   if (formData.name.trim().length < 3) {
-  //     validationErrors.name = "Name must be at least 3 characters.";
-  //   }
-
-  //   if (!phoneRegex.test(formData.phone)) {
-  //     validationErrors.phone = "Invalid Phone Number.";
-  //   }
-
-  //   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  //   if (!emailRegex.test(formData.email)) {
-  //     validationErrors.email = "Please enter valid email.";
-  //   }
-
-  //   if (!formData.pickupState) {
-  //     validationErrors.pickupState = "Select pickup state.";
-  //   }
-
-  //   if (!formData.pickupCity) {
-  //     validationErrors.pickupCity = "Select pickup city.";
-  //   }
-
-  //   if (!formData.destinationState) {
-  //     validationErrors.destinationState = "Select destination state.";
-  //   }
-
-  //   if (!formData.destinationCity) {
-  //     validationErrors.destinationCity = "Select destination city.";
-  //   }
-
-  //   const selectedDate = new Date(formData.travelDate);
-  //   if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
-  //     validationErrors.travelDate = "Select future date & time.";
-  //   }
-
-  //   if (!formData.vehicleType) {
-  //     validationErrors.vehicleType = "Select vehicle type.";
-  //   }
-
-  //   if (!formData.passengers || parseInt(formData.passengers) <= 0) {
-  //     validationErrors.passengers = "Minimum 1 passenger required.";
-  //   }
-
-  //   if (Object.keys(validationErrors).length > 0) {
-  //     setErrors(validationErrors);
-  //     return;
-  //   }
-  //  navigate("/customer/payment");
-  // };
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  let validationErrors = {};
-
-  if (formData.name.trim().length < 3) {
-    validationErrors.name = "Name must be at least 3 characters.";
-  }
-
-  if (!phoneRegex.test(formData.phone)) {
-    validationErrors.phone = "Invalid Phone Number.";
-  }
-
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(formData.email)) {
-    validationErrors.email = "Please enter valid email.";
-  }
-
-  if (!formData.pickupState) validationErrors.pickupState = "Select pickup state.";
-  if (!formData.pickupCity) validationErrors.pickupCity = "Select pickup city.";
-  if (!formData.destinationState) validationErrors.destinationState = "Select destination state.";
-  if (!formData.destinationCity) validationErrors.destinationCity = "Select destination city.";
-
-  const selectedDate = new Date(formData.travelDate);
-  if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
-    validationErrors.travelDate = "Select future date & time.";
-  }
-
-  if (!formData.vehicleType) validationErrors.vehicleType = "Select vehicle type.";
-  if (!formData.passengers || parseInt(formData.passengers) <= 0) {
-    validationErrors.passengers = "Minimum 1 passenger required.";
-  }
-
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-
-  try {
-    const token = localStorage.getItem("token");
-
-    const response = await fetch ("http://localhost:3000/api/trip/create", {
-      method: "POST",
-      headers: {
-  "Content-Type": "application/json"
-},
-      credentials:"include",
-      body: JSON.stringify({
-        ...formData,
-        dateAndTime: formData.travelDate
-      }),
-    });
-
-    const data = await response.json();
-
-    console.log("API Response:", data);
-
-    if (!response.ok) {
-      throw new Error(data.message || "Trip creation failed");
+    if (formData.name.trim().length < 3) {
+      validationErrors.name = "Name must be at least 3 characters.";
     }
 
-    const tripId = data.trip._id;
+    if (!phoneRegex.test(formData.phone)) {
+      validationErrors.phone = "Invalid Phone Number.";
+    }
 
-    console.log("Trip Created:", tripId);
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      validationErrors.email = "Please enter valid email.";
+    }
+
+    if (!formData.pickupState)
+      validationErrors.pickupState = "Select pickup state.";
+    if (!formData.pickupCity)
+      validationErrors.pickupCity = "Select pickup city.";
+    if (!formData.destinationState)
+      validationErrors.destinationState = "Select destination state.";
+    if (!formData.destinationCity)
+      validationErrors.destinationCity = "Select destination city.";
+
+    const selectedDate = new Date(formData.travelDate);
+    if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
+      validationErrors.travelDate = "Select future date & time.";
+    }
+
+    if (!formData.vehicleType)
+      validationErrors.vehicleType = "Select vehicle type.";
+    if (!formData.passengers || parseInt(formData.passengers) <= 0) {
+      validationErrors.passengers = "Minimum 1 passenger required.";
+    }
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch("http://localhost:3000/api/trip/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          ...formData,
+          dateAndTime: formData.travelDate,
+        }),
+      });
+
+      const data = await response.json();
+
+      console.log("API Response:", data);
+
+      if (!response.ok) {
+        throw new Error(data.message || "Trip creation failed");
+      }
+
+      const tripId = data.trip._id;
+
+      console.log("Trip Created:", tripId);
 
     //  send tripId to payment page
     navigate("/customer/payment", { state: { tripId } });
@@ -367,4 +319,3 @@ const handleSubmit = async (e) => {
 }
 
 export default BookTrip;
-

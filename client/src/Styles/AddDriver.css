@@ -156,6 +156,12 @@
     gap: 10px;
 }
 
+.adddriver-location-details{
+    display: flex;
+    gap: 15px;
+    justify-content: space-around;
+}
+
 @media (max-width: 768px) {
     .addDriver-body {
         padding: 16px;

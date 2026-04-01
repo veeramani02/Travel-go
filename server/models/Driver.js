@@ -11,10 +11,12 @@ const driverSchema = new mongoose.Schema({
   vehicleColor: String,
   rating: String,
   status: String,
+  state: String,
+  city: String,
   joinedDate: {
-  type: Date,
-  default: Date.now
-},
+    type: Date,
+    default: Date.now,
+  },
 });
 
 export default mongoose.model("Driver", driverSchema);

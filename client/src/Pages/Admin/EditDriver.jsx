@@ -5,6 +5,8 @@ import {
   VEHICLE_TYPES,
   PORT,
 } from "../../services/driverService";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { State, City } from "country-state-city";
 
 export default function EditDriver({ Open, Close, Data, Onsave }) {
   const Profileref = useRef();
@@ -21,7 +23,16 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
     license: "",
     vehicleColor: "",
     status: "Active",
+    state: "",
+    city: "",
   });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const [state, setState] = useState([]);
+  const [cities, setCities] = useState([]);
 
   useEffect(() => {
     return () => {
@@ -42,16 +53,51 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
         vehicleNo: Data.vehicleNo,
         license: Data.license,
         vehicleColor: Data.vehicleColor,
+        state: Data.state,
+        city: Data.city,
       });
     }
+    const cities = City.getCitiesOfState("IN", Data.state);
+    setCities(cities);
   }, [Data]);
+
+  useEffect(() => {
+    if (snackbar) {
+      setSnackbar({
+        open: false,
+        message: "",
+        severity: "success",
+      });
+    }
+  }, [Open]);
+
+  useEffect(() => {
+    const indiaStates = State.getStatesOfCountry("IN");
+    setState(indiaStates);
+  }, []);
+
+  function handlestateChange(e) {
+    const state = e.target.value;
+
+    setFormData({
+      ...formData,
+      state: state,
+      city: "",
+    });
+    const cities = City.getCitiesOfState("IN", state);
+    setCities(cities);
+  }
 
   const handleProfileFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const maxSize = 2 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert("File size must be less than 2MB");
+      setSnackbar({
+        open: true,
+        message: "File size must be less than 2MB",
+        severity: "info",
+      });
       return;
     }
     setProfileFile(file);
@@ -80,33 +126,45 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = new FormData();
-    let profileurl = "";
-    let licenseurl = "";
-    if (profileFile) {
-      data.append("profileFile", profileFile);
-    }
+    try {
+      e.preventDefault();
+      const data = new FormData();
+      let profileurl = "";
+      let licenseurl = "";
+      if (profileFile) {
+        data.append("profileFile", profileFile);
+      }
 
-    if (profileFile) {
-      const res = await fetch(`http://localhost:${PORT}/api/driver/uploads`, {
-        method: "POST",
-        body: data,
-        credentials: "include",
+      if (profileFile) {
+        const res = await fetch(`http://localhost:${PORT}/api/driver/uploads`, {
+          method: "POST",
+          body: data,
+          credentials: "include",
+        });
+        if (!res.ok) throw { message: "upload failed" };
+        const result = await res.json();
+        profileurl = result.profileUrl;
+        licenseurl = result.licenseUrl;
+      }
+      const newData = {
+        ...formData,
+        profile: profileurl || formData.profile,
+        license: licenseurl || formData.license,
+      };
+      await Onsave(newData);
+      Close();
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: err.message,
+        severity: "error",
       });
-      if (!res.ok) throw new Error("Upload failed");
-      const result = await res.json();
-      profileurl = result.profileUrl;
-      licenseurl = result.licenseUrl;
     }
-    const newData = {
-      ...formData,
-      profile: profileurl || formData.profile,
-      license: licenseurl || formData.license,
-    };
-    Onsave(newData);
-    Close();
   };
+
+  function handleClose() {
+    Close();
+  }
 
   if (!Open || !Data) return null;
   return (
@@ -195,6 +253,39 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
             />
           </div>
           <div className="editdriver-input">
+            <label htmlFor="state">State</label>
+            <select
+              name="state"
+              id="state"
+              value={formData.state}
+              onChange={handlestateChange}
+            >
+              <option value="">--select--</option>
+              {state.map((value, index) => (
+                <option value={value.isoCode} key={index}>
+                  {value.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="editdriver-input">
+            <label htmlFor="city">City</label>
+            <select
+              name="city"
+              id="city"
+              value={formData.city}
+              onChange={handleChange}
+              disabled={!formData.state ? true : false}
+            >
+              <option value="">--select--</option>
+              {cities.map((value, index) => (
+                <option value={value.name} key={index}>
+                  {value.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="editdriver-input">
             <label htmlFor="status">Status</label>
             <select
               name="status"
@@ -233,6 +324,7 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
               id="vehicleNo"
               value={formData.vehicleNo || ""}
               onChange={handleChange}
+              disabled={!formData.vehicleType ? true : false}
             />
           </div>
           <div className="editdriver-input">
@@ -243,16 +335,22 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
               id="vehicleColor"
               value={formData.vehicleColor || ""}
               onChange={handleChange}
+              disabled={!formData.vehicleType ? true : false}
             />
           </div>
           <div className="editdriver-button-div">
             <button type="submit">Save</button>
-            <button type="button" onClick={Close}>
+            <button type="button" onClick={() => handleClose()}>
               Close
             </button>
           </div>
         </form>
       </div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+      />
     </div>
   );
 }
