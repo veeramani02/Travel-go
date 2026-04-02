@@ -5,30 +5,52 @@ function PaymentHistory() {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchPayments = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/payments", {
-          credentials: "include",
-        });
+  // useEffect(() => {
+  //   const fetchPayments = async () => {
+  //     try {
+  //       const res = await fetch("http://localhost:3000/api/payments", {
+  //         credentials: "include",
+  //       });
 
-        const data = await res.json();
+  //       const data = await res.json();
 
-        console.log("Payments:", data);
+  //       console.log("Payments:", data);
 
-        if (res.ok) {
-          setPayments(data);
-        }
-      } catch (err) {
-        console.error("Fetch Payment Error:", err);
-      } finally {
-        setLoading(false);
+  //       if (res.ok) {
+  //         setPayments(data);
+  //       }
+  //     } catch (err) {
+  //       console.error("Fetch Payment Error:", err);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchPayments();
+  // }, []);
+useEffect(() => {
+  const fetchPayments = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/payments", {
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      console.log("Payments:", data);
+
+      if (res.ok) {
+        setPayments(data.payments || []); 
       }
-    };
+    } catch (err) {
+      console.error("Fetch Payment Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchPayments();
-  }, []);
-
+  fetchPayments();
+}, []);
   if (loading) {
     return (
       <div className="paymenthistory-page">

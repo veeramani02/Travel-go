@@ -1,32 +1,73 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import StarImage from "../../assets/star2.png"
 import "../../Styles/LoyaltyPoints.css"
 
 function LoyaltyPoints() {
 
-  const RewardsPoint = 2000;
+  const [points, setPoints] = useState(0);
+  const [history, setHistory] = useState([]);
 
-  const tableData = [
-    {
-      Id: '101',
-      Date: 'Feb 26, 2026',
-      Activity: 'Payment',
-      Points: '+100'
-    },
-    {
-      Id: '102',
-      Date: 'Dec 25, 2025',
-      Activity: 'Redeemed Voucher',
-      Points: '-100'
+  //  Fetch loyalty data
+  useEffect(() => {
+    fetchLoyalty();
+  }, []);
+
+  const fetchLoyalty = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/loyalty", {
+        method: "GET",
+        credentials: "include" 
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.log("Error:", data.message);
+        return;
+      }
+
+      setPoints(data.totalPoints);
+      setHistory(data.history);
+
+    } catch (err) {
+      console.log("Fetch Loyalty Error:", err);
     }
-  ];
+  };
+
+  //  Redeem points
+  const handleRedeem = async (pts) => {
+    try {
+      const res = await fetch("http://localhost:3000/api/loyalty/redeem", {
+        method: "POST",
+        credentials: "include", 
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          pointsRequired: pts
+        })
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        alert(data.msg || "Not enough points");
+      } else {
+        alert(data.msg || "Voucher Redeemed 🎉");
+        fetchLoyalty(); 
+      }
+
+    } catch (err) {
+      console.log("Redeem Error:", err);
+    }
+  };
 
   return (
     <div className='loyalty-container'>
 
       <h1 className="loyalty-title">Reward Points</h1>
 
-      {/* Reward Balance Card */}
+      {/*  Reward Balance Card */}
       <div className="reward-card">
         <div className='circle'>
           <img src={StarImage} alt="reward-star" />
@@ -34,11 +75,11 @@ function LoyaltyPoints() {
 
         <div className="info">
           <p>Your reward balance</p>
-          <h2>{RewardsPoint} Points</h2>
+          <h2>{points} Points</h2>
         </div>
       </div>
 
-      {/* Redeem Section */}
+      {/*  Redeem Section */}
       <p className='redeem-title'>Redeem Rewards</p>
 
       <div className="redeem-card">
@@ -48,7 +89,13 @@ function LoyaltyPoints() {
             <h4>20% Discount Voucher</h4>
             <p>(1500 pts)</p>
           </div>
-          <button className="redeem-btn">Redeem</button>
+          <button 
+            className="redeem-btn"
+            onClick={() => handleRedeem(1500)}
+            disabled={points < 1500}
+          >
+            Redeem
+          </button>
         </div>
 
         <div className="redeem-info">
@@ -56,7 +103,13 @@ function LoyaltyPoints() {
             <h4>10% Discount Voucher</h4>
             <p>(1000 pts)</p>
           </div>
-          <button className="redeem-btn">Redeem</button>
+          <button 
+            className="redeem-btn"
+            onClick={() => handleRedeem(1000)}
+            disabled={points < 1000}
+          >
+            Redeem
+          </button>
         </div>
 
         <div className="redeem-info">
@@ -64,12 +117,18 @@ function LoyaltyPoints() {
             <h4>5% Discount Voucher</h4>
             <p>(500 pts)</p>
           </div>
-          <button className="redeem-btn">Redeem</button>
+          <button 
+            className="redeem-btn"
+            onClick={() => handleRedeem(500)}
+            disabled={points < 500}
+          >
+            Redeem
+          </button>
         </div>
 
       </div>
 
-      {/* Points History Table */}
+      {/*  Points History Table */}
       <div className="loyalty-table-container">
         <h2 className='loyalty-table-title'>Points History</h2>
 
@@ -83,15 +142,21 @@ function LoyaltyPoints() {
           </thead>
 
           <tbody>
-            {tableData.map(value => (
-              <tr key={value.Id}>
-                <td>{value.Date}</td>
-                <td>{value.Activity} ({value.Id})</td>
-                <td className={value.Points.includes('-') ? "points-negative" : "points-positive"}>
-                  {value.Points}
-                </td>
+            {history.length === 0 ? (
+              <tr>
+                <td colSpan="3">No data available</td>
               </tr>
-            ))}
+            ) : (
+              history.map(item => (
+                <tr key={item._id}>
+                  <td>{new Date(item.createdAt).toDateString()}</td>
+                  <td>{item.activity}</td>
+                  <td className={item.points < 0 ? "points-negative" : "points-positive"}>
+                    {item.points > 0 ? `+${item.points}` : item.points}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
 
         </table>
