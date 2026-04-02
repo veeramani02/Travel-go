@@ -3,7 +3,8 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
-import { PORT } from "../../client/src/services/driverService.js";
+
+const PORT = 3000;
 
 // __dirname fix
 const __filename = fileURLToPath(import.meta.url);

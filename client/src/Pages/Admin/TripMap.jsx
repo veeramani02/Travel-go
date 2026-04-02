@@ -9,6 +9,7 @@ import {
 import { useEffect, useState } from "react";
 import L from "leaflet";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { Skeleton } from "@mui/material";
 
 export default function TripMap({ Coords }) {
   const [route, setRoute] = useState([]);
@@ -90,35 +91,49 @@ export default function TripMap({ Coords }) {
   }
   return (
     <>
-      {loading && <p>Loading route...</p>}
-      <MapContainer
-        center={sourcePos}
-        zoom={12}
-        style={{ height: "400px", width: "100%", borderRadius: "10px" }}
-      >
-        <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      {loading ? (
+        <Skeleton
+          variant="rectangular"
+          width="100%"
+          height={400}
+          sx={{
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark"
+                ? theme.palette.grey[800]
+                : theme.palette.grey[300],
+            borderRadius: "10px",
+          }}
         />
+      ) : (
+        <MapContainer
+          center={sourcePos}
+          zoom={12}
+          style={{ height: "400px", width: "100%", borderRadius: "10px" }}
+        >
+          <TileLayer
+            attribution="&copy; OpenStreetMap contributors"
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
 
-        <Marker position={sourcePos}>
-          <Popup>Source</Popup>
-        </Marker>
+          <Marker position={sourcePos}>
+            <Popup>Source</Popup>
+          </Marker>
 
-        <Marker position={destPos}>
-          <Popup>Destination</Popup>
-        </Marker>
+          <Marker position={destPos}>
+            <Popup>Destination</Popup>
+          </Marker>
 
-        {route.length > 0 && (
-          <>
-            <Polyline
-              positions={route}
-              pathOptions={{ color: "#3b82f6", weight: 5 }}
-            />
-            <FitRoute route={route} />
-          </>
-        )}
-      </MapContainer>
+          {route.length > 0 && (
+            <>
+              <Polyline
+                positions={route}
+                pathOptions={{ color: "#3b82f6", weight: 5 }}
+              />
+              <FitRoute route={route} />
+            </>
+          )}
+        </MapContainer>
+      )}
       <CustomizedSnackbars
         open={snackbar.open}
         message={snackbar.message}

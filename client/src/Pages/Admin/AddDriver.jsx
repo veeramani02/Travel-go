@@ -110,7 +110,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       setSnackbar({
         open: true,
         message: "File size must be less than 2MB",
-        severity: "info",
+        severity: "error",
       });
       LicenseRef.current.value = "";
       return;
@@ -125,7 +125,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       setSnackbar({
         open: true,
         message: "File size must be less than 2MB",
-        severity: "info",
+        severity: "error",
       });
       Profileref.current.value = "";
       return;
