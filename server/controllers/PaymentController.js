@@ -1,31 +1,50 @@
 import Payment from "../models/Payment.js";
 import Trip from "../models/Trip.js";
 import mongoose from "mongoose";
+import Loyalty from "../models/Loyalty.js";
+import Voucher from "../models/Voucher.js";
 
 
-//  CREATE PAYMENT
+//  CREATE PAYMENT (SECURE)
 export const createPayment = async (req, res) => {
   try {
-    const { tripId, amount, paymentMethod } = req.body;
+    const { tripId, paymentMethod, voucherCode } = req.body;
 
     const userId = req.user.id || req.user._id;
 
-    //  Validate tripId
     if (!mongoose.Types.ObjectId.isValid(tripId)) {
       return res.status(400).json({ message: "Invalid Trip ID" });
     }
 
-    //  Check trip exists
     const trip = await Trip.findById(tripId);
+
     if (!trip) {
       return res.status(404).json({ message: "Trip not found" });
+    }
+
+    //  SECURE AMOUNT
+    let finalAmount = trip.amount || 0;
+
+    //  APPLY VOUCHER (BACKEND SAFE)
+    if (voucherCode) {
+      const voucher = await Voucher.findOne({
+        code: voucherCode,
+        userId,
+        isUsed: false,
+      });
+
+      if (voucher && voucher.expiryDate > new Date()) {
+        const discountAmount = (finalAmount * voucher.discount) / 100;
+        finalAmount -= discountAmount;
+      }
     }
 
     const payment = new Payment({
       userId,
       tripId,
-      amount,
+      amount: finalAmount,
       paymentMethod,
+      paymentStatus: "Pending",
     });
 
     await payment.save();
@@ -47,21 +66,20 @@ export const createPayment = async (req, res) => {
 export const updatePaymentStatus = async (req, res) => {
   try {
     const { paymentId } = req.params;
-    const { status, transactionId } = req.body;
+    const { status, transactionId, voucherCode } = req.body;
 
-    //  Validate paymentId
     if (!mongoose.Types.ObjectId.isValid(paymentId)) {
       return res.status(400).json({ message: "Invalid Payment ID" });
     }
 
-    //  Fetch payment
     const payment = await Payment.findById(paymentId);
 
     if (!payment) {
       return res.status(404).json({ message: "Payment not found" });
     }
 
-    //  Update fields
+    const alreadyCompleted = payment.paymentStatus === "Completed";
+
     payment.paymentStatus = status;
 
     if (transactionId) {
@@ -70,16 +88,41 @@ export const updatePaymentStatus = async (req, res) => {
 
     await payment.save();
 
-    //  If payment success → confirm trip
-    if (status === "Completed") {
+    let earnedPoints = 0;
+
+    if (status === "Completed" && !alreadyCompleted) {
+
       await Trip.findByIdAndUpdate(payment.tripId, {
         status: "Confirmed",
       });
+
+      earnedPoints = Math.floor(Math.random() * 200) + 50;
+
+      await Loyalty.create({
+        userId: payment.userId,
+        activity: "Payment",
+        points: earnedPoints,
+      });
+
+      //  MARK VOUCHER USED
+      if (voucherCode) {
+        const voucher = await Voucher.findOne({
+          code: voucherCode,
+          userId: payment.userId,
+          isUsed: false,
+        });
+
+        if (voucher && voucher.expiryDate > new Date()) {
+          voucher.isUsed = true;
+          await voucher.save();
+        }
+      }
     }
 
     res.json({
       message: "Payment updated successfully",
       payment,
+      earnedPoints,
     });
 
   } catch (error) {
@@ -87,10 +130,7 @@ export const updatePaymentStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-//  GET ALL USER PAYMENTS
+//  GET CURRENT USER PAYMENTS
 export const getUserPayments = async (req, res) => {
   try {
     const userId = req.user.id || req.user._id;
@@ -99,22 +139,22 @@ export const getUserPayments = async (req, res) => {
       .populate("tripId")
       .sort({ createdAt: -1 });
 
-    res.json(payments);
+    res.json({
+      count: payments.length,
+      payments,
+    });
 
   } catch (error) {
     console.log("GET USER PAYMENTS ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
 //  GET SINGLE PAYMENT
 export const getPaymentById = async (req, res) => {
   try {
     const { paymentId } = req.params;
 
-    //  Validate ID
+    //  validate id
     if (!mongoose.Types.ObjectId.isValid(paymentId)) {
       return res.status(400).json({ message: "Invalid Payment ID" });
     }

@@ -10,6 +10,8 @@ import driverRouter from "./routes/driverRoutes.js";
 import PaymentRouter from "./routes/PaymentRoutes.js";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
 
+import loyaltyrouter from "./routes/LoyaltyRoutes.js";
+import voucherRoute from "./routes/voucherRoutes.js";
 dotenv.config();
 const app = express();
 const PORT = 3000;
@@ -36,6 +38,9 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/driver", driverRouter);
 app.use("/api/payments", PaymentRouter);
 app.use("/api/vehicle", vehicleRoutes);
+app.use("/api/payments", PaymentRouter);
+app.use("/api/loyalty", loyaltyrouter);
+app.use("/api/voucher", voucherRoute);
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
