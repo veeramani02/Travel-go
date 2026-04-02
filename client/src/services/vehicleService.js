@@ -7,6 +7,7 @@ export const getVehicle = async () => {
     });
 
     let data = await res.json();
+    console.log("from vehicle", data);
     return data;
   } catch (e) {
     console.log(e.message);
@@ -48,5 +49,21 @@ export const addVehicle = async (formData) => {
   } catch (err) {
     console.log(err);
     throw err;
+  }
+};
+
+export const deleteVehicle = async (_id) => {
+  try {
+    const res = await fetch(
+      `http://localhost:${PORT}/api/vehicle/delete/${_id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      },
+    );
+
+    if (!res.ok) throw new Error("Delete failed");
+  } catch (e) {
+    console.log(e.message);
   }
 };

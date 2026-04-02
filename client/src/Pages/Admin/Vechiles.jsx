@@ -8,12 +8,26 @@ import { FaCarSide } from "react-icons/fa6";
 import { HiOutlineWrenchScrewdriver } from "react-icons/hi2";
 import VechileModal from "../../Components/VechileModal";
 import { useNavigate } from "react-router-dom";
-import { addVehicle, getVehicle } from "../../services/vehicleService";
+import {
+  addVehicle,
+  deleteVehicle,
+  getVehicle,
+} from "../../services/vehicleService";
+import { MdDelete } from "react-icons/md";
+import AlertDialogSlide from "../../Components/AlertDialogSlide";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 function Vehicles() {
   const navigate = useNavigate();
   const [showForm, setShowForm] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [search, setSearch] = useState("");
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [DeleteData, setDeletedata] = useState("");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const [formData, setFormData] = useState({
     name: "",
@@ -161,6 +175,28 @@ function Vehicles() {
       return vehicle.type === selectedFilter;
     });
 
+  async function handleDeleteVehicle(value) {
+    try {
+      console.log(value);
+      if (!value._id) return null;
+      setVehicleList((pre) => pre.filter((d) => d._id !== value._id));
+      await deleteVehicle(value._id);
+      setSnackbar((p) => ({
+        ...p,
+        open: true,
+        message: `Vehicle "${value?.vehicleModel || "Unknown"}" Deleted successfully!`,
+      }));
+    } catch (e) {
+      setSnackbar((p) => ({
+        ...p,
+        open: true,
+        message: e.message,
+        severity: "error",
+      }));
+      console.log(e.message);
+    }
+  }
+
   return (
     <div className="vehicles-page">
       <div className="vehicles-header">
@@ -211,9 +247,23 @@ function Vehicles() {
 
       <div className="vehicle-list">
         {filteredVehicles.map((vehicle) => (
-          <div className="vehicle-card" key={vehicle.id}>
+          <div className="vehicle-card" key={vehicle._id}>
             <div className="vehicle-status">
-              <span className={vehicle.status}>{vehicle.status}</span>
+              <div>
+                <span className={vehicle.status}>{vehicle.status}</span>
+              </div>
+              <div className="driver-DeleteButton">
+                <button
+                  className="btnDelete"
+                  title="Delete Vehicle"
+                  onClick={() => {
+                    setDeletedata(vehicle);
+                    setAlertDialogOpen(true);
+                  }}
+                >
+                  <MdDelete />
+                </button>
+              </div>
             </div>
 
             <div className="vehicle-info">
@@ -278,6 +328,25 @@ function Vehicles() {
           onCancel={() => setShowForm(false)}
         />
       )}
+      <AlertDialogSlide
+        open={alertDialogOpen}
+        onClose={() => setAlertDialogOpen(false)}
+        onConfirm={() => {
+          setAlertDialogOpen(false);
+          handleDeleteVehicle(DeleteData);
+        }}
+      />
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() =>
+          setSnackbar((prev) => ({
+            ...prev,
+            open: false,
+          }))
+        }
+      />
     </div>
   );
 }

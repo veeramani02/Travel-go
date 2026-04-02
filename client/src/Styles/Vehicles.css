@@ -89,6 +89,13 @@
     transform: translateX(0);
   }
 }
+
+.vehicle-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .vehicle-status span {
   background: #dcfce7;
   color: #15803d;

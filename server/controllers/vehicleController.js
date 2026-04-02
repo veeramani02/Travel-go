@@ -91,6 +91,62 @@ const vehicleController = {
       res.status(500).send(err.message);
     }
   },
+
+  deleteVehicle: async (req, res) => {
+    try {
+      const { id } = req.params;
+      let vehicle = await Vehicle.findByIdAndDelete(id);
+
+      if (!vehicle) {
+        return res.status(404).send("Vehicle not found");
+      }
+      if (vehicle.frontView) {
+        const fileName = vehicle.frontView.split("/uploads/")[1];
+        const filePath = path.join(__dirname, "../uploads", fileName);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+
+      if (vehicle.sideView) {
+        const fileName = vehicle.sideView.split("/uploads/")[1];
+        const filePath = path.join(__dirname, "../uploads", fileName);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      if (vehicle.backView) {
+        const fileName = vehicle.backView.split("/uploads/")[1];
+        const filePath = path.join(__dirname, "../uploads", fileName);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      if (vehicle.interior) {
+        const fileName = vehicle.interior.split("/uploads/")[1];
+        const filePath = path.join(__dirname, "../uploads", fileName);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+      if (vehicle.document) {
+        const fileName = vehicle.document.split("/uploads/")[1];
+        const filePath = path.join(__dirname, "../uploads", fileName);
+
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      }
+
+      res.send("Vehicle deleted");
+    } catch (err) {
+      res.status(500).send("Error deleting driver");
+    }
+  },
 };
 
 export default vehicleController;

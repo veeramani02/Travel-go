@@ -209,6 +209,7 @@ function VehicleModal({ onSave, onCancel }) {
               value={formData.vehicleType}
               onChange={handleChange}
             >
+              <option>--select--</option>
               <option>Sedan</option>
               <option>SUV</option>
               <option>Van</option>
