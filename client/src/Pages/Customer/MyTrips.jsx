@@ -144,7 +144,7 @@ function MyTrips() {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        // 🟢 CURRENT TRIP
+        //  CURRENT TRIP
         const latestRes = await fetch(
           "http://localhost:3000/api/trip/latest",
           {
@@ -154,13 +154,13 @@ function MyTrips() {
 
         const latestData = await latestRes.json();
 
-        console.log("Latest Trip:", latestData); // 🔥 debug
+        console.log("Latest Trip:", latestData); 
 
         if (latestRes.ok && latestData) {
-          setCurrentTrip(latestData); // 🔥 direct set (no condition)
+          setCurrentTrip(latestData); 
         }
 
-        // 🟡 PAST TRIPS
+        //  PAST TRIPS
         const pastRes = await fetch(
           "http://localhost:3000/api/trip/past-trips",
           {
@@ -190,7 +190,7 @@ function MyTrips() {
     <div className="mytrips-page">
       <h1 className="mytrips-title">My Trips</h1>
 
-      {/* 🟢 CURRENT TRIP */}
+      {/*  CURRENT TRIP */}
       {currentTrip && (
         <div className="current-trip-section">
           <h2>Current Trip</h2>
@@ -220,7 +220,7 @@ function MyTrips() {
               </p>
             </div>
 
-            {/* 🚀 TRACK BUTTON → MAP PAGE */}
+           
             <button
               className="track-btn"
               onClick={() =>
@@ -238,7 +238,7 @@ function MyTrips() {
         </div>
       )}
 
-      {/* 🟡 PAST TRIPS */}
+      {/*  PAST TRIPS */}
       <div className="past-trips-section">
         <h2>Past Trips</h2>
 

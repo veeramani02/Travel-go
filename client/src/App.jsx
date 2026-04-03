@@ -15,7 +15,8 @@ import PaymentsHistory from "./Pages/Customer/PaymentsHistory";
 import Payments from "./Pages/Customer/Payment";
 import MyTrips from "./Pages/Customer/MyTrips";
 import TrackTrip from "./Pages/Customer/TrackTrips";
-import Prefrence from "./Pages/Customer/Prefrences";
+// import Prefrence from "./Pages/Customer/Prefrences";
+import Voucher from "./Pages/Customer/Voucher";
 import LoyaltyPoints from "./Pages/Customer/LoyaltyPoints";
 import Dues from "./Pages/Customer/Dues";
 
@@ -44,7 +45,7 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* 🔓 Public Routes */}
+        {/*  Public Routes */}
         <Route path="/" element={<LandingPage />} />
 
         <Route
@@ -60,7 +61,7 @@ function App() {
 
         <Route path="/signup" element={<Signup />} />
 
-        {/* 🔐 Protected Layout */}
+        {/*  Protected Layout */}
         <Route element={<DashboardLayout />}>
 
           {/* Customer */}
@@ -119,10 +120,10 @@ function App() {
           />
 
           <Route
-            path="/customer/prefrences"
+            path="/customer/Vouchers"
             element={
               <ProtectedRoute role="customer">
-                <Prefrence />
+                <Voucher />
               </ProtectedRoute>
             }
           />

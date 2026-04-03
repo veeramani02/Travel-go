@@ -28,3 +28,21 @@ export const applyVoucher = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const getMyVouchers = async (req, res) => {
+  try {
+    const userId = req.user.id || req.user._id;
+
+    const vouchers = await Voucher.find({ userId }).sort({
+      createdAt: -1,
+    });
+
+    res.status(200).json({
+      success: true,
+      vouchers,
+    });
+  } catch (err) {
+    console.error("Fetch voucher error:", err);
+    res.status(500).json({ error: err.message });
+  }
+};

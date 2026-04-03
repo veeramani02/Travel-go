@@ -1,0 +1,115 @@
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../Styles/Voucher.css";
+
+const Voucher = () => {
+  const [vouchers, setVouchers] = useState([]);
+  const [copiedCode, setCopiedCode] = useState("");
+  const navigate = useNavigate();
+
+  const fetchVouchers = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/voucher/my", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      //  filter only available vouchers
+      const available = data.vouchers.filter(
+        (v) =>
+          !v.isUsed && new Date(v.expiryDate) > new Date()
+      );
+
+      setVouchers(available);
+    } catch (err) {
+      console.error("Error fetching vouchers:", err);
+    }
+  };
+
+  useEffect(() => {
+    fetchVouchers();
+  }, []);
+
+  const handleCopy = (code) => {
+    navigator.clipboard.writeText(code);
+    setCopiedCode(code);
+
+    setTimeout(() => {
+      setCopiedCode("");
+    }, 2000);
+  };
+
+  return (
+    <div style={{ textAlign: "center", marginTop: "30px" }}>
+      <h2>My Vouchers</h2>
+
+      {/*  No vouchers */}
+      {vouchers.length === 0 ? (
+        <div style={{ marginTop: "40px" }}>
+          <p style={{ fontSize: "18px", color: "#555" }}>
+            No vouchers available 😔
+          </p>
+
+          <p style={{ marginBottom: "20px" }}>
+            Redeem your points to get discounts on trips!
+          </p>
+
+          <button
+            onClick={() => navigate("/rewards")}
+            style={{
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "none",
+              background: "#007bff",
+              color: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Go to Rewards 🎁
+          </button>
+        </div>
+      ) : (
+        /*  Show vouchers */
+        vouchers.map((v) => (
+          <div key={v._id} className="voucher-container">
+            <div className="voucher-card">
+              <h2 className="voucher-title">Your Voucher</h2>
+
+            
+              <div className="voucher-code-box">
+                <span className="voucher-code">{v.code}</span>
+
+                <button
+                  className="copy-btn"
+                  onClick={() => handleCopy(v.code)}
+                >
+                  Copy
+                </button>
+              </div>
+
+              {/* Discount */}
+              <p className="voucher-discount">
+                🎉 {v.discount}% OFF on your next trip
+              </p>
+
+              {/* Expiry */}
+              <p className="voucher-expiry">
+                ⏳ Valid till:{" "}
+                {new Date(v.expiryDate).toLocaleDateString()}
+              </p>
+
+              {/* Copy feedback */}
+              {copiedCode === v.code && (
+                <span className="copied-text">Copied!</span>
+              )}
+            </div>
+          </div>
+        ))
+      )}
+    </div>
+  );
+};
+
+export default Voucher;

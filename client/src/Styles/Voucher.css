@@ -1,0 +1,66 @@
+.voucher-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.voucher-card {
+  background: #ffffff;
+  padding: 25px;
+  width: 350px;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.voucher-title {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.voucher-code-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f4f6f8;
+  padding: 10px 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.voucher-code {
+  font-size: 18px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.copy-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: #0056b3;
+}
+
+.voucher-discount {
+  color: green;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.voucher-expiry {
+  font-size: 14px;
+  color: #777;
+}
+
+.copied-text {
+  display: inline-block;
+  margin-top: 10px;
+  color: #28a745;
+  font-size: 14px;
+}

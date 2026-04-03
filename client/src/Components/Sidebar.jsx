@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { FiHome, FiMap, FiClock, FiCreditCard, FiSettings, FiUsers, FiTruck, FiDollarSign, FiAward, FiMenu,FiCalendar } from "react-icons/fi";
 import { TbReportAnalytics } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
+import { RiCoupon2Line } from "react-icons/ri";
 import "../Styles/Sidebar.css";
 
 function Sidebar() {
@@ -20,7 +21,7 @@ function Sidebar() {
     "Book Trip": <FiMap />,
     "My Trips": <FiClock />,
     Payments: <FiCreditCard />,
-    Prefrence: <FiSettings />,
+    voucher: <RiCoupon2Line />,
     Salary: <FiDollarSign />,
     Rewards: <FiAward />,
     dues:<FiCalendar/>,
@@ -43,8 +44,8 @@ function Sidebar() {
       { name: "Book Trip", path: "/customer/book-trip" },
       { name: "My Trips", path: "/customer/my-trips" },
       { name: "Payments", path: "/customer/paymentsHistory" },
-      { name: "Prefrence", path: "/customer/prefrences" },
       { name: "Rewards", path:"/customer/LoyaltyPoints"},
+      { name: "voucher", path: "/customer/Vouchers" },
       { name: "dues", path:"/customer/Dues"}
     ],
     driver: [
