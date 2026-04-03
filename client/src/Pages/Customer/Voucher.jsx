@@ -18,8 +18,7 @@ const Voucher = () => {
 
       //  filter only available vouchers
       const available = data.vouchers.filter(
-        (v) =>
-          !v.isUsed && new Date(v.expiryDate) > new Date()
+        (v) => !v.isUsed && new Date(v.expiryDate) > new Date(),
       );
 
       setVouchers(available);
@@ -57,12 +56,12 @@ const Voucher = () => {
           </p>
 
           <button
-            onClick={() => navigate("/rewards")}
+            onClick={() => navigate("/customer/LoyaltyPoints")}
             style={{
               padding: "10px 20px",
               borderRadius: "8px",
               border: "none",
-              background: "#007bff",
+              background: "#1E40AF",
               color: "#fff",
               cursor: "pointer",
             }}
@@ -77,14 +76,10 @@ const Voucher = () => {
             <div className="voucher-card">
               <h2 className="voucher-title">Your Voucher</h2>
 
-            
               <div className="voucher-code-box">
                 <span className="voucher-code">{v.code}</span>
 
-                <button
-                  className="copy-btn"
-                  onClick={() => handleCopy(v.code)}
-                >
+                <button className="copy-btn" onClick={() => handleCopy(v.code)}>
                   Copy
                 </button>
               </div>
@@ -96,8 +91,7 @@ const Voucher = () => {
 
               {/* Expiry */}
               <p className="voucher-expiry">
-                ⏳ Valid till:{" "}
-                {new Date(v.expiryDate).toLocaleDateString()}
+                ⏳ Valid till: {new Date(v.expiryDate).toLocaleDateString()}
               </p>
 
               {/* Copy feedback */}
