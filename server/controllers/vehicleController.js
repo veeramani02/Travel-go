@@ -34,7 +34,7 @@ const vehicleController = {
     try {
       const vehicle = new Vehicle(req.body);
       await vehicle.save();
-      res.status(200).json({ message: "Vehicle Added" });
+      res.status(200).json(vehicle);
     } catch (e) {
       res.status(500).json({
         errors: { message: e.message },
@@ -89,6 +89,34 @@ const vehicleController = {
       });
     } catch (err) {
       res.status(500).send(err.message);
+    }
+  },
+
+  updateVehicle: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const vehicle = await Vehicle.findByIdAndUpdate(id, req.body);
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+      res.json(vehicle);
+    } catch (err) {
+      res.status(500).send({
+        errors: { message: err.message },
+      });
+    }
+  },
+
+  updateVehicleField: async (req, res) => {
+    try {
+      const updatedVehicle = await Vehicle.findByIdAndUpdate(
+        req.params.id,
+        { $set: req.body },
+        { new: true },
+      );
+      res.status(200).json(updatedVehicle);
+    } catch (err) {
+      res.status(500).json(err);
     }
   },
 

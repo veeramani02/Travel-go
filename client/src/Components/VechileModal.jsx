@@ -154,7 +154,6 @@ function VehicleModal({ onSave, onCancel }) {
         interior: interiorUrl || "",
         backView: backUrl || "",
       };
-      console.log(newData);
       onSave(newData);
     } catch (e) {
       console.log(e.message);

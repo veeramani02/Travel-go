@@ -6,9 +6,13 @@ const vehicleRoutes = express.Router();
 
 vehicleRoutes.post("/add", protect, vehicleController.addVehicle);
 vehicleRoutes.get("/vehicle", protect, vehicleController.getVehicle);
-// vehicleRoutes.put("/update/:id", protect, vehicleController.updateDriver);
+vehicleRoutes.put("/update/:id", protect, vehicleController.updateVehicle);
 vehicleRoutes.delete("/delete/:id", protect, vehicleController.deleteVehicle);
-
+vehicleRoutes.patch(
+  "/updatefield/:id",
+  protect,
+  vehicleController.updateVehicleField,
+);
 vehicleRoutes.post(
   "/uploads",
   protect,

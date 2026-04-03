@@ -12,12 +12,18 @@ import {
   addVehicle,
   deleteVehicle,
   getVehicle,
+  updateVehicleField,
 } from "../../services/vehicleService";
 import { MdDelete } from "react-icons/md";
 import AlertDialogSlide from "../../Components/AlertDialogSlide";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { useLocation } from "react-router-dom";
+import { TbCarSuvFilled } from "react-icons/tb";
+import { FaVanShuttle } from "react-icons/fa6";
+
 function Vehicles() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showForm, setShowForm] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [search, setSearch] = useState("");
@@ -29,15 +35,6 @@ function Vehicles() {
     severity: "success",
   });
 
-  const [formData, setFormData] = useState({
-    name: "",
-    number: "",
-    type: "Sedan",
-    location: "",
-  });
-
-  const [errors, setErrors] = useState({});
-
   const filters = [
     "All",
     "Sedan",
@@ -47,6 +44,12 @@ function Vehicles() {
     "InUse",
     "Maintenance",
   ];
+
+  const carIcon = {
+    Sedan: <FaCarSide />,
+    SUV: <TbCarSuvFilled />,
+    Van: <FaVanShuttle />,
+  };
 
   const [vehicleList, setVehicleList] = useState([]);
 
@@ -60,7 +63,12 @@ function Vehicles() {
   const totalFleet = vehicleList.length;
 
   const stats = [
-    { title: "Available", count: availableCount, img: check },
+    {
+      title: "Available",
+      count: availableCount,
+      img: check,
+      status: "<FaCarSide />",
+    },
     { title: "InUse", count: inUseCount, img: deliverytruck },
     { title: "Maintenance", count: maintenanceCount, img: tool },
     { title: "TotalFleet", count: totalFleet, img: speedometer },
@@ -70,85 +78,32 @@ function Vehicles() {
     let fetchData = async () => {
       const data = await getVehicle();
       setVehicleList(data);
-      console.log(data);
     };
     fetchData();
   }, []);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleAddVehicle = () => {
-    let newErrors = {};
-
-    if (!formData.name.trim()) {
-      newErrors.name = "Vehicle name is required";
-    }
-
-    if (!formData.number.trim()) {
-      newErrors.number = "Vehicle number is required";
-    }
-
-    if (!formData.location.trim()) {
-      newErrors.location = "Location is required";
-    }
-
-    const alreadyExists = vehicleList.some(
-      (vehicle) => vehicle.number === formData.number,
-    );
-
-    if (alreadyExists) {
-      newErrors.number = "Vehicle number already exists";
-    }
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
-
-    const newVehicle = {
-      id: Date.now(),
-      ...formData,
-      status: "Available",
-      km: "0 Km",
-      fuel: "100%",
-      lastService: "2026-01-01",
-    };
-
-    setVehicleList([...vehicleList, newVehicle]);
-
-    setShowForm(false);
-
-    setFormData({
-      name: "",
-      number: "",
-      type: "Sedan",
-      location: "",
-    });
-
-    setErrors({});
-  };
-
-  const toggleStatus = (id) => {
+  const toggleStatus = async (value) => {
+    if (!value || !value._id) return null;
+    const updatedvalue = vehicleList.find((v) => v._id === value._id);
+    const nextStatus =
+      updatedvalue.status === "Available"
+        ? "Maintenance"
+        : updatedvalue.status === "Maintenance"
+          ? "InUse"
+          : "Available";
     setVehicleList((prev) =>
       prev.map((vehicle) =>
-        vehicle.id === id
+        vehicle._id === value._id
           ? {
               ...vehicle,
-              status:
-                vehicle.status === "Available"
-                  ? "Maintenance"
-                  : vehicle.status === "Maintenance"
-                    ? "InUse"
-                    : "Available",
+              status: nextStatus,
             }
           : vehicle,
       ),
     );
+    await updateVehicleField(updatedvalue._id, {
+      status: nextStatus,
+    });
   };
 
   const filteredVehicles = vehicleList
@@ -156,9 +111,8 @@ function Vehicles() {
       if (search === "") return true;
 
       return (
-        vehicle.name.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.number.toLowerCase().includes(search.toLowerCase()) ||
-        vehicle.location.toLowerCase().includes(search.toLowerCase())
+        vehicle.vehicleModel.toLowerCase().includes(search.toLowerCase()) ||
+        vehicle.vehicleNo.toLowerCase().includes(search.toLowerCase())
       );
     })
     .filter((vehicle) => {
@@ -172,7 +126,7 @@ function Vehicles() {
         return vehicle.status === selectedFilter;
       }
 
-      return vehicle.type === selectedFilter;
+      return vehicle.vehicleType === selectedFilter;
     });
 
   async function handleDeleteVehicle(value) {
@@ -207,7 +161,7 @@ function Vehicles() {
 
         <div className="header-actions">
           <input
-            placeholder="Search fleet..."
+            placeholder="Search..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -267,7 +221,7 @@ function Vehicles() {
             </div>
 
             <div className="vehicle-info">
-              <FaCarSide />
+              {carIcon[vehicle.vehicleType] || <FaCarSide />}
               <h3>{vehicle.vehicleModel}</h3>
               <p>{vehicle.vehicleNo}</p>
               <span className="vehicle-type">{vehicle.vehicleType}</span>
@@ -303,7 +257,7 @@ function Vehicles() {
 
               <HiOutlineWrenchScrewdriver
                 className="screwicon"
-                onClick={() => toggleStatus(vehicle.id)}
+                onClick={() => toggleStatus(vehicle)}
               />
             </div>
           </div>
@@ -313,16 +267,25 @@ function Vehicles() {
       {showForm && (
         <VechileModal
           onSave={async (vehicle) => {
-            console.log("from vehicle", vehicle);
             try {
-              setVehicleList((prev) => [...prev, vehicle]);
-
-              await addVehicle(vehicle);
-
+              const data = await addVehicle(vehicle);
+              setVehicleList((prev) => [...prev, data]);
+              setSnackbar((p) => ({
+                ...p,
+                open: true,
+                message: `Vehicle "${vehicle?.vehicleModel || "Unknown"}" Added successfully!`,
+                severity: "success",
+              }));
               setShowForm(false);
             } catch (error) {
               console.error("Failed to add vehicle:", error);
               setVehicleList((prev) => prev.filter((v) => v !== vehicle));
+              setSnackbar((p) => ({
+                ...p,
+                open: true,
+                message: `Error ${error.message}`,
+                severity: "error",
+              }));
             }
           }}
           onCancel={() => setShowForm(false)}

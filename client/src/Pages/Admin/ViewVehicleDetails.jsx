@@ -2,16 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../../Styles/VehicleDetails.css";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { updateVehicle } from "../../services/vehicleService";
+
 function VehicleDetails() {
   const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
   const location = useLocation();
-
   const [vehicle, setVehicle] = useState(location.state);
-
-  useEffect(() => {
-    console.log(location.state);
-  });
+  const [oldVehicle, setOldVehicle] = useState(location.state);
 
   const vehicleImages = {
     front: vehicle.frontView,
@@ -20,14 +18,28 @@ function VehicleDetails() {
     back: vehicle.backView,
   };
 
+  useEffect(() => console.log(vehicle));
+
   const [mainImage, setMainImage] = useState(vehicleImages.front);
 
   const handleChange = (e) => {
-    setVehicle({
-      ...vehicle,
-      [e.target.name]: e.target.value,
-    });
+    let { name, value } = e.target;
+    setVehicle((p) => ({
+      ...p,
+      [name]: name === "AC" ? value === "Yes" : value,
+    }));
   };
+
+  async function handleUpdatedData() {
+    try {
+      const isChange = oldVehicle !== vehicle;
+      if (isChange) await updateVehicle(vehicle._id, vehicle);
+      if (!isChange) {
+      }
+    } catch (e) {
+      console.log(e.message);
+    }
+  }
 
   return (
     <div className="vehicleDetailsPage">
@@ -40,34 +52,62 @@ function VehicleDetails() {
         {/* IMAGE SECTION */}
 
         <div className="vehicleImageSection">
-          <div className="vehicleMainImage">
-            <img src={mainImage} alt="vehicle" />
-          </div>
+          {mainImage ? (
+            <div className="vehicleMainImage">
+              <img src={mainImage} alt="vehicle" />
+            </div>
+          ) : (
+            <div className="no_image_preview">
+              <p>No Image</p>
+            </div>
+          )}
 
           <div className="vehicleThumbnailRow">
-            <img
-              src={vehicleImages.front}
-              onClick={() => setMainImage(vehicleImages.front)}
-              alt="front"
-            />
+            {vehicleImages.front ? (
+              <img
+                src={vehicleImages.front}
+                onClick={() => setMainImage(vehicleImages.front)}
+                alt="front"
+              />
+            ) : (
+              <div className="no_image_vehicle">
+                <p>No Front Image</p>
+              </div>
+            )}
 
-            <img
-              src={vehicleImages.side}
-              onClick={() => setMainImage(vehicleImages.side)}
-              alt="side"
-            />
-
-            <img
-              src={vehicleImages.interior}
-              onClick={() => setMainImage(vehicleImages.interior)}
-              alt="interior"
-            />
-
-            <img
-              src={vehicleImages.back}
-              onClick={() => setMainImage(vehicleImages.back)}
-              alt="back"
-            />
+            {vehicleImages.side ? (
+              <img
+                src={vehicleImages.side}
+                onClick={() => setMainImage(vehicleImages.side)}
+                alt="side"
+              />
+            ) : (
+              <div className="no_image_vehicle">
+                <p>No Side Image</p>
+              </div>
+            )}
+            {vehicle.interior ? (
+              <img
+                src={vehicleImages.interior}
+                onClick={() => setMainImage(vehicleImages.interior)}
+                alt="interior"
+              />
+            ) : (
+              <div className="no_image_vehicle">
+                <p>No Interior Image</p>
+              </div>
+            )}
+            {vehicleImages.back ? (
+              <img
+                src={vehicleImages.back}
+                onClick={() => setMainImage(vehicleImages.back)}
+                alt="back"
+              />
+            ) : (
+              <div className="no_image_vehicle">
+                <p>No Back Image</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -82,34 +122,29 @@ function VehicleDetails() {
             <div className="vehicleInfoRow">
               <label>Type</label>
               {isEditing ? (
-                <input
-                  name="type"
+                <select
+                  id="vehicleType"
+                  name="vehicleType"
                   value={vehicle.vehicleType}
                   onChange={handleChange}
-                />
+                >
+                  <option>--select--</option>
+                  <option>Sedan</option>
+                  <option>SUV</option>
+                  <option>Van</option>
+                  <option>Minibus</option>
+                  <option>Luxury Coach</option>
+                </select>
               ) : (
                 <p>{vehicle.vehicleType}</p>
               )}
             </div>
 
-            {/* <div className="vehicleInfoRow">
-              <label>Make</label>
-              {isEditing ? (
-                <input
-                  name="make"
-                  value={vehicle.make}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{vehicle.make}</p>
-              )}
-            </div> */}
-
             <div className="vehicleInfoRow">
-              <label>Model</label>
+              <label>Vehicle Model</label>
               {isEditing ? (
                 <input
-                  name="model"
+                  name="vehicleModel"
                   value={vehicle.vehicleModel}
                   onChange={handleChange}
                 />
@@ -118,24 +153,11 @@ function VehicleDetails() {
               )}
             </div>
 
-            {/* <div className="vehicleInfoRow">
-              <label>Year</label>
-              {isEditing ? (
-                <input
-                  name="year"
-                  value={vehicle.year}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{vehicle.year}</p>
-              )}
-            </div> */}
-
             <div className="vehicleInfoRow">
-              <label>License</label>
+              <label>Vehicle No</label>
               {isEditing ? (
                 <input
-                  name="license"
+                  name="vehicleNo"
                   value={vehicle.vehicleNo}
                   onChange={handleChange}
                 />
@@ -154,7 +176,7 @@ function VehicleDetails() {
               <label>Passenger Capacity:</label>
               {isEditing ? (
                 <input
-                  name="passengers"
+                  name="seatCapacity"
                   value={vehicle.seatCapacity}
                   onChange={handleChange}
                 />
@@ -167,45 +189,45 @@ function VehicleDetails() {
               <label>Luggage Capacity:</label>
               {isEditing ? (
                 <input
-                  name="luggage"
-                  value={vehicle.luggage}
+                  name="luggageCapacity"
+                  value={vehicle.luggageCapacity}
                   onChange={handleChange}
                 />
               ) : (
-                <p>{vehicle.luggage || "Nil"}</p>
+                <p>{vehicle.luggageCapacity || "Nil"}</p>
               )}
             </div>
 
             <div className="vehicleInfoRow">
-              <label>Fuel:</label>
+              <label>Fuel Type:</label>
               {isEditing ? (
-                <input
-                  name="fuel"
+                <select
+                  name="fuelType"
                   value={vehicle.fuelType}
                   onChange={handleChange}
-                />
+                >
+                  <option>Petrol</option>
+                  <option>Diesel</option>
+                  <option>Hybrid</option>
+                  <option>Electric</option>
+                </select>
               ) : (
                 <p>{vehicle.fuelType}</p>
               )}
             </div>
 
-            {/* <div className="vehicleInfoRow">
-              <label>Transmission:</label>
-              {isEditing ? (
-                <input
-                  name="transmission"
-                  value={vehicle.transmission}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{vehicle.transmission}</p>
-              )}
-            </div> */}
-
             <div className="vehicleInfoRow">
               <label>AC:</label>
               {isEditing ? (
-                <input name="ac" value={vehicle.AC} onChange={handleChange} />
+                <select
+                  name="AC"
+                  value={vehicle.AC ? "Yes" : "No"}
+                  onChange={handleChange}
+                >
+                  <option value="">--select--</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
               ) : (
                 <p>{vehicle.AC ? "Yes" : "No"}</p>
               )}
@@ -220,11 +242,16 @@ function VehicleDetails() {
             <div className="vehicleInfoRow">
               <label>Status:</label>
               {isEditing ? (
-                <input
+                <select
                   name="status"
                   value={vehicle.status}
                   onChange={handleChange}
-                />
+                >
+                  <option value="Availabe">Available</option>
+                  <option value="In-Use">In-Use</option>
+                  <option value="In Maintenance">In Maintenance</option>
+                  <option value="Out of Service">Out of Service</option>
+                </select>
               ) : (
                 <p>{vehicle.status}</p>
               )}
@@ -234,7 +261,7 @@ function VehicleDetails() {
               <label>Insurance:</label>
               {isEditing ? (
                 <input
-                  name="insurance"
+                  name="policyNo"
                   value={vehicle.policyNo}
                   onChange={handleChange}
                 />
@@ -248,7 +275,10 @@ function VehicleDetails() {
             {isEditing ? (
               <button
                 className="vehicleSaveBtn"
-                onClick={() => setIsEditing(false)}
+                onClick={async () => {
+                  await handleUpdatedData();
+                  setIsEditing(false);
+                }}
               >
                 Save
               </button>

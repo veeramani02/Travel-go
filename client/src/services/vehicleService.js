@@ -7,7 +7,6 @@ export const getVehicle = async () => {
     });
 
     let data = await res.json();
-    console.log("from vehicle", data);
     return data;
   } catch (e) {
     console.log(e.message);
@@ -45,6 +44,60 @@ export const addVehicle = async (formData) => {
     if (!res.ok) {
       throw data.errors || { message: "Something went wrong" };
     }
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+export const updateVehicle = async (_id, updatedData) => {
+  try {
+    const res = await fetch(
+      `http://localhost:${PORT}/api/vehicle/update/${_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedData),
+        credentials: "include",
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw data.errors || { general: "Something went wrong" };
+    }
+
+    return data;
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+};
+
+export const updateVehicleField = async (_id, updatedField) => {
+  try {
+    const res = await fetch(
+      `http://localhost:${PORT}/api/vehicle/updatefield/${_id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedField),
+        credentials: "include",
+      },
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw data.errors || { general: "Something went wrong" };
+    }
+
     return data;
   } catch (err) {
     console.log(err);
