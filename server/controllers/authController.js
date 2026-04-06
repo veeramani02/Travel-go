@@ -23,7 +23,7 @@ export const signup = async (req, res) => {
       email,
       password: hashedPassword,
       phone,
-      role: "customer", // 🔥 always default
+      role: "customer", 
     });
 
     const { password: _, ...userData } = user._doc;
@@ -65,10 +65,10 @@ export const login = async (req, res) => {
 
     //  SET COOKIE
     res.cookie("token", token, {
-      httpOnly: true,       //  secure (JS access panna mudiyadhu)
-      secure: false,        // ⚠️ production la true (HTTPS)
+      httpOnly: true,      
+      secure: false,       
       sameSite: "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, 
     });
 
     const { password: _, ...userData } = user._doc;

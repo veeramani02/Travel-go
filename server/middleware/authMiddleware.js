@@ -10,7 +10,7 @@ export const protect = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
 
-    //Check Cookie (fallback)
+    //Check Cookie 
     if (!token && req.cookies?.token) {
       token = req.cookies.token;
     }

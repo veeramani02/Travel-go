@@ -71,7 +71,7 @@ function CustomerDashboard() {
 
   <div className="upcoming-card">
 
-    {/* Left Side */}
+    
     <div className="upcoming-left">
       <div className="row">
         <span className="label">From:</span>
@@ -89,7 +89,7 @@ function CustomerDashboard() {
       </div>
     </div>
 
-    {/* Right Side */}
+
     <div className="upcoming-right">
       <div className="row">
         <span className="label">Date:</span>
@@ -104,10 +104,10 @@ function CustomerDashboard() {
 
   </div>
 </div>
-{/* Bottom Section */}
+
 <div className="bottom-section">
 
-  {/* Trip History */}
+  
   <div className="trip-history">
     <h2>Trip History</h2>
 
@@ -148,7 +148,7 @@ function CustomerDashboard() {
     </div>
   </div>
 
-  {/* Popular Destinations */}
+ 
   <div className="popular-section">
     <h2>Most Popular Destinations</h2>
 
