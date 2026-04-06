@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import L from "leaflet";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import { Skeleton } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function TripMap({ Coords }) {
   const [route, setRoute] = useState([]);
@@ -33,7 +34,10 @@ export default function TripMap({ Coords }) {
     const getRoute = async () => {
       try {
         const res = await fetch(
-          `https://router.project-osrm.org/route/v1/driving/${Coords.source.lon},${Coords.source.lat};${Coords.destination.lon},${Coords.destination.lat}?overview=full&geometries=geojson`,
+          `http://localhost:3000/api/trip/route?start=${Coords.source.lon},${Coords.source.lat}&end=${Coords.destination.lon},${Coords.destination.lat}`,
+          {
+            credentials: "include",
+          },
         );
 
         const data = await res.json();
@@ -76,8 +80,21 @@ export default function TripMap({ Coords }) {
     }));
   };
 
+  const loadingStyle = {
+    height: "400px",
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
+
   //  Prevent crash
-  if (!Coords) return <p>Map Loading...</p>;
+  if (!Coords)
+    return (
+      <div style={loadingStyle}>
+        <CircularProgress />
+      </div>
+    );
 
   const sourcePos = [Number(Coords?.source?.lat), Number(Coords?.source?.lon)];
 

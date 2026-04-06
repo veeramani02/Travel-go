@@ -1,68 +1,66 @@
 import Trip from "../models/Trip.js";
-export const createTrip=async (req,res)=>{
-    try{
-        const {
-            name,
-            phone,
-            email,
-            pickupState,
-            pickupCity,
-            destinationState,
-            destinationCity,
-            dateAndTime,
-            vehicleType,
-            passengers,
-            specialRequest,
-        }=req.body;
-        const dateobj=new Date(dateAndTime)
-        const date= dateobj
-        const time=dateobj.toLocaleTimeString([],{
-            hour:"2-digit",
-            minute:"2-digit"
-        })
-        const baseprice=500
-        const amount=baseprice*passengers
-       const trip = await Trip.create({
-               userId: req.user.id,
-               name,
-  phone,
-  email,
-  pickupState,
-  pickupCity,
-  destinationState,
-  destinationCity,
+export const createTrip = async (req, res) => {
+  try {
+    const {
+      name,
+      phone,
+      email,
+      pickupState,
+      pickupCity,
+      destinationState,
+      destinationCity,
+      dateAndTime,
+      vehicleType,
+      passengers,
+      specialRequest,
+    } = req.body;
+    const dateobj = new Date(dateAndTime);
+    const date = dateobj;
+    const time = dateobj.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+    const baseprice = 500;
+    const amount = baseprice * passengers;
+    const trip = await Trip.create({
+      userId: req.user.id,
+      name,
+      phone,
+      email,
+      pickupState,
+      pickupCity,
+      destinationState,
+      destinationCity,
 
-  dateAndTime, 
+      dateAndTime,
 
-  date,
-  time,
-  vehicleType,
-  passengers,
-  specialRequest,
-  amount,
+      date,
+      time,
+      vehicleType,
+      passengers,
+      specialRequest,
+      amount,
 
-  status: "pending",
-  paymentStatus: "pending",
-});
-        res.status(201).json({
-            success:"true",
-            message:"Trip created successfully",
-            trip,
-        });
-
-    }
-
-    catch(error){
-            console.log(error)
-            res.status(500).json({
-                message:"Failed to create trip"
-            })
-    }
-}
+      status: "pending",
+      paymentStatus: "pending",
+    });
+    res.status(201).json({
+      success: "true",
+      message: "Trip created successfully",
+      trip,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to create trip",
+    });
+  }
+};
 export const getLatestTrip = async (req, res) => {
   try {
-    const trip = await Trip.findOne({ userId: req.user._id })
-      .sort({ createdAt: -1 });
+    const trip = await Trip.findOne({ userId: req.user._id }).sort({
+      createdAt: -1,
+    });
 
     if (!trip) {
       return res.status(404).json({ message: "No trips found" });
@@ -73,16 +71,31 @@ export const getLatestTrip = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-export const getPastTrips=async(req,res)=>{
-  try{
-    const userId=req.user._id;
-    const pastTrips=await Trip.find({userId})
-    .sort({createdAt:-1})
-    .skip(1).limit(5)
-    res.json(pastTrips)
+export const getPastTrips = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const pastTrips = await Trip.find({ userId })
+      .sort({ createdAt: -1 })
+      .skip(1)
+      .limit(5);
+    res.json(pastTrips);
+  } catch (err) {
+    console.log("GET PAST TRIPS ERROR", err);
+    res.status(500).json({ message: err.message });
   }
-  catch(err){
-    console.log("GET PAST TRIPS ERROR",err)
-    res.status(500).json({message:err.message})
+};
+
+export const getRoute = async (req, res) => {
+  const { start, end } = req.query;
+
+  try {
+    const response = await fetch(
+      `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`,
+    );
+
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Route fetch failed" });
   }
-}
+};
