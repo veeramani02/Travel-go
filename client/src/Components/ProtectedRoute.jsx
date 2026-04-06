@@ -6,12 +6,10 @@ const ProtectedRoute = ({ children, role }) => {
 
   if (loading) return <h2>Loading...</h2>;
 
-  //  not logged in
   if (!user) {
     return <Navigate to="/login" />;
   }
 
-  //  role check
   if (role && user.role !== role) {
     return <Navigate to="/login" />;
   }

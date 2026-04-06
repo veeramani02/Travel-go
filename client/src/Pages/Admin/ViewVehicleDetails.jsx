@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "../../Styles/VehicleDetails.css";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { updateVehicle } from "../../services/vehicleService";
+import { updateVehicle } from "../../services/vehicleService"; 3
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 function VehicleDetails() {
   const navigate = useNavigate();
@@ -10,6 +11,11 @@ function VehicleDetails() {
   const location = useLocation();
   const [vehicle, setVehicle] = useState(location.state);
   const [oldVehicle, setOldVehicle] = useState(location.state);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const vehicleImages = {
     front: vehicle.frontView,
@@ -34,8 +40,13 @@ function VehicleDetails() {
     try {
       const isChange = oldVehicle !== vehicle;
       if (isChange) await updateVehicle(vehicle._id, vehicle);
-      if (!isChange) {
-      }
+      if (!isChange)
+        setSnackbar((p) => ({
+          ...p,
+          open: true,
+          message: "No Changes Made",
+          severity: "info",
+        }));
     } catch (e) {
       console.log(e.message);
     }
@@ -299,6 +310,12 @@ function VehicleDetails() {
           </div>
         </div>
       </div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
   );
 }
