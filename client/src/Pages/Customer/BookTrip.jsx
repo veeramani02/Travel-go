@@ -28,6 +28,8 @@ function BookTrip() {
     vehicleType: "",
     passengers: "",
     specialRequest: "",
+    driverId: "",
+    vehicleId: "",
   });
 
   useEffect(() => {
@@ -114,8 +116,6 @@ function BookTrip() {
     }
 
     try {
-     
-
       const response = await fetch("http://localhost:3000/api/trip/create", {
         method: "POST",
         headers: {
@@ -140,14 +140,13 @@ function BookTrip() {
 
       console.log("Trip Created:", tripId);
 
-    //  send tripId to payment page
-    navigate("/customer/payment", { state: { tripId } });
-
-  } catch (error) {
-    console.error("ERROR:", error);
-    alert(error.message);
-  }
-};
+      //  send tripId to payment page
+      navigate("/customer/payment", { state: { tripId } });
+    } catch (error) {
+      console.error("ERROR:", error);
+      alert(error.message);
+    }
+  };
   const renderError = (field) =>
     errors[field] ? (
       <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>

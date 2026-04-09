@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import Loyalty from "../models/Loyalty.js";
 import Voucher from "../models/Voucher.js";
 
-
 //  CREATE PAYMENT (SECURE)
 export const createPayment = async (req, res) => {
   try {
@@ -53,14 +52,11 @@ export const createPayment = async (req, res) => {
       message: "Payment created successfully",
       payment,
     });
-
   } catch (error) {
     console.log("CREATE PAYMENT ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
-
-
 
 // UPDATE PAYMENT STATUS
 export const updatePaymentStatus = async (req, res) => {
@@ -91,9 +87,8 @@ export const updatePaymentStatus = async (req, res) => {
     let earnedPoints = 0;
 
     if (status === "Completed" && !alreadyCompleted) {
-
       await Trip.findByIdAndUpdate(payment.tripId, {
-        status: "Confirmed",
+        status: "confirmed",
       });
 
       earnedPoints = Math.floor(Math.random() * 200) + 50;
@@ -124,7 +119,6 @@ export const updatePaymentStatus = async (req, res) => {
       payment,
       earnedPoints,
     });
-
   } catch (error) {
     console.log("UPDATE PAYMENT ERROR:", error);
     res.status(500).json({ message: error.message });
@@ -143,7 +137,6 @@ export const getUserPayments = async (req, res) => {
       count: payments.length,
       payments,
     });
-
   } catch (error) {
     console.log("GET USER PAYMENTS ERROR:", error);
     res.status(500).json({ message: error.message });
@@ -159,15 +152,13 @@ export const getPaymentById = async (req, res) => {
       return res.status(400).json({ message: "Invalid Payment ID" });
     }
 
-    const payment = await Payment.findById(paymentId)
-      .populate("tripId");
+    const payment = await Payment.findById(paymentId).populate("tripId");
 
     if (!payment) {
       return res.status(404).json({ message: "Payment not found" });
     }
 
     res.json(payment);
-
   } catch (error) {
     console.log("GET PAYMENT ERROR:", error);
     res.status(500).json({ message: error.message });

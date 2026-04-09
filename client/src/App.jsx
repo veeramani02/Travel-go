@@ -157,7 +157,7 @@ function App() {
           />
 
           <Route
-            path="/admin/enquiries"
+            path="/admin/customer"
             element={
               <ProtectedRoute role="admin">
                 <Enquiries />

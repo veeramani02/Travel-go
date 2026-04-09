@@ -10,112 +10,136 @@
   z-index: 9999;
 }
 
-.modal{
-    width: 100%;
-    background-color: rgb(238, 237, 237);
-    padding: 25px;
-    border-radius: 12px;
-    max-width: 800px;
-    max-height: 95vh;
-    overflow: hidden;
-    animation: fadeIn 0.2s ease forwards;
+.modal {
+  width: 100%;
+  background-color: rgb(238, 237, 237);
+  padding: 25px;
+  border-radius: 12px;
+  max-width: 800px;
+  max-height: 95vh;
+  overflow-x: auto;
+  animation: fadeIn 0.3s ease forwards;
 }
 
-.input-div{
-    display: flex;
-    gap: 15px;
+.modal-overlay.close {
+  animation: fadeOut 0.2s ease forwards;
 }
 
-input,
-select{
-    border-radius: 6px; 
-    border: 1px solid rgba(0,0,0,0.2);
-    padding: 6px 8px;
-    width: 100%;
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
 }
-
-.address-div{
-    display: flex;
-    gap: 15px;
-}
-
-.pickup-input,.drop-input{
-    flex: 1;
-}
-
-.date-div{
-    display: flex;
-    gap: 15px;
-}
-
-.label{
-    margin-bottom: 15px;
-}
-
-.h2{
-    color: var(--primary);
-}
-
-.body-title{
-    color: var(--primary);
-    margin: 10px 0;
-}
-
-.btn{
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
+.input-div {
+  display: flex;
+  gap: 15px;
 }
 
 input,
-select{
-    width: 100%;
-    box-sizing: border-box;
+select {
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 6px 8px;
+  width: 100%;
+}
+
+.address-div {
+  display: flex;
+  gap: 15px;
+}
+
+.pickup-input,
+.drop-input {
+  flex: 1;
+}
+
+.date-div {
+  display: flex;
+  gap: 15px;
+}
+
+.label {
+  margin-bottom: 15px;
+}
+
+.h2 {
+  color: var(--primary);
+}
+
+.body-title {
+  color: var(--primary);
+  margin: 10px 0;
+}
+
+.btn {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+input,
+select {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.edittrip-select-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.edittrip-type-driver {
+  flex: 1;
 }
 
 @media (max-width: 768px) {
+  .modal {
+    width: 95%;
+    max-width: 95%;
+    padding: 18px;
+  }
 
-    .modal {
-        width: 95%;
-        max-width: 95%;
-        padding: 18px;
-    }
+  .input-div,
+  .address-div,
+  .date-div {
+    flex-direction: column;
+    gap: 12px;
+  }
 
-    .input-div,
-    .address-div,
-    .date-div {
-        flex-direction: column;
-        gap: 12px;
-    }
+  .pickup-input,
+  .drop-input {
+    width: 100%;
+  }
 
-    .pickup-input,
-    .drop-input {
-        width: 100%;
-    }
+  .btn {
+    justify-content: center;
+    flex-direction: column;
+  }
 
-    .btn {
-        justify-content: center;
-        flex-direction: column;
-    }
-
-    .btn button {
-        width: 100%;
-    }
+  .btn button {
+    width: 100%;
+  }
 }
 
 /* Extra small devices */
 @media (max-width: 480px) {
+  h2 {
+    font-size: 1.3rem;
+  }
 
-    h2 {
-        font-size: 1.3rem;
-    }
+  .body-title {
+    font-size: 1rem;
+  }
 
-    .body-title {
-        font-size: 1rem;
-    }
-
-    input,
-    select {
-        padding: 10px;
-    }
+  input,
+  select {
+    padding: 10px;
+  }
 }

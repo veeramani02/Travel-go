@@ -13,7 +13,7 @@ function Sidebar() {
   // Mapping icons to names to keep the menu clean
   const icons = {
     Dashboard: <FiHome />,
-    Enquiries: <FiUsers />,
+    Customer: <FiUsers />,
     Trips: <FiMap />,
     "Assigned Trips": <FiMap />,
     Drivers: <FiUsers />,
@@ -32,7 +32,7 @@ function Sidebar() {
   const menu = {
     admin: [
       { name: "Dashboard", path: "/admin/dashboard" },
-      { name: "Enquiries", path: "/admin/enquiries" },
+      { name: "Customer", path: "/admin/customer" },
       { name: "Trips", path: "/admin/trips" },
       { name: "Drivers", path: "/admin/driver" },
       { name: "Vehicles", path: "/admin/vehicles" },  
