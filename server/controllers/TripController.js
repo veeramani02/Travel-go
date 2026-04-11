@@ -33,23 +33,20 @@ export const createTrip = async (req, res) => {
       pickupCity,
       destinationState,
       destinationCity,
-
       dateAndTime,
-
       date,
       time,
       vehicleType,
       passengers,
       specialRequest,
       amount,
-
       status: "pending",
       paymentStatus: "pending",
       driverId,
       vehicleId,
     });
     res.status(201).json({
-      success: "true",
+      success: true,
       message: "Trip created successfully",
       trip,
     });
@@ -115,5 +112,42 @@ export const getRoute = async (req, res) => {
     res.json(data);
   } catch (err) {
     res.status(500).json({ error: "Route fetch failed" });
+  }
+};
+
+export const updateTrips = async (req, res) => {
+  try {
+    console.log(req.body);
+    const { _id, driverId, vehicleId } = req.body;
+
+    if (!driverId)
+      return res.status(400).json({ message: "Assign driver require" });
+    if (!vehicleId)
+      return res.status(400).json({ message: "Assign vehicle require" });
+
+    if (!_id) {
+      return res.status(400).json({ message: "Trip ID is required" });
+    }
+
+    const updatedTrip = await Trip.findByIdAndUpdate(
+      _id,
+      {
+        ...(driverId && { driverId }),
+        ...(vehicleId && { vehicleId }),
+      },
+      { new: true },
+    );
+
+    if (!updatedTrip) {
+      return res.status(404).json({ message: "Trip not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Trip updated successfully",
+      trip: updatedTrip,
+    });
+  } catch (e) {
+    return res.status(500).json({ message: e.message });
   }
 };

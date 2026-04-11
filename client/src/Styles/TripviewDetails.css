@@ -128,7 +128,8 @@
    font-size: 0.9rem;
 }
 
-.card-title {
+.tripview-card-title {
+  font-size: 1.1rem;
   margin-bottom: 10px;
   font-weight: 600;
   color: var(--primary);

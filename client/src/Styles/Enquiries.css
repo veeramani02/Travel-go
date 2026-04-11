@@ -7,7 +7,7 @@
 .enquiries-container {
   width: 100%;
   min-height: 100vh;
-  background-color: #f4f7fe;
+  background-color: var(--background);
   padding: 10px;
 }
 

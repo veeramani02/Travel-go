@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../Styles/TripviewDetails.css";
 
 export default function TripviewDetails({
@@ -14,14 +14,14 @@ export default function TripviewDetails({
       <div className={`tripview-modal ${isClosing ? "close" : "open"}`}>
         <div className="modal-content">
           <h1 className="modal-title">
-            Trip Details: #{trip._id.slice(4, 8).toUpperCase()}
+            Trip Details: #{trip.Data._id.slice(4, 8).toUpperCase()}
           </h1>
 
           <div className="status-div">
             <div className="status-display">
               <h3>Status:</h3>
-              <p className={`status-pill ${trip.status.toLowerCase()}`}>
-                {trip.status}
+              <p className={`status-pill ${trip.Data.status.toLowerCase()}`}>
+                {trip.Data.status}
               </p>
             </div>
 
@@ -32,26 +32,37 @@ export default function TripviewDetails({
 
           <div className="card-container">
             <div className="tripview-card">
-              <h4 className="card-title">Passenger Information</h4>
-              <p>{trip?.name}</p>
-              <p>{trip?.email}</p>
+              <h4 className="tripview-card-title">Passenger Information</h4>
+              <p>{trip.Data?.name}</p>
+              <p>{trip.Data?.email}</p>
             </div>
 
             <div className="tripview-card">
-              <h4 className="card-title">Driver & Vehicle</h4>
-              {trip?.driverId ? <p>{trip?.driverId}</p> : <p>Not Assigned</p>}
+              <h4 className="tripview-card-title">Driver & Vehicle</h4>
+              {trip.Data?.driverId ? (
+                <div>
+                  <strong>Driver</strong>
+                  <p>{trip.driverData.Name}</p>
+                  <p>{trip.driverData.Phone}</p>
+                  <strong>Vehicle</strong>
+                  <p>{trip.vehicleData.vehicleName}</p>
+                  <p>{trip.vehicleData.vehicleNo}</p>
+                </div>
+              ) : (
+                <p>Not Assigned</p>
+              )}
             </div>
 
             <div className="tripview-card">
-              <h4 className="card-title">Routes & Schedule</h4>
+              <h4 className="tripview-card-title">Routes & Schedule</h4>
               <p>
-                <strong>Pickup:</strong> {trip.pickupCity}
+                <strong>Pickup:</strong> {trip.Data.pickupCity}
               </p>
               <p>
-                <strong>Dropoff:</strong> {trip.destinationCity}
+                <strong>Dropoff:</strong> {trip.Data.destinationCity}
               </p>
               {(() => {
-                const dt = trip?.dateAndTime;
+                const dt = trip.Data?.dateAndTime;
                 if (!dt) return "-";
 
                 const [date, time] = dt.split("T");
@@ -71,15 +82,15 @@ export default function TripviewDetails({
             </div>
 
             <div className="tripview-card">
-              <h4 className="card-title">Payment Summary</h4>
+              <h4 className="tripview-card-title">Payment Summary</h4>
               <p>
-                <strong>Total:</strong> {trip.amount}
+                <strong>Total:</strong> {trip.Data.amount}
               </p>
               <p>
                 <strong>Method:</strong>Cash
               </p>
               <p>
-                <strong>Status:</strong> {trip?.paymentStatus}
+                <strong>Status:</strong> {trip.Data?.paymentStatus}
               </p>
             </div>
           </div>
@@ -96,9 +107,9 @@ export default function TripviewDetails({
               </thead>
               <tbody>
                 <tr>
-                <td colSpan="3" className="no-data">
-                  "No History Trip"
-                </td>
+                  <td colSpan="3" className="no-data">
+                    "No History Trip"
+                  </td>
                 </tr>
               </tbody>
             </table>

@@ -4,6 +4,7 @@ import {
   getDriver,
   getVehicle,
   status,
+  updateTrips,
 } from "../../services/customerService.js";
 import { City } from "country-state-city";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars.jsx";
@@ -20,15 +21,15 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     message: "",
     severity: "success",
   });
+  const oldData = formData;
 
   useEffect(() => {
     if (!trip) return;
-    const pickup = City.getCitiesOfState("IN", trip.pickupState);
-    const destination = City.getCitiesOfState("IN", trip.destinationState);
+    const pickup = City.getCitiesOfState("IN", trip.Data.pickupState);
+    const destination = City.getCitiesOfState("IN", trip.Data.destinationState);
     setPickupCities(pickup);
     setDestinationCities(destination);
-    setFormData(trip);
-    console.log(trip);
+    setFormData(trip.Data);
   }, [trip]);
 
   useEffect(() => {
@@ -49,15 +50,14 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     (value) => value?.status?.toLowerCase().trim() === "available",
   );
 
-  function handlesubmit() {
+  async function handlesubmit() {
     try {
-      console.log(formData);
       let { driverId, vehicleId } = formData;
       let error = {};
       if (!driverId) error.driver = "Required Driver";
       if (!vehicleId) error.vehicle = "Required Vehicle";
       setErrors(error);
-      if (!Object.keys(error).length !== 0) {
+      if (Object.keys(error).length !== 0) {
         setSnackbar({
           open: true,
           message: error.driver || error.vehicle,
@@ -65,8 +65,9 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
         });
         return;
       }
-      //onsave(formData);
-      //onClose();
+      onsave(formData);
+      await updateTrips(formData);
+      onClose();
     } catch (e) {
       console.error(e.message);
     }
@@ -76,7 +77,9 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
   return (
     <div className={`modal-overlay ${isClose ? "close" : "open"} `}>
       <div className="modal">
-        <h2 className="h2">Edit Trip: #{trip._id.slice(4, 8).toUpperCase()}</h2>
+        <h2 className="h2">
+          Edit Trip: #{trip.Data._id.slice(4, 8).toUpperCase()}
+        </h2>
 
         <div className="body">
           <h4 className="body-title">Passenger Details</h4>
@@ -138,7 +141,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                   <div>
                     <input
                       type="text"
-                      defaultValue={trip.vehicleType}
+                      defaultValue={trip.Data.vehicleType}
                       readOnly
                     />
                   </div>
@@ -151,6 +154,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                     <select
                       id="assigndriver"
                       name="assigndriver"
+                      value={formData.driverId}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -175,6 +179,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                     <select
                       id="assignvehicle"
                       name="assignvehicle"
+                      value={formData.vehicleId}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -244,7 +249,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                   </div>
                   <input
                     type="date"
-                    defaultValue={trip.dateAndTime.split("T")[0]}
+                    defaultValue={trip.Data.dateAndTime.split("T")[0]}
                   />
                 </div>
                 <div className="label">

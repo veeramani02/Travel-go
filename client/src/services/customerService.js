@@ -54,3 +54,20 @@ export const getVehicle = async () => {
     console.log(e.message);
   }
 };
+
+export const updateTrips = async (updatedField) => {
+  try {
+    let res = await fetch(`http://localhost:${PORT}/api/trip/update`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedField),
+      credentials: "include",
+    });
+    let data = await res.json();
+    return data;
+  } catch (e) {
+    console.error(e.message);
+  }
+};

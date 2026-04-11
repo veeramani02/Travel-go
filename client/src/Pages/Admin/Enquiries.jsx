@@ -3,7 +3,7 @@ import "../../Styles/Enquiries.css";
 import { FiSearch, FiUser, FiCalendar, FiCheckCircle } from "react-icons/fi";
 import TripviewDetails from "./TripviewDetails";
 import EditTrip from "./EditTrip";
-import { TripsData } from "../../services/customerService";
+import { getVehicle, TripsData } from "../../services/customerService";
 import { getDriver } from "../../services/driverService";
 
 export default function Enquiries() {
@@ -18,14 +18,31 @@ export default function Enquiries() {
   const [isClosing, setIsClosing] = useState(false);
   const [customers, setCustomers] = useState([]);
   const [drivers, setDrivers] = useState([]);
-  const [updateddata, setUpdatedData] = useState(null);
+  const [vehicles, setVehicles] = useState([]);
   const [isClose, setIsClose] = useState(false);
+  const driverMap = {};
+  const vehicleMap = {};
+  drivers.forEach((d) => {
+    driverMap[d._id] = { id: d._id, Name: d.name, Phone: d.phone };
+  });
+  vehicles.forEach((v) => {
+    vehicleMap[v._id] = {
+      id: v._id,
+      vehicleName: v.vehicleModel,
+      vehicleNo: v.vehicleNo,
+    };
+  });
 
   useEffect(() => {
     const fetchData = async () => {
-      const [customer, driver] = await Promise.all([TripsData(), getDriver()]);
+      const [customer, driver, vehicle] = await Promise.all([
+        TripsData(),
+        getDriver(),
+        getVehicle(),
+      ]);
       setCustomers(customer);
       setDrivers(driver);
+      setVehicles(vehicle);
     };
     fetchData();
   }, []);
@@ -65,7 +82,8 @@ export default function Enquiries() {
 
     const matchesStatus = statusFilter === "" || item.status === statusFilter;
 
-    const matchesDriver = driverFilter === "" || item?.driver === driverFilter;
+    const matchesDriver =
+      driverFilter === "" || driverMap[item?.driverId]?.Name === driverFilter;
 
     const matchesDate =
       dateFilter === "" || item.dateAndTime.includes(dateFilter);
@@ -171,7 +189,9 @@ export default function Enquiries() {
                   <tr key={value._id}>
                     <td>{value._id.slice(4, 8).toUpperCase()}</td>
                     <td>{value?.name}</td>
-                    <td>{value?.driver || "Not Assigned"}</td>
+                    <td>
+                      {driverMap[value?.driverId]?.Name || "Not Assigned"}
+                    </td>
                     <td>
                       {value.pickupCity} → {value.destinationCity}{" "}
                     </td>
@@ -202,7 +222,11 @@ export default function Enquiries() {
                       <div className="button-container">
                         <button
                           onClick={() => {
-                            setSelectedRow(value);
+                            setSelectedRow({
+                              Data: value,
+                              driverData: driverMap[value?.driverId],
+                              vehicleData: vehicleMap[value?.vehicleId],
+                            });
                             setIsModalOpen(true);
                           }}
                         >
@@ -257,8 +281,30 @@ export default function Enquiries() {
         onClose={() => handleClose("edittrip")}
         trip={selectedRow}
         type={type}
-        onsave={(d) => setUpdatedData(d)}
         isClose={isClose}
+        onsave={(p) => {
+          setCustomers((prev) =>
+            prev.map((item) =>
+              item._id === p._id
+                ? { ...item, driverId: p.driverId, vehicleId: p.vehicleId }
+                : item,
+            ),
+          );
+          setSelectedRow((prev) =>
+            prev?.Data?._id === p._id
+              ? {
+                  ...prev,
+                  Data: {
+                    ...prev.Data,
+                    driverId: p.driverId,
+                    vehicleId: p.vehicleId,
+                  },
+                  driverData: driverMap[p.driverId],
+                  vehicleData: vehicleMap[p.vehicleId],
+                }
+              : prev,
+          );
+        }}
       />
     </div>
   );
