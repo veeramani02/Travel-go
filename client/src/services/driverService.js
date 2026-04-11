@@ -1,5 +1,5 @@
 export const PORT = 3000;
-export const VEHICLE_TYPES = ["Car", "Van", "Tourist Van", "SUV"];
+export const VEHICLE_TYPES = ["Car", "Van", "Tourist Van", "SUV", "Bus"];
 
 export const getDriver = async () => {
   try {

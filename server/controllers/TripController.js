@@ -13,6 +13,8 @@ export const createTrip = async (req, res) => {
       vehicleType,
       passengers,
       specialRequest,
+      driverId,
+      vehicleId,
     } = req.body;
     const dateobj = new Date(dateAndTime);
     const date = dateobj;
@@ -43,6 +45,8 @@ export const createTrip = async (req, res) => {
 
       status: "pending",
       paymentStatus: "pending",
+      driverId,
+      vehicleId,
     });
     res.status(201).json({
       success: "true",
@@ -82,6 +86,20 @@ export const getPastTrips = async (req, res) => {
   } catch (err) {
     console.log("GET PAST TRIPS ERROR", err);
     res.status(500).json({ message: err.message });
+  }
+};
+
+export const getTrips = async (req, res) => {
+  try {
+    const trip = await Trip.find();
+
+    if (!trip) {
+      return res.status(404).json({ message: "No trips found" });
+    }
+
+    res.json(trip);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

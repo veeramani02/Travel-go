@@ -14,7 +14,7 @@ export const Data = [
     location: "New York, NY",
     joinedDate: "Jan 2023",
     totalTrips: 145,
-    avatar: "https://randomuser.me/api/portraits/men/1.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/1.jpg",
   },
   {
     id: "D-5002",
@@ -31,7 +31,7 @@ export const Data = [
     location: "San Francisco, CA",
     joinedDate: "Mar 2023",
     totalTrips: 89,
-    avatar: "https://randomuser.me/api/portraits/men/6.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/6.jpg",
   },
   {
     id: "D-5003",
@@ -48,7 +48,7 @@ export const Data = [
     location: "Chicago, IL",
     joinedDate: "Nov 2022",
     totalTrips: 210,
-    avatar: "https://randomuser.me/api/portraits/men/3.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/3.jpg",
   },
   {
     id: "D-5004",
@@ -65,7 +65,7 @@ export const Data = [
     location: "Austin, TX",
     joinedDate: "May 2023",
     totalTrips: 56,
-    avatar: "https://randomuser.me/api/portraits/men/4.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/4.jpg",
   },
   {
     id: "D-5005",
@@ -82,7 +82,7 @@ export const Data = [
     location: "Miami, FL",
     joinedDate: "July 2023",
     totalTrips: 102,
-    avatar: "https://randomuser.me/api/portraits/men/9.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/9.jpg",
   },
   {
     id: "D-5006",
@@ -99,10 +99,9 @@ export const Data = [
     location: "Seattle, WA",
     joinedDate: "Dec 2022",
     totalTrips: 178,
-    avatar: "https://randomuser.me/api/portraits/men/7.jpg"
-  }
+    avatar: "https://randomuser.me/api/portraits/men/7.jpg",
+  },
 ];
-
 
 export const recentTripActivityData = [
   {
@@ -117,7 +116,7 @@ export const recentTripActivityData = [
     time: "09:30 AM",
     status: "Completed",
     vehicleModel: "Toyota Camry",
-    licensePlate: "TN-01-1234"
+    licensePlate: "TN-01-1234",
   },
   {
     tripId: "1290001",
@@ -131,7 +130,7 @@ export const recentTripActivityData = [
     time: "02:15 PM",
     status: "Approvals",
     vehicleModel: "Honda CR-V",
-    licensePlate: "TN-01-5678"
+    licensePlate: "TN-01-5678",
   },
   {
     tripId: "1290002",
@@ -145,7 +144,7 @@ export const recentTripActivityData = [
     time: "11:45 AM",
     status: "Completed",
     vehicleModel: "Ford Transit",
-    licensePlate: "TN-01-9012"
+    licensePlate: "TN-01-9012",
   },
   {
     tripId: "1290003",
@@ -159,54 +158,18 @@ export const recentTripActivityData = [
     time: "08:20 PM",
     status: "Completed",
     vehicleModel: "Honda Accord",
-    licensePlate: "TN-01-7890"
-  }
-  
+    licensePlate: "TN-01-7890",
+  },
 ];
 
 export const revenueData = [
-  { day: 'Mon', revenue: 2400 },
-  { day: 'Tue', revenue: 1500 },
-  { day: 'Wed', revenue: 9800 },
-  { day: 'Thu', revenue: 3900 },
-  { day: 'Fri', revenue: 4800 },
-  { day: 'Sat', revenue: 3800 },
-  { day: 'Sun', revenue: 4300 },
-];
-
-export const car = [
-{
-    id: "status-1",
-    label: "Available",
-    description: "Vehicles ready for dispatch"
-  },
-  {
-    id: "status-2",
-    label: "On Trip",
-    description: "Vehicles currently with passengers"
-  },
-  {
-    id: "status-3",
-    label: "Maintenance",
-    description: "Vehicles in the shop for repairs"
-  },
-  {
-    id: "status-4",
-    label: "Out of Service",
-    description: "Vehicles retired or unavailable"
-  }
-];
-
-const avaliable = car.filter(value=>(value.label.toLocaleLowerCase().trim() === "available"))
-const onTrip = car.filter(value=>(value.label.toLocaleLowerCase().trim() === "on trip"))
-const Maintenance = car.filter(value=>(value.label.toLocaleLowerCase().trim() === "maintenance"))
-const outOfService = car.filter(value=>(value.label.toLocaleLowerCase().trim() === "out of service"))
-
-export const fleetData = [
-  { label: "Available", count: avaliable.length, total: 60, color: "#10b981" }, 
-  { label: "On Trip", count: onTrip.length, total: 60, color: "#3b82f6" },   
-  { label: "Maintenance", count: Maintenance.length, total: 60, color: "#f59e0b" }, 
-  { label: "Out of Service", count: outOfService.length, total: 60, color: "#ef4444" } 
+  { day: "Mon", revenue: 2400 },
+  { day: "Tue", revenue: 1500 },
+  { day: "Wed", revenue: 9800 },
+  { day: "Thu", revenue: 3900 },
+  { day: "Fri", revenue: 4800 },
+  { day: "Sat", revenue: 3800 },
+  { day: "Sun", revenue: 4300 },
 ];
 
 export const Customers = [
@@ -222,7 +185,7 @@ export const Customers = [
     status: "Active",
     tier: "Gold",
     preferredPayment: "Credit Card (**** 1234)",
-    avatar: "https://randomuser.me/api/portraits/men/32.jpg"
+    avatar: "https://randomuser.me/api/portraits/men/32.jpg",
   },
   {
     id: "C-9002",
@@ -236,7 +199,7 @@ export const Customers = [
     status: "Active",
     tier: "Silver",
     preferredPayment: "Apple Pay",
-    avatar: "https://randomuser.me/api/portraits/women/44.jpg"
+    avatar: "https://randomuser.me/api/portraits/women/44.jpg",
   },
   {
     id: "C-9003",
@@ -250,7 +213,7 @@ export const Customers = [
     status: "Active",
     tier: "Platinum",
     preferredPayment: "Wallet Balance",
-    avatar: "https://randomuser.me/api/portraits/women/68.jpg"
+    avatar: "https://randomuser.me/api/portraits/women/68.jpg",
   },
   {
     id: "C-9004",
@@ -264,8 +227,6 @@ export const Customers = [
     status: "Inactive",
     tier: "Bronze",
     preferredPayment: "Cash",
-    avatar: "https://randomuser.me/api/portraits/men/52.jpg"
-  }
+    avatar: "https://randomuser.me/api/portraits/men/52.jpg",
+  },
 ];
-
-

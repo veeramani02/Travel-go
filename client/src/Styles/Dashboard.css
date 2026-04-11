@@ -44,7 +44,7 @@
   padding: 30px;
   overflow-y: auto; 
   overflow-x: hidden; 
-  background: #f4f7fe; 
+  background: var(--background);
   width: 100%; 
   box-sizing: border-box;
 }

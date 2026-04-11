@@ -28,6 +28,8 @@ function BookTrip() {
     vehicleType: "",
     passengers: "",
     specialRequest: "",
+    driverId: "",
+    vehicleId: "",
   });
 
   useEffect(() => {
@@ -114,8 +116,6 @@ function BookTrip() {
     }
 
     try {
-     
-
       const response = await fetch("http://localhost:3000/api/trip/create", {
         method: "POST",
         headers: {
