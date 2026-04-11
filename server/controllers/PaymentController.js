@@ -3,12 +3,11 @@ import Trip from "../models/Trip.js";
 import mongoose from "mongoose";
 import Loyalty from "../models/Loyalty.js";
 import Voucher from "../models/Voucher.js";
+import Dues from "../models/Dues.js";
 
-
-//  CREATE PAYMENT (SECURE)
 export const createPayment = async (req, res) => {
   try {
-    const { tripId, paymentMethod, voucherCode } = req.body;
+    const { tripId, paymentMethod, voucherCode, months } = req.body;
 
     const userId = req.user.id || req.user._id;
 
@@ -22,10 +21,7 @@ export const createPayment = async (req, res) => {
       return res.status(404).json({ message: "Trip not found" });
     }
 
-    //  SECURE AMOUNT
     let finalAmount = trip.amount || 0;
-
-    //  APPLY VOUCHER (BACKEND SAFE)
     if (voucherCode) {
       const voucher = await Voucher.findOne({
         code: voucherCode,
@@ -39,12 +35,63 @@ export const createPayment = async (req, res) => {
       }
     }
 
+    let paymentAmount = finalAmount;
+
+    if (paymentMethod === "dues") {
+
+      if (!months) {
+        return res.status(400).json({ message: "Months required" });
+      }
+
+      const initialAmount = Math.floor(finalAmount * 0.3);
+
+      const remainingAmount = finalAmount - initialAmount;
+
+      const monthlyDue = Math.floor(remainingAmount / months);
+
+      let dueSchedule = [];
+
+ 
+      for (let i = 0; i < months; i++) {
+  const dueDate = new Date();
+
+ 
+  dueDate.setMonth(dueDate.getMonth() + i + 1);
+
+ 
+  dueDate.setDate(3);
+
+  dueSchedule.push({
+    dueDate,
+    amount:
+      i === months - 1
+        ? remainingAmount - monthlyDue * (months - 1)
+        : monthlyDue,
+    status: "Pending",
+  });
+}
+      const due = new Dues({
+        user: userId,
+        tripId,
+        totalAmount: finalAmount,
+        paidAmount: initialAmount,
+        remainingAmount,
+        dueSchedule,
+      });
+
+      await due.save();
+
+      console.log("✅ DUE SAVED:", due);
+
+      paymentAmount = initialAmount;
+    }
+
     const payment = new Payment({
       userId,
       tripId,
-      amount: finalAmount,
+      amount: paymentAmount,
       paymentMethod,
-      paymentStatus: "Pending",
+      paymentStatus: paymentMethod === "dues" ? "Partial" : "Pending",
     });
 
     await payment.save();
@@ -59,10 +106,6 @@ export const createPayment = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-
-
-
-// UPDATE PAYMENT STATUS
 export const updatePaymentStatus = async (req, res) => {
   try {
     const { paymentId } = req.params;
@@ -103,8 +146,6 @@ export const updatePaymentStatus = async (req, res) => {
         activity: "Payment",
         points: earnedPoints,
       });
-
-      //  MARK VOUCHER USED
       if (voucherCode) {
         const voucher = await Voucher.findOne({
           code: voucherCode,
@@ -130,7 +171,6 @@ export const updatePaymentStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-//  GET CURRENT USER PAYMENTS
 export const getUserPayments = async (req, res) => {
   try {
     const userId = req.user.id || req.user._id;
@@ -149,13 +189,11 @@ export const getUserPayments = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
-//  GET SINGLE PAYMENT
+
 export const getPaymentById = async (req, res) => {
   try {
     const { paymentId } = req.params;
-
-    //  validate id
-    if (!mongoose.Types.ObjectId.isValid(paymentId)) {
+   if (!mongoose.Types.ObjectId.isValid(paymentId)) {
       return res.status(400).json({ message: "Invalid Payment ID" });
     }
 

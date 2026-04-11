@@ -17,7 +17,7 @@ const duesSchema = new Mongoose.Schema({
         default:0,
     },
     remainingAmount:Number,
-    duesSchedule:[
+    dueSchedule:[
        {
         dueDate: Date,
         amount:Number,

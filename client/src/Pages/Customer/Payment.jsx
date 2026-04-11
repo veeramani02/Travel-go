@@ -10,14 +10,16 @@ function Payments() {
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [points, setPoints] = useState(0);
   const [loading, setLoading] = useState(false);
+ 
+  const [months, setMonths] = useState("");
 
   //  Voucher states
   const [voucherCode, setVoucherCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
 
-  //  Fetch latest trip
-  useEffect(() => {
+  
+useEffect(() => {
     const fetchTrip = async () => {
       try {
         const res = await fetch("http://localhost:3000/api/trip/latest", {
@@ -30,7 +32,7 @@ function Payments() {
 
         setTrip(data);
 
-        //  base amount
+     
         setFinalAmount(data.price || 1000);
       } catch (err) {
         console.error("Fetch Trip Error:", err);
@@ -40,7 +42,7 @@ function Payments() {
     fetchTrip();
   }, []);
 
-  //  APPLY VOUCHER
+
   const applyVoucher = async () => {
     try {
       const res = await fetch("http://localhost:3000/api/voucher/apply", {
@@ -67,66 +69,79 @@ function Payments() {
     }
   };
 
-  //  PAYMENT HANDLER
+
   const handlePayment = async () => {
-    if (!trip) return;
+  if (!trip) return;
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-   
-      const res = await fetch("http://localhost:3000/api/payments", {
-        method: "POST",
+  try {
+    const payload = {
+      tripId: trip._id,
+      paymentMethod,
+      voucherCode: voucherCode || null,
+    };
+
+    
+    if (paymentMethod === "dues") {
+      if (!months) {
+        alert("Select months plan");
+        setLoading(false);
+        return;
+      }
+
+      payload.months = Number(months);
+    }
+
+
+    const res = await fetch("http://localhost:3000/api/payments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message);
+
+    const paymentId = data.payment._id;
+
+  
+    const updateRes = await fetch(
+      `http://localhost:3000/api/payments/${paymentId}`,
+      {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
         body: JSON.stringify({
-          tripId: trip._id,
-          paymentMethod,
+          status: "Completed",
+          transactionId: "TXN" + Date.now(),
           voucherCode: voucherCode || null,
         }),
-      });
+      }
+    );
 
-      const data = await res.json();
+    const updateData = await updateRes.json();
 
-      if (!res.ok) throw new Error(data.message);
+    if (!updateRes.ok) throw new Error(updateData.message);
 
-      const paymentId = data.payment._id;
+    setPoints(updateData.earnedPoints || 0);
+    setPaymentSuccess(true);
 
-      //  UPDATE STATUS
-      const updateRes = await fetch(
-        `http://localhost:3000/api/payments/${paymentId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            status: "Completed",
-            transactionId: "TXN" + Date.now(),
-            voucherCode: voucherCode || null,
-          }),
-        }
-      );
+  } catch (err) {
+    console.error("Payment Error:", err);
+    alert("Payment Failed ❌");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      const updateData = await updateRes.json();
 
-      if (!updateRes.ok) throw new Error(updateData.message);
-
-      setPoints(updateData.earnedPoints || 0);
-      setPaymentSuccess(true);
-
-    } catch (err) {
-      console.error("Payment Error:", err);
-      alert("Payment Failed ❌");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  //  SUCCESS UI
   if (paymentSuccess) {
     return (
       <div className="payment-page">
@@ -149,7 +164,6 @@ function Payments() {
     );
   }
 
-  //  NO TRIP
   if (!trip) {
     return (
       <div className="payment-page">
@@ -166,7 +180,6 @@ function Payments() {
     );
   }
 
-  //  MAIN UI
   return (
     <div className="payment-page">
       <div className="payment-card">
@@ -180,14 +193,14 @@ function Payments() {
           <p><strong>Vehicle:</strong> {trip.vehicleType}</p>
         </div>
 
-        {/*  PRICE SECTION */}
+       
         <div className="price-box">
           <h3>Original Amount: ₹{trip.price || 1000}</h3>
           {discount > 0 && <h4>Discount: {discount}%</h4>}
           <h2>Final Amount: ₹{finalAmount}</h2>
         </div>
 
-        {/*  VOUCHER */}
+  
         <div className="voucher-box">
           <input
             type="text"
@@ -198,11 +211,11 @@ function Payments() {
           <button onClick={applyVoucher}>Apply</button>
         </div>
 
-        {/*  PAYMENT METHOD */}
+        
         <h3>Select Payment Method</h3>
 
         <div className="payment-methods">
-          {["card", "upi", "cash"].map((method) => (
+          {["card", "upi", "cash","dues"].map((method) => (
             <label key={method}>
               <input
                 type="radio"
@@ -214,7 +227,22 @@ function Payments() {
             </label>
           ))}
         </div>
+         {paymentMethod === "dues" && (
+  <div className="dues-box">
 
+    <select value={months} onChange={(e) => setMonths(e.target.value)}>
+      <option value="">Select Plan</option>
+      <option value="3">3 Months</option>
+      <option value="6">6 Months</option>
+    </select>
+
+    
+    <p>
+      Plan Selected: {months || "None"}
+    </p>
+
+  </div>
+)}
         <button
           className="pay-btn"
           onClick={handlePayment}

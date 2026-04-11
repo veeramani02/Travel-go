@@ -1,9 +1,10 @@
 import express from 'express';
-import { createDuePlan,getUserDues,getUpcomingDues,payDue } from '../controllers/DuesController.js';
+import { createDuePlan,getUserDues,getUpcomingDues,payDue, payAllDues} from '../controllers/DuesController.js';
 import { protect } from '../middleware/authMiddleware.js';
 const dueRouter = express.Router();
 dueRouter.post('/create',protect,createDuePlan);
 dueRouter.get('/user-dues',protect,getUserDues);
 dueRouter.get('/upcoming',protect,getUpcomingDues);
 dueRouter.post('/pay/:dueId/:scheduleIndex',protect,payDue);
+dueRouter.post('pay-all/:dueId',protect,payAllDues);
 export default dueRouter;

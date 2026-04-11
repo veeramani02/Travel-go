@@ -3,7 +3,7 @@ import Voucher from "../models/Voucher.js";
 import { generateVoucherCode } from "../utils/generateVoucherCode.js";
 
 
-//  GET LOYALTY DATA
+
 export const getLoyaltyData = async (req, res) => {
   try {
     const userId = req.user.id || req.user._id;
@@ -22,7 +22,7 @@ export const getLoyaltyData = async (req, res) => {
 };
 
 
-//  REDEEM VOUCHER
+
 export const redeemVoucher = async (req, res) => {
   try {
     const { pointsRequired } = req.body;
@@ -52,14 +52,14 @@ export const redeemVoucher = async (req, res) => {
       return res.status(400).json({ msg: "Invalid redemption value" });
     }
 
-    // deduct points
+
     await Loyalty.create({
       userId,
       activity: "Redeemed Voucher",
       points: -pointsRequired,
     });
 
-    //  safe unique code
+
     let code;
     let isUnique = false;
     let attempts = 0;

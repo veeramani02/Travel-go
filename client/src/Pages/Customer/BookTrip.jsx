@@ -140,7 +140,7 @@ function BookTrip() {
 
       console.log("Trip Created:", tripId);
 
-    //  send tripId to payment page
+   
     navigate("/customer/payment", { state: { tripId } });
 
   } catch (error) {
@@ -195,7 +195,7 @@ function BookTrip() {
           {renderError("email")}
         </div>
 
-        {/* Pickup */}
+      
         <div className="booktrip-group">
           <label>Pickup State</label>
           <select
@@ -229,7 +229,7 @@ function BookTrip() {
           {renderError("pickupCity")}
         </div>
 
-        {/* Destination */}
+        
         <div className="booktrip-group">
           <label>Destination State</label>
           <select

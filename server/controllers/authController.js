@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 
-// SIGNUP
+
 export const signup = async (req, res) => {
   try {
     const { name, password, phone, email } = req.body;
@@ -37,7 +37,7 @@ export const signup = async (req, res) => {
   }
 };
 
-// LOGIN cookie set
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -56,14 +56,14 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    //  TOKEN
+   
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
 
-    //  SET COOKIE
+  
     res.cookie("token", token, {
       httpOnly: true,      
       secure: false,       

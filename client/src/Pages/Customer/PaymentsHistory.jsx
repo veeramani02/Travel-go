@@ -51,7 +51,7 @@ useEffect(() => {
           {payments.map((payment, index) => (
             <div className="payment-card" key={payment._id || index}>
 
-              {/* LEFT SIDE */}
+              
               <div className="payment-left">
                 <div className="txn-id">
                  <strong>Transcation Id:</strong> {payment.transactionId || `TXN00${index + 1}`}
@@ -70,7 +70,7 @@ useEffect(() => {
                 </div>
               </div>
 
-              {/* RIGHT SIDE */}
+             
               <div className="payment-right">
                 <div className="payment-amount">
                   ₹ {payment.amount}

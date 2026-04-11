@@ -50,7 +50,7 @@ const vehicleController = {
     { name: "documentFile", maxCount: 1 },
   ]),
 
-  // UPLOAD
+  
   uploadFiles: (req, res) => {
     try {
       let frontViewUrl = "";

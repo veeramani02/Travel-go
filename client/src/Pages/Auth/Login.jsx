@@ -39,15 +39,8 @@ try {
         setError(data.message);
         return;
       }
-
-      // backend la role varum
-      const role = data.user.role;
-
-      // optional
-      localStorage.setItem("role", role);
-
-      // redirect based on role
-      setUser(data.user)
+   const role = data.user.role;
+    setUser(data.user)
       navigate(`/${role}/dashboard`);
     } catch (err) {
       console.log(err);

@@ -16,7 +16,7 @@ const Voucher = () => {
 
       const data = await res.json();
 
-      //  filter only available vouchers
+      
       const available = data.vouchers.filter(
         (v) => !v.isUsed && new Date(v.expiryDate) > new Date(),
       );
@@ -44,7 +44,7 @@ const Voucher = () => {
     <div style={{ textAlign: "center", marginTop: "30px" }}>
       <h2>My Vouchers</h2>
 
-      {/*  No vouchers */}
+     
       {vouchers.length === 0 ? (
         <div style={{ marginTop: "40px" }}>
           <p style={{ fontSize: "18px", color: "#555" }}>
@@ -70,7 +70,7 @@ const Voucher = () => {
           </button>
         </div>
       ) : (
-        /*  Show vouchers */
+      
         vouchers.map((v) => (
           <div key={v._id} className="voucher-container">
             <div className="voucher-card">
@@ -84,17 +84,16 @@ const Voucher = () => {
                 </button>
               </div>
 
-              {/* Discount */}
+           
               <p className="voucher-discount">
                 🎉 {v.discount}% OFF on your next trip
               </p>
 
-              {/* Expiry */}
+           
               <p className="voucher-expiry">
                 ⏳ Valid till: {new Date(v.expiryDate).toLocaleDateString()}
               </p>
 
-              {/* Copy feedback */}
               {copiedCode === v.code && (
                 <span className="copied-text">Copied!</span>
               )}

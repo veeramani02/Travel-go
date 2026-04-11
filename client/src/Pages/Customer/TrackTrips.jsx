@@ -13,7 +13,7 @@ function TrackTrip() {
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(true);
 
-  //  GET TRIP FROM BACKEND
+
   useEffect(() => {
     const fetchTrip = async () => {
       try {
@@ -39,7 +39,7 @@ function TrackTrip() {
     fetchTrip();
   }, [tripId]);
 
-  //  CITY → COORDINATES
+  
   const getCoordinates = async (place) => {
     try {
       const res = await fetch(
@@ -59,7 +59,7 @@ function TrackTrip() {
     }
   };
 
-  //  MAP + ROUTE
+  
   useEffect(() => {
     if (!trip) return;
 
@@ -85,7 +85,7 @@ function TrackTrip() {
         attribution: "© OpenStreetMap contributors",
       }).addTo(map);
 
-      //  REAL ROAD ROUTE
+     
       L.Routing.control({
         waypoints: [
           L.latLng(pickupCoords[0], pickupCoords[1]),
