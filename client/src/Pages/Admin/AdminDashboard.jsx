@@ -47,7 +47,7 @@ export default function AdminDashboard() {
       value?.status?.toLowerCase().trim() === "confirmed",
   );
   const pendingRequest = trips.filter(
-    (value) => value?.status?.toLowerCase().trim() === "pending",
+    (value) => value?.driverId?.toLowerCase().trim() === "",
   );
 
   const stats = [

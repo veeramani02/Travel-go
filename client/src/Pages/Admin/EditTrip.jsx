@@ -21,7 +21,6 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     message: "",
     severity: "success",
   });
-  const oldData = formData;
 
   useEffect(() => {
     if (!trip) return;

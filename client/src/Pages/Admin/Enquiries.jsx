@@ -283,6 +283,14 @@ export default function Enquiries() {
         type={type}
         isClose={isClose}
         onsave={(p) => {
+          let tripData = customers.find((v) => p._id === v._id);
+          if (
+            tripData &&
+            tripData.driverId === p.driverId &&
+            tripData.vehicleId === p.vehicleId
+          ) {
+            return;
+          }
           setCustomers((prev) =>
             prev.map((item) =>
               item._id === p._id

@@ -22,7 +22,7 @@ import "../Styles/Sidebar.css";
 function Sidebar() {
   const [isExpanded, setIsExpanded] = useState(false);
   const userData = useAuth();
-  const role = userData.user.role;
+  const role = userData?.user?.role;
 
   // Mapping icons to names to keep the menu clean
   const icons = {

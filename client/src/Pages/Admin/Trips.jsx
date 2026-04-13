@@ -9,37 +9,59 @@ import { Data, recentTripActivityData, Customers } from "../../Data/Data";
 import { FiPhone } from "react-icons/fi";
 import { FiMessageSquare } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
+import {
+  getDriver,
+  getVehicle,
+  TripsData,
+} from "../../services/customerService";
+import { getAvatarColor } from "../../services/driverService";
 
 export default function Trips() {
   const status = ["All", "Active", "Pending", "Completed"];
   const [Active, setActive] = useState("All");
   const [coords, setCoords] = useState(null);
-  const [filterData, setFilterData] = useState(recentTripActivityData);
+  const [drivers, setDrivers] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [trips, setTrips] = useState([]);
+  const [filterData, setFilterData] = useState([]);
   const DateStyle = {
     color: "gray",
     fontSize: "0.7rem",
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const [driverRes, vehicleRes, tripRes] = await Promise.all([
+        getDriver(),
+        getVehicle(),
+        TripsData(),
+      ]);
+      setDrivers(driverRes || []);
+      setVehicles(vehicleRes || []);
+      setTrips(tripRes || []);
+      setFilterData(tripRes || []);
+      getCoordinates(tripRes[0]);
+    };
+    fetchData();
+  }, []);
+
   const getDriverDetails = (id) => {
-    return Data.find((driver) => driver.id === id);
+    return drivers.find((driver) => driver._id === id);
   };
 
-  const getCustomerDetails = (id) => {
-    return Customers.find((customer) => customer.id === id);
+  const getVehicleDetails = (id) => {
+    return vehicles.find((vehicle) => vehicle._id === id);
   };
 
   function handleFilterChange(status) {
-    if (status.toLowerCase() == "all") setFilterData(recentTripActivityData);
-    else
-      setFilterData(
-        recentTripActivityData.filter((value) => value.status === status),
-      );
+    if (status.toLowerCase() === "all") setFilterData(trips);
+    else setFilterData(trips.filter((value) => value.status === status));
   }
 
   const getCoordinates = async (value) => {
     try {
-      const sourceUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.source}`;
-      const destinationUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.destination}`;
+      const sourceUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value?.pickupCity}`;
+      const destinationUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value?.destinationCity}`;
       const sourceRes = await fetch(sourceUrl, {
         headers: {
           Accept: "application/json",
@@ -73,10 +95,6 @@ export default function Trips() {
     }
   };
 
-  useEffect(() => {
-    getCoordinates(filterData[0]);
-  }, []);
-
   return (
     <div className="trips-container-div">
       <div className="trips-title-div">
@@ -108,103 +126,124 @@ export default function Trips() {
       <div className="trips-body-container-div">
         <div className="trip-card-div-scroll">
           <div className="tripcard-container">
-            {filterData.map((value) => (
-              <div
-                key={value.tripId}
-                className="trips-card-container-div"
-                onClick={() => {
-                  getCoordinates(value);
-                }}
-              >
-                <div className="trips-card-title-div">
-                  <div className="trips-card-icons">
-                    <div className="trips-icons">
-                      <LiaCarSideSolid className="trips-car-icons" />
-                    </div>
-                    <div className="trips-card-title">
-                      <h3>{value.licensePlate}</h3>
-                      <p style={DateStyle}>
-                        <span>
-                          {value.date} <GoDotFill className="trips-time-dot" />{" "}
-                          {value.time}
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                  <div>
-                    <span
-                      className={`status-pill ${value.status.toLowerCase()}`}
-                    >
-                      {value.status}
-                    </span>
-                  </div>
-                </div>
-                <div className="trips-content-container">
-                  <div className="trips-pickup-dropoff-div">
-                    <div className="trips-pickup">
-                      <div className="trips-pickup-dot">
-                        <FaRegCircleDot style={{ color: "#087f5b" }} />
+            {filterData.map((value) => {
+              let driver = getDriverDetails(value.driverId);
+              let vehicle = getVehicleDetails(value.vehicleId);
+              return (
+                <div
+                  key={value._id}
+                  className="trips-card-container-div"
+                  onClick={() => {
+                    getCoordinates(value);
+                  }}
+                >
+                  <div className="trips-card-title-div">
+                    <div className="trips-card-icons">
+                      <div className="trips-icons">
+                        <LiaCarSideSolid className="trips-car-icons" />
                       </div>
-                      <div className="trip-pickup-content">
-                        <p className="p-trip-pickup-drop">PICKUP</p>
-                        <p style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
-                          {value.source}
+                      <div className="trips-card-title">
+                        <h3>{vehicle?.vehicleNo || "Not Assigned"}</h3>
+                        <p style={DateStyle}>
+                          <span>
+                            {value.dateAndTime.split("T")[0]}{" "}
+                            <GoDotFill className="trips-time-dot" />{" "}
+                            {value.dateAndTime.split("T")[1].split(".")[0]}
+                          </span>
                         </p>
                       </div>
                     </div>
+                    <div>
+                      <span
+                        className={`status-pill ${value.status.toLowerCase()}`}
+                      >
+                        {value.status}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="trips-content-container">
+                    <div className="trips-pickup-dropoff-div">
+                      <div className="trips-pickup">
+                        <div className="trips-pickup-dot">
+                          <FaRegCircleDot style={{ color: "#087f5b" }} />
+                        </div>
+                        <div className="trip-pickup-content">
+                          <p className="p-trip-pickup-drop">PICKUP</p>
+                          <p style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
+                            {value.pickupCity}
+                          </p>
+                        </div>
+                      </div>
 
-                    <div className="trips-dropoff">
-                      <div className="trips-dropoff-dot">
-                        <FaRegCircleDot style={{ color: "#fa5252" }} />
+                      <div className="trips-dropoff">
+                        <div className="trips-dropoff-dot">
+                          <FaRegCircleDot style={{ color: "#fa5252" }} />
+                        </div>
+                        <div className="trip-dropoff-content">
+                          <p className="p-trip-pickup-drop">DROPOFF</p>
+                          <p style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
+                            {value.destinationCity}
+                          </p>
+                        </div>
                       </div>
-                      <div className="trip-dropoff-content">
-                        <p className="p-trip-pickup-drop">DROPOFF</p>
-                        <p style={{ fontWeight: "bold", fontSize: "0.9rem" }}>
-                          {value.destination}
+                    </div>
+                  </div>
+                  <div className="trips-card-driver-info">
+                    <div className="trips-card-driver-icons-name">
+                      <div className="trips-card-driver-icon">
+                        {driver?.profile ? (
+                          <img src={driver?.profile} alt="" />
+                        ) : (
+                          <div
+                            style={{
+                              backgroundColor: getAvatarColor(driver?.name),
+                            }}
+                            className="driver-image-no-div"
+                          >
+                            <span>
+                              {driver?.name
+                                ? driver.name
+                                    .split(" ")
+                                    .map((w) => w[0])
+                                    .join("")
+                                    .slice(0, 2)
+                                : "NA"}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="trips-card-driver-name">
+                        <p style={{ fontSize: "0.9rem", color: "gray" }}>
+                          Driver
+                        </p>
+                        <p className="p-trips-driver-name">
+                          {driver?.name || "Not Assigned"}
                         </p>
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div className="trips-card-driver-info">
-                  <div className="trips-card-driver-icons-name">
-                    <div className="trips-card-driver-icon">
-                      <img
-                        src={getDriverDetails(value.driverId)?.avatar}
-                        alt=""
-                      />
+                    <div className="trips-card-driver-info-icons">
+                      <div className="trips-card-driver-phone-icon">
+                        <FiPhone />
+                      </div>
+                      <div className="trips-card-driver-message-icon">
+                        <FiMessageSquare />
+                      </div>
+                      <div className="trips-card-driver-threedot-icon">
+                        <BsThreeDots />
+                      </div>
                     </div>
-                    <div className="trips-card-driver-name">
+                  </div>
+                  <div className="trips-card-customer-details">
+                    <div className="trips-card-customer-name">
                       <p style={{ fontSize: "0.9rem", color: "gray" }}>
-                        Driver
-                      </p>
-                      <p className="p-trips-driver-name">
-                        {getDriverDetails(value.driverId)?.name}
+                        Customer: {value?.name}
                       </p>
                     </div>
-                  </div>
-                  <div className="trips-card-driver-info-icons">
-                    <div className="trips-card-driver-phone-icon">
-                      <FiPhone />
-                    </div>
-                    <div className="trips-card-driver-message-icon">
-                      <FiMessageSquare />
-                    </div>
-                    <div className="trips-card-driver-threedot-icon">
-                      <BsThreeDots />
-                    </div>
+                    <div className="trips-card-customer-cost"></div>
                   </div>
                 </div>
-                <div className="trips-card-customer-details">
-                  <div className="trips-card-customer-name">
-                    <p style={{ fontSize: "0.9rem", color: "gray" }}>
-                      Customer: {getCustomerDetails(value.customerId).name}
-                    </p>
-                  </div>
-                  <div className="trips-card-customer-cost"></div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
         <div className="trips-map-container">
