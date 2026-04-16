@@ -30,7 +30,14 @@ const tripSchema = new mongoose.Schema(
     amount: { type: Number, default: 0 },
     driverId: String,
     vehicleId: String,
+    paymentId: {
+    type: String,
+    },
+    orderId: {
+    type: String,
+    },
   },
+
   { timestamps: true },
 );
 export default mongoose.model("Trip", tripSchema);
