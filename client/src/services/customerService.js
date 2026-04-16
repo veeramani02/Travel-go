@@ -71,3 +71,15 @@ export const updateTrips = async (updatedField) => {
     console.error(e.message);
   }
 };
+
+export function getAvatarColor(name) {
+  let hash = 0;
+
+  for (let i = 0; i < name?.length; i++) {
+    hash += name.charCodeAt(i);
+  }
+
+  const hue = hash % 360;
+
+  return `hsl(${hue}, 65%, 55%)`;
+}

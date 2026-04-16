@@ -5,10 +5,10 @@ import UserImage from "../assets/user.png";
 import "../Styles/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
+import { getAvatarColor } from "../services/customerService";
 
 export default function NavBar() {
-  const {setUser}=useAuth()
-  const {user}=useAuth()
+  const { setUser, user } = useAuth();
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,15 +25,10 @@ export default function NavBar() {
     try {
       await fetch("http://localhost:3000/api/auth/logout", {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
       });
-
-     
-
-      // redirect
-      setUser(null)
+      setUser(null);
       navigate("/login");
-      
     } catch (error) {
       console.log(error);
     }
@@ -41,12 +36,7 @@ export default function NavBar() {
 
   useEffect(() => {
     function handleClickOutside(e) {
-      if (
-        popupRef.current &&
-        !popupRef.current.contains(e.target) &&
-        userRef.current &&
-        !userRef.current.contains(e.target)
-      ) {
+      if (popupRef.current && !popupRef.current.contains(e.target)) {
         setIsMenuOpen(false);
       }
 
@@ -55,9 +45,8 @@ export default function NavBar() {
       }
     }
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () =>
-      document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   return (
@@ -72,7 +61,10 @@ export default function NavBar() {
         <div
           className="notification-wrapper"
           ref={notifyRef}
-          onClick={() => setIsNotifyOpen(!isNotifyOpen)}
+          onClick={(e) => {
+            setIsNotifyOpen((prev) => !prev);
+            e.stopPropagation();
+          }}
         >
           <FiBell className="icon" />
           {notificationCount > 0 && (
@@ -89,18 +81,54 @@ export default function NavBar() {
 
         {/*  User */}
         <div className="user-section">
-          <img
-            src={UserImage}
-            alt="user"
-            ref={userRef}
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          />
+          {user?.profile ? (
+            <img
+              src={user?.profile}
+              ref={userRef}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen((p) => !p);
+              }}
+            />
+          ) : (
+            <div
+              className="user-image-no-div"
+              style={{ background: getAvatarColor(user?.name) }}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsMenuOpen((p) => !p);
+              }}
+            >
+              <span>
+                {user?.name
+                  ?.split(" ")
+                  .map((w) => w[0])
+                  .join("")
+                  .slice(0, 2) || "U"}
+              </span>
+            </div>
+          )}
 
           {isMenuOpen && (
             <div className="user-dropdown" ref={popupRef}>
-              <span>{user?.name||"user"}</span>
-
+              <span className="user-name">{user?.name || "user"}</span>
+              <p className="user-role">{user?.role?.toUpperCase() || "USER"}</p>
+              <p className="user-email">{user?.email || "No email"}</p>
+              <hr />
+              <p
+                className="dropdown-item"
+                onClick={() => navigate(`/${user?.role}/dashboard`)}
+              >
+                Dashboard
+              </p>
+              <p
+                className="dropdown-item"
+                onClick={() => navigate(`/${user?.role}/settings`)}
+              >
+                Settings
+              </p>
               {/*   LOGOUT */}
+              <hr />
               <button onClick={handleLogout}>Logout</button>
             </div>
           )}
@@ -109,7 +137,7 @@ export default function NavBar() {
         {/*  Mobile */}
         <div
           className="mobile-toggle"
-          onClick={() => setIsMobileOpen(!isMobileOpen)}
+          onClick={() => setIsMobileOpen((p) => !p)}
         >
           {isMobileOpen ? <FiX /> : <FiMenu />}
         </div>

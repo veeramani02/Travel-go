@@ -197,10 +197,12 @@ export default function Trips() {
                           <div
                             style={{
                               backgroundColor: getAvatarColor(driver?.name),
+                              height: "50px",
+                              width: "50px",
                             }}
                             className="driver-image-no-div"
                           >
-                            <span>
+                            <span style={{ fontSize: "1rem" }}>
                               {driver?.name
                                 ? driver.name
                                     .split(" ")

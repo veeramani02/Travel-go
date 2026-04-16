@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
       } catch (err) {
         setUser(null);
       } finally {
-        setLoading(false);
+        setTimeout(() => setLoading(false), 1000);
       }
     };
 

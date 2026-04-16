@@ -218,6 +218,17 @@ button:hover {
   min-width: 0;
 }
 
+.card-symbol {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  border-radius: 50%;
+  background-color: var(--secondary);
+}
+
 @media (max-width: 768px) {
   .body-div {
     flex-direction: column;

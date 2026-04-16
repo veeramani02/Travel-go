@@ -1,8 +1,16 @@
 :root {
-  --primary: #1E40AF;
-  --secondary: #3B82F6;
-  --background: #F8FAFC;
-  --text-dark: #1F2937;
+  --primary: #1e40af;
+  --secondary: #3b82f6;
+  --background: #f8fafc;
+  --text-dark: #1f2937;
   --text: #f4f7fe;
-  --accent: #F97316;
+  --accent: #f97316;
+}
+
+.loading-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

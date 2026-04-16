@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./Context/AuthContext";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import "./App.css";
+import { PacmanLoader } from "react-spinners";
 
 // Pages
 import Login from "./Pages/Auth/Login";
@@ -39,23 +41,23 @@ import AssignedTrips from "./Pages/Driver/AssignedTrips";
 function App() {
   const { user, loading } = useAuth();
 
-  if (loading) return <h2>Loading...</h2>;
+  if (loading)
+    return (
+      <div className="loading-container">
+        <PacmanLoader color="#1e40af" size={25} />
+      </div>
+    );
 
   return (
     <BrowserRouter>
       <Routes>
-
         {/*  Public Routes */}
         <Route path="/" element={<LandingPage />} />
 
         <Route
           path="/login"
           element={
-            !user ? (
-              <Login />
-            ) : (
-              <Navigate to={`/${user.role}/dashboard`} />
-            )
+            !user ? <Login /> : <Navigate to={`/${user.role}/dashboard`} />
           }
         />
 
@@ -63,7 +65,6 @@ function App() {
 
         {/*  Protected Layout */}
         <Route element={<DashboardLayout />}>
-
           {/* Customer */}
           <Route
             path="/customer/dashboard"
@@ -255,9 +256,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

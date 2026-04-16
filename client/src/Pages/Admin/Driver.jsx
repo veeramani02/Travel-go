@@ -12,6 +12,7 @@ import DriverProfile from "./DriverProfile";
 import { MdDelete } from "react-icons/md";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars.jsx";
 import AlertDialogSlide from "../../Components/AlertDialogSlide.jsx";
+import { PacmanLoader } from "react-spinners";
 
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);
@@ -182,8 +183,8 @@ export default function Driver() {
       </div>
       <div className="driver-card-container">
         {loading ? (
-          <div className="driver-data-empty">
-            <p>Loading drivers...</p>
+          <div className="driver-loading-container">
+            <PacmanLoader color="#1e40af" size={25} />
           </div>
         ) : filteredDrivers?.length > 0 ? (
           filteredDrivers.map((value) => (

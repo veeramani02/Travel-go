@@ -10,10 +10,13 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useNavigate } from "react-router-dom";
+import { TbMoneybag } from "react-icons/tb";
+import { TbUserCheck } from "react-icons/tb";
+import { IoCarOutline } from "react-icons/io5";
 import { getDriver } from "../../services/driverService";
 import { TripsData, vehicleData } from "../../services/customerService";
 import { useAuth } from "../../Context/AuthContext";
+import { MdOutlinePendingActions } from "react-icons/md";
 
 export default function AdminDashboard() {
   const [drivers, setDrivers] = useState([]);
@@ -51,10 +54,22 @@ export default function AdminDashboard() {
   );
 
   const stats = [
-    { label: "Total Revenue", value: `Rs.6888.00` },
-    { label: "Active Trips", value: onTrip.length },
-    { label: "Active Drivers", value: activeDrivers.length },
-    { label: "Pending Requests", value: pendingRequest.length },
+    { symbol: <TbMoneybag />, label: "Total Revenue", value: `Rs.6888.00` },
+    {
+      symbol: <IoCarOutline />,
+      label: "Active Trips",
+      value: onTrip.length,
+    },
+    {
+      symbol: <TbUserCheck />,
+      label: "Active Drivers",
+      value: activeDrivers.length,
+    },
+    {
+      symbol: <MdOutlinePendingActions />,
+      label: "Pending Requests",
+      value: pendingRequest.length,
+    },
   ];
 
   let avaliable = 0;
@@ -116,8 +131,8 @@ export default function AdminDashboard() {
         <div>
           <h1 className="title">Dashboard Overview</h1>
           <p>
-            Welcome back, <span>{userdata.user.name.split(" ")[0]}</span> Here's
-            what's happening today.
+            Welcome back, <span>{userdata.user.name}</span> Here's what's
+            happening today.
           </p>
         </div>
       </div>
@@ -125,6 +140,7 @@ export default function AdminDashboard() {
       <div className="card-container">
         {stats.map((item, index) => (
           <div className="card-div" key={index}>
+            <div className="card-symbol">{item.symbol}</div>
             <p>{item.label}</p>
             <h1>{item.value}</h1>
           </div>

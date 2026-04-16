@@ -1,20 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../Styles/Settings.css";
 import { FaLock } from "react-icons/fa";
 import { MdSecurity } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { useAuth } from "../Context/AuthContext";
+import CustomizedSnackbar from "./CustomizedSnackbars";
+import { getAvatarColor } from "../services/customerService";
 
 function Settings() {
   const [profileImage, setProfileImage] = useState(null);
   const [editProfile, setEditProfile] = useState(true);
   const { user, setUser } = useAuth();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const ProfileRef = useRef();
+  const [profileFile, setProfileFile] = useState(null);
 
+  useEffect(() => {
+    ProfileRef.current.value = "";
+  }, []);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setProfileImage(URL.createObjectURL(file));
+    if (!file) return;
+    const maxSize = 2 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setSnackbar({
+        open: true,
+        message: "File size must be less than 2MB",
+        severity: "error",
+      });
+      ProfileRef.current.value = "";
+      return;
     }
+    setProfileFile(file);
+    setProfileImage(URL.createObjectURL(file));
   };
 
   const handleInputChange = (e) => {
@@ -24,6 +46,26 @@ function Settings() {
       ...prev,
       [name]: value,
     }));
+  };
+
+  const handleSubmit = async () => {
+    let imageurl = "";
+    const data = new FormData();
+    try {
+      if (profileFile) {
+        data.append("profileFile", profileFile);
+        const res = await fetch(`http://localhost:${PORT}/api/user/uploads`, {
+          method: "POST",
+          body: data,
+          credentials: "include",
+        });
+        if (!res.ok) throw { message: "Upload failed" };
+        const result = await res.json();
+        imageurl = result.profileUrl;
+      }
+    } catch (e) {
+      console.error(e.message);
+    }
   };
 
   return (
@@ -42,25 +84,61 @@ function Settings() {
         </div>
         <div className="profile-section">
           <label htmlFor="avatarUpload">
-            <img
-              src={profileImage || "https://i.pravatar.cc/200"}
-              alt="avatar"
-              className="profile-avatar"
-            />
+            {profileImage ? (
+              <img
+                src={profileImage}
+                alt="avatar"
+                className="profile-avatar"
+                onClick={() => ProfileRef.current.click()}
+              />
+            ) : (
+              <div
+                className="settings-user-image-no-div"
+                style={{
+                  background: getAvatarColor(user?.name),
+                  cursor: editProfile ? "not-allowed" : "pointer",
+                  opacity: editProfile ? "0.6" : "1",
+                }}
+                onClick={() => ProfileRef.current.click()}
+              >
+                <span>
+                  {user?.name
+                    ?.split(" ")
+                    .map((w) => w[0])
+                    .join("")
+                    .slice(0, 2) || "U"}
+                </span>
+              </div>
+            )}
           </label>
 
           <input
             type="file"
-            id="avatarUpload"
+            ref={ProfileRef}
             className="hidden-input"
             disabled={editProfile}
             onChange={handleImageChange}
           />
 
-          <label htmlFor="avatarUpload" className="avatar-text">
-            <h4>Change Avatar</h4>
-            <p>JPG, GIF or PNG. Max size of 800Kb</p>
-          </label>
+          <div
+            className="avatar-text"
+            style={{
+              cursor: editProfile ? "not-allowed" : "pointer",
+            }}
+          >
+            <button
+              className="settings-user-profile-button"
+              style={{
+                cursor: editProfile ? "not-allowed" : "pointer",
+                background: editProfile ? "gray" : "",
+              }}
+              disabled={editProfile}
+              onClick={() => ProfileRef.current.click()}
+            >
+              Change Profile
+            </button>
+            <p>JPG, GIF or PNG. Max size of 2MB</p>
+          </div>
         </div>
 
         <div className="profile-fields">
@@ -84,7 +162,7 @@ function Settings() {
               name="email"
               id="email"
               placeholder="admin@fleetpro.com"
-              disabled={editProfile}
+              disabled={true}
               value={user?.email}
             />
           </div>
@@ -163,8 +241,16 @@ function Settings() {
 
       <div className="settings-actions">
         <button className="cancel-btn">Cancel</button>
-        <button className=" settings-save-btn">Save Changes</button>
+        <button className=" settings-save-btn" onClick={handleSubmit}>
+          Save Changes
+        </button>
       </div>
+      <CustomizedSnackbar
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
   );
 }

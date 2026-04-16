@@ -38,6 +38,7 @@
 .nav-right {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 40px;
 }
 
@@ -97,7 +98,13 @@
 }
 
 .user-section img {
-  width: 26px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   border-radius: 50%;
 }
@@ -107,19 +114,51 @@
   top: 45px;
   right: 0;
   width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   background: white;
   border-radius: 10px;
   padding: 15px;
+  max-height: 250px;
+  overflow-y: auto;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  text-align: center;
   z-index: 999;
   animation: fade 0.3s ease forwards;
 }
 
-.user-dropdown span {
+.user-dropdown hr {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 6px 0;
+}
+
+.user-dropdown .user-name {
   display: block;
-  margin-bottom: 10px;
   font-weight: bold;
+}
+
+.user-role,
+.user-email {
+  color: gray;
+  font-size: 12px;
+}
+
+.dropdown-item {
+  font-size: 12px;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 6px;
+  transition: 0.2s;
+}
+
+.dropdown-item {
+  display: block;
+}
+
+.dropdown-item:hover {
+  background: #f3f4f6;
+  transform: translateX(3px);
 }
 
 .user-dropdown button {
@@ -143,6 +182,20 @@
   cursor: pointer;
 }
 
+.user-image-no-div {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  color: white;
+  border: 4px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
 @keyframes fade {
   from {
     opacity: 0;
@@ -152,6 +205,15 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.user-dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+.user-dropdown::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
 }
 
 @media (max-width: 768px) {
