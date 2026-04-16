@@ -11,6 +11,9 @@ const userSchema = new mongoose.Schema(
       default: "customer",
     },
     profile: String,
+    emailNotify: { type: Boolean, default: true },
+    pushNotify: { type: Boolean, default: false },
+    smsNotify: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

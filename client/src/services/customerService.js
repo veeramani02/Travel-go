@@ -83,3 +83,18 @@ export function getAvatarColor(name) {
 
   return `hsl(${hue}, 65%, 55%)`;
 }
+
+export const updateUser = async (id, updatedData) => {
+  try {
+    const res = await fetch(`http://localhost:${PORT}/api/user/update/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+      credentials: "include",
+    });
+  } catch (e) {
+    console.log(e.message);
+  }
+};

@@ -6,10 +6,8 @@ import { fileURLToPath } from "url";
 
 const PORT = 3000;
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -22,9 +20,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 const driverController = {
-
   addDriver: async (req, res) => {
     try {
       let { name, phone, email, state, city, vehicleType, vehicleNo, license } =
@@ -57,7 +53,6 @@ const driverController = {
       });
     }
   },
-
 
   getDrivers: async (req, res) => {
     try {
@@ -103,7 +98,6 @@ const driverController = {
     }
   },
 
-
   deleteDriver: async (req, res) => {
     try {
       const { id } = req.params;
@@ -136,12 +130,10 @@ const driverController = {
     }
   },
 
-
   uploadMiddleware: upload.fields([
     { name: "profileFile", maxCount: 1 },
     { name: "licenseFile", maxCount: 1 },
   ]),
-
 
   uploadFiles: (req, res) => {
     try {

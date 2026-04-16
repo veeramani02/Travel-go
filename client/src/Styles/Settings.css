@@ -36,7 +36,7 @@
   text-transform: uppercase;
 }
 
-.settings-user-image-no-div span{
+.settings-user-image-no-div span {
   font-size: 1.6rem;
 }
 
@@ -63,7 +63,7 @@
   display: none;
 }
 
-.avatar-text{
+.avatar-text {
   display: flex;
   flex-direction: column;
   gap: 8px;

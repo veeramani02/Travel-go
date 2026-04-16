@@ -5,11 +5,11 @@ import { MdSecurity } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { useAuth } from "../Context/AuthContext";
 import CustomizedSnackbar from "./CustomizedSnackbars";
-import { getAvatarColor } from "../services/customerService";
+import { getAvatarColor, updateUser } from "../services/customerService";
 
 function Settings() {
   const [profileImage, setProfileImage] = useState(null);
-  const [editProfile, setEditProfile] = useState(true);
+  const [isEditing, setisEditing] = useState(true);
   const { user, setUser } = useAuth();
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -21,6 +21,7 @@ function Settings() {
 
   useEffect(() => {
     ProfileRef.current.value = "";
+    console.log(user);
   }, []);
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -40,21 +41,21 @@ function Settings() {
   };
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, type, checked } = e.target;
 
     setUser((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async () => {
-    let imageurl = "";
+    let imageurl = user?.profile;
     const data = new FormData();
     try {
       if (profileFile) {
         data.append("profileFile", profileFile);
-        const res = await fetch(`http://localhost:${PORT}/api/user/uploads`, {
+        const res = await fetch(`http://localhost:3000/api/user/uploads`, {
           method: "POST",
           body: data,
           credentials: "include",
@@ -63,6 +64,16 @@ function Settings() {
         const result = await res.json();
         imageurl = result.profileUrl;
       }
+      const finalData = { ...user, profile: imageurl };
+      console.log(finalData);
+      setUser(finalData);
+      let updatedValue = await updateUser(user._id, finalData);
+      setSnackbar({
+        open: true,
+        message: "Profile Updated Successfully",
+        severity: "success",
+      });
+      console.log(user);
     } catch (e) {
       console.error(e.message);
     }
@@ -74,32 +85,37 @@ function Settings() {
         <h1>System Settings</h1>
         <p>Configure your fleet management preferences.</p>
       </div>
-
       <div className="settings-card">
         <div className="edit-profile-div">
           <h2 className="card-title">Profile & Account</h2>
-          <button type="button" onClick={() => setEditProfile((p) => !p)}>
+          <button type="button" onClick={() => setisEditing((p) => !p)}>
             <FaRegEdit /> Edit
           </button>
         </div>
         <div className="profile-section">
           <label htmlFor="avatarUpload">
             {profileImage ? (
+              <img src={profileImage} className="profile-avatar" />
+            ) : user?.profile ? (
               <img
-                src={profileImage}
+                src={user?.profile}
                 alt="avatar"
                 className="profile-avatar"
-                onClick={() => ProfileRef.current.click()}
+                onClick={() => {
+                  if (!editProfile) ProfileRef.current.click();
+                }}
               />
             ) : (
               <div
                 className="settings-user-image-no-div"
                 style={{
                   background: getAvatarColor(user?.name),
-                  cursor: editProfile ? "not-allowed" : "pointer",
-                  opacity: editProfile ? "0.6" : "1",
+                  cursor: isEditing ? "not-allowed" : "pointer",
+                  opacity: isEditing ? "0.6" : "1",
                 }}
-                onClick={() => ProfileRef.current.click()}
+                onClick={() => {
+                  if (!editProfile) ProfileRef.current.click();
+                }}
               >
                 <span>
                   {user?.name
@@ -116,23 +132,23 @@ function Settings() {
             type="file"
             ref={ProfileRef}
             className="hidden-input"
-            disabled={editProfile}
+            disabled={isEditing}
             onChange={handleImageChange}
           />
 
           <div
             className="avatar-text"
             style={{
-              cursor: editProfile ? "not-allowed" : "pointer",
+              cursor: isEditing ? "not-allowed" : "pointer",
             }}
           >
             <button
               className="settings-user-profile-button"
               style={{
-                cursor: editProfile ? "not-allowed" : "pointer",
-                background: editProfile ? "gray" : "",
+                cursor: isEditing ? "not-allowed" : "pointer",
+                background: isEditing ? "gray" : "",
               }}
-              disabled={editProfile}
+              disabled={isEditing}
               onClick={() => ProfileRef.current.click()}
             >
               Change Profile
@@ -149,7 +165,7 @@ function Settings() {
               name="name"
               id="name"
               placeholder="Admin User"
-              disabled={editProfile}
+              disabled={isEditing}
               value={user?.name}
               onChange={handleInputChange}
             />
@@ -179,7 +195,12 @@ function Settings() {
           </div>
 
           <label className="switch">
-            <input type="checkbox" defaultChecked />
+            <input
+              type="checkbox"
+              name="emailNotify"
+              checked={user?.emailNotify || false}
+              onChange={handleInputChange}
+            />
             <span className="slider"></span>
           </label>
         </div>
@@ -191,7 +212,12 @@ function Settings() {
           </div>
 
           <label className="switch">
-            <input type="checkbox" defaultChecked />
+            <input
+              type="checkbox"
+              name="pushNotify"
+              checked={user?.pushNotify || false}
+              onChange={handleInputChange}
+            />
             <span className="slider"></span>
           </label>
         </div>
@@ -203,7 +229,12 @@ function Settings() {
           </div>
 
           <label className="switch">
-            <input type="checkbox" />
+            <input
+              type="checkbox"
+              name="smsNotify"
+              checked={user.smsNotify}
+              onChange={handleInputChange}
+            />
             <span className="slider"></span>
           </label>
         </div>
@@ -241,7 +272,7 @@ function Settings() {
 
       <div className="settings-actions">
         <button className="cancel-btn">Cancel</button>
-        <button className=" settings-save-btn" onClick={handleSubmit}>
+        <button className=" settings-save-btn" onClick={() => handleSubmit()}>
           Save Changes
         </button>
       </div>

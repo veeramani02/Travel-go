@@ -10,6 +10,7 @@ function Signup() {
     email: "",
     phone: "",
     password: "",
+    profile: "",
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -48,7 +49,6 @@ function Signup() {
         return;
       }
 
-     
       navigate("/login");
     } catch (err) {
       console.log(err);
