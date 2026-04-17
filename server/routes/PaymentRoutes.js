@@ -9,10 +9,7 @@ import  { protect } from "../middleware/authMiddleware.js"
 import { razorpay } from "../utils/razorpay.js"
 import crypto from "crypto"
 const PaymentRouter= express.Router()
-PaymentRouter.post("/",protect,createPayment)
-PaymentRouter.put("/:paymentId",protect,updatePaymentStatus)
-PaymentRouter.get("/",protect,getUserPayments)
-PaymentRouter.get("/:paymentId",protect,getPaymentById)
+
 PaymentRouter.post("/create-order",async(req,res)=>{
     try{
         const{amount,tripId}=req.body;
@@ -45,4 +42,8 @@ PaymentRouter.post("/verify-payment",async(req,res)=>{
         console.log("VERIFY PAYMENT ERROR:",error)  
     }
 })
+PaymentRouter.post("/",protect,createPayment)
+PaymentRouter.put("/:paymentId",protect,updatePaymentStatus)
+PaymentRouter.get("/",protect,getUserPayments)
+PaymentRouter.get("/:paymentId",protect,getPaymentById)
 export default PaymentRouter;
