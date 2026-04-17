@@ -104,7 +104,7 @@ function Settings() {
           "Updated your account settings",
         );
       if (user?.smsNotify)
-        sendSms("+919489023750", "Updated your account settings");
+        sendSms(`+91${user?.phone}`, "Updated your account settings");
     } catch (e) {
       console.error(e.message);
     }
