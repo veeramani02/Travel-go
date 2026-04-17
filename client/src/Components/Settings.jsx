@@ -5,7 +5,12 @@ import { MdSecurity } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { useAuth } from "../Context/AuthContext";
 import CustomizedSnackbar from "./CustomizedSnackbars";
-import { getAvatarColor, updateUser } from "../services/customerService";
+import {
+  getAvatarColor,
+  sendEmail,
+  sendSms,
+  updateUser,
+} from "../services/customerService";
 
 function Settings() {
   const [profileImage, setProfileImage] = useState(null);
@@ -18,11 +23,20 @@ function Settings() {
   });
   const ProfileRef = useRef();
   const [profileFile, setProfileFile] = useState(null);
+  const [oldData, setOldData] = useState(user);
 
   useEffect(() => {
-    ProfileRef.current.value = "";
-    console.log(user);
+    if (ProfileRef.current) {
+      ProfileRef.current.value = "";
+    }
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (profileImage) URL.revokeObjectURL(profileImage);
+    };
+  }, [profileImage]);
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -65,15 +79,32 @@ function Settings() {
         imageurl = result.profileUrl;
       }
       const finalData = { ...user, profile: imageurl };
-      console.log(finalData);
+      const isChange = JSON.stringify(finalData) === JSON.stringify(oldData);
+      if (isChange) {
+        setSnackbar((p) => ({
+          ...p,
+          open: true,
+          message: "No changes made",
+          severity: "info",
+        }));
+        return;
+      }
       setUser(finalData);
-      let updatedValue = await updateUser(user._id, finalData);
+      setOldData(finalData);
+      let updatedValue = await updateUser(finalData._id, finalData);
       setSnackbar({
         open: true,
         message: "Profile Updated Successfully",
         severity: "success",
       });
-      console.log(user);
+      if (user?.emailNotify)
+        sendEmail(
+          user?.email,
+          "Account settings",
+          "Updated your account settings",
+        );
+      if (user?.smsNotify)
+        sendSms("+919489023750", "Updated your account settings");
     } catch (e) {
       console.error(e.message);
     }
@@ -102,7 +133,7 @@ function Settings() {
                 alt="avatar"
                 className="profile-avatar"
                 onClick={() => {
-                  if (!editProfile) ProfileRef.current.click();
+                  if (!isEditing) ProfileRef.current.click();
                 }}
               />
             ) : (
@@ -114,7 +145,7 @@ function Settings() {
                   opacity: isEditing ? "0.6" : "1",
                 }}
                 onClick={() => {
-                  if (!editProfile) ProfileRef.current.click();
+                  if (!isEditing) ProfileRef.current.click();
                 }}
               >
                 <span>
@@ -232,7 +263,7 @@ function Settings() {
             <input
               type="checkbox"
               name="smsNotify"
-              checked={user.smsNotify}
+              checked={user?.smsNotify}
               onChange={handleInputChange}
             />
             <span className="slider"></span>
@@ -272,7 +303,13 @@ function Settings() {
 
       <div className="settings-actions">
         <button className="cancel-btn">Cancel</button>
-        <button className=" settings-save-btn" onClick={() => handleSubmit()}>
+        <button
+          className=" settings-save-btn"
+          onClick={() => {
+            handleSubmit();
+            setisEditing(true);
+          }}
+        >
           Save Changes
         </button>
       </div>
