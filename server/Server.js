@@ -17,19 +17,13 @@ import custRouter from "./routes/custRoutes.js";
 import NotifyRoutes from "./routes/NotifyRoutes.js";
 dotenv.config();
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.use(express.json());
 connectDB();
 app.use(cookieParser());
-app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "hello",
-  });
-});
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   }),
 );

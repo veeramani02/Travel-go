@@ -5,6 +5,7 @@ import TripviewDetails from "./TripviewDetails";
 import EditTrip from "./EditTrip";
 import { getVehicle, TripsData } from "../../services/customerService";
 import { getDriver } from "../../services/driverService";
+import API_BASE_URL from "../../config/api";
 
 export default function Enquiries() {
   const [isModalOpen, setIsModalOpen] = useState(false);

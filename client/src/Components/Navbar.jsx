@@ -6,6 +6,8 @@ import "../Styles/NavBar.css";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { getAvatarColor } from "../services/customerService";
+import API_BASE_URL from "../config/api";
+import AlertDialogSlide from "./AlertDialogSlide";
 
 export default function NavBar() {
   const { setUser, user } = useAuth();
@@ -15,7 +17,12 @@ export default function NavBar() {
   const [isNotifyOpen, setIsNotifyOpen] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(3);
-
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    message: "Are you sure you want to logout of your account?",
+    title: "Logout?",
+    confirmText: "Logout",
+  });
   const popupRef = useRef(null);
   const notifyRef = useRef(null);
   const userRef = useRef(null);
@@ -23,7 +30,7 @@ export default function NavBar() {
   //  LOGOUT FUNCTION
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:3000/api/auth/logout", {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
       });
@@ -129,7 +136,16 @@ export default function NavBar() {
               </p>
               {/*   LOGOUT */}
               <hr />
-              <button onClick={handleLogout}>Logout</button>
+              <button
+                onClick={() => {
+                  setConfirmDialog((p) => ({
+                    ...p,
+                    open: true,
+                  }));
+                }}
+              >
+                Logout
+              </button>
             </div>
           )}
         </div>
@@ -142,6 +158,14 @@ export default function NavBar() {
           {isMobileOpen ? <FiX /> : <FiMenu />}
         </div>
       </div>
+      <AlertDialogSlide
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        title={confirmDialog.title}
+        confirmText={confirmDialog.confirmText}
+        onClose={() => setConfirmDialog((p) => ({ ...p, open: false }))}
+        onConfirm={handleLogout}
+      />
     </nav>
   );
 }

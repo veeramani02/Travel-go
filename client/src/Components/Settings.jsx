@@ -11,10 +11,11 @@ import {
   sendSms,
   updateUser,
 } from "../services/customerService";
+import API_BASE_URL from "../config/api";
 
 function Settings() {
   const [profileImage, setProfileImage] = useState(null);
-  const [isEditing, setisEditing] = useState(true);
+  const [isEditing, setIsEditing] = useState(true);
   const { user, setUser } = useAuth();
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -50,6 +51,9 @@ function Settings() {
       ProfileRef.current.value = "";
       return;
     }
+    if (profileImage) {
+      URL.revokeObjectURL(profileImage);
+    }
     setProfileFile(file);
     setProfileImage(URL.createObjectURL(file));
   };
@@ -65,22 +69,22 @@ function Settings() {
 
   const handleSubmit = async () => {
     let imageurl = user?.profile;
-    const data = new FormData();
     try {
       if (profileFile) {
+        const data = new FormData();
         data.append("profileFile", profileFile);
-        const res = await fetch(`http://localhost:3000/api/user/uploads`, {
+        const res = await fetch(`${API_BASE_URL}/api/user/uploads`, {
           method: "POST",
           body: data,
           credentials: "include",
         });
-        if (!res.ok) throw { message: "Upload failed" };
+        if (!res.ok) throw new Error("Upload failed");
         const result = await res.json();
         imageurl = result.profileUrl;
       }
       const finalData = { ...user, profile: imageurl };
-      const isChange = JSON.stringify(finalData) === JSON.stringify(oldData);
-      if (isChange) {
+      const isChanged = JSON.stringify(finalData) !== JSON.stringify(oldData);
+      if (!isChanged) {
         setSnackbar((p) => ({
           ...p,
           open: true,
@@ -89,25 +93,46 @@ function Settings() {
         }));
         return;
       }
-      setUser(finalData);
-      setOldData(finalData);
-      let updatedValue = await updateUser(finalData._id, finalData);
+      await updateUser(finalData._id, finalData);
+      setUser({ ...finalData });
+      setOldData({ ...finalData });
       setSnackbar({
         open: true,
         message: "Profile Updated Successfully",
         severity: "success",
       });
-      if (user?.emailNotify)
+      if (finalData?.emailNotify)
         sendEmail(
-          user?.email,
+          finalData?.email,
           "Account settings",
-          "Updated your account settings",
+          `Hi ${finalData?.name}, your account settings have been updated.`,
         );
-      if (user?.smsNotify)
-        sendSms(`+91${user?.phone}`, "Updated your account settings");
+      if (finalData?.smsNotify)
+        sendSms(
+          finalData?.phone,
+          `Hi ${finalData?.name}, your account settings have been updated.`,
+        );
+      return true;
     } catch (e) {
-      console.error(e.message);
+      setSnackbar({
+        open: true,
+        message: e.message,
+        severity: "error",
+      });
+      return false;
     }
+  };
+
+  const handleCancel = () => {
+    setUser(oldData);
+    setProfileImage(null);
+    setProfileFile(null);
+    setIsEditing(true);
+  };
+
+  const handleSave = async () => {
+    const success = await handleSubmit();
+    if (success) setIsEditing(true);
   };
 
   return (
@@ -119,14 +144,20 @@ function Settings() {
       <div className="settings-card">
         <div className="edit-profile-div">
           <h2 className="card-title">Profile & Account</h2>
-          <button type="button" onClick={() => setisEditing((p) => !p)}>
+          <button type="button" onClick={() => setIsEditing((p) => !p)}>
             <FaRegEdit /> Edit
           </button>
         </div>
         <div className="profile-section">
           <label htmlFor="avatarUpload">
             {profileImage ? (
-              <img src={profileImage} className="profile-avatar" />
+              <img
+                src={profileImage}
+                className="profile-avatar"
+                style={{
+                  cursor: isEditing ? "not-allowed" : "pointer",
+                }}
+              />
             ) : user?.profile ? (
               <img
                 src={user?.profile}
@@ -135,6 +166,9 @@ function Settings() {
                 onClick={() => {
                   if (!isEditing) ProfileRef.current.click();
                 }}
+                style={{
+                  cursor: isEditing ? "not-allowed" : "pointer",
+                }}
               />
             ) : (
               <div
@@ -142,7 +176,7 @@ function Settings() {
                 style={{
                   background: getAvatarColor(user?.name),
                   cursor: isEditing ? "not-allowed" : "pointer",
-                  opacity: isEditing ? "0.6" : "1",
+                  opacity: isEditing ? 0.6 : 1,
                 }}
                 onClick={() => {
                   if (!isEditing) ProfileRef.current.click();
@@ -256,14 +290,14 @@ function Settings() {
         <div className="notification-item">
           <div>
             <h4>SMS Alerts</h4>
-            <p>Receive SMS for urgent driver issues.</p>
+            <p>Get SMS updates for pending details.</p>
           </div>
 
           <label className="switch">
             <input
               type="checkbox"
               name="smsNotify"
-              checked={user?.smsNotify}
+              checked={user?.smsNotify || false}
               onChange={handleInputChange}
             />
             <span className="slider"></span>
@@ -302,14 +336,10 @@ function Settings() {
       </div>
 
       <div className="settings-actions">
-        <button className="cancel-btn">Cancel</button>
-        <button
-          className=" settings-save-btn"
-          onClick={() => {
-            handleSubmit();
-            setisEditing(true);
-          }}
-        >
+        <button className="cancel-btn" onClick={() => handleCancel()}>
+          Cancel
+        </button>
+        <button className=" settings-save-btn" onClick={() => handleSave()}>
           Save Changes
         </button>
       </div>

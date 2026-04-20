@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/PaymentHistory.css";
+import API_BASE_URL from "../../config/api";
 
 function PaymentHistory() {
   const [payments, setPayments] = useState([]);
@@ -9,7 +10,7 @@ function PaymentHistory() {
 useEffect(() => {
   const fetchPayments = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/payments", {
+      const res = await fetch(`${API_BASE_URL}/api/payments`, {
         credentials: "include",
       });
 

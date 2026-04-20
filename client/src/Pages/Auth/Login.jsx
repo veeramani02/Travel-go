@@ -2,6 +2,7 @@ import "../../Styles/Login.css";
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../Context/AuthContext";
+import API_BASE_URL from "../../config/api";
 
 function Login() {
   const{setUser}=useAuth()
@@ -26,7 +27,7 @@ const [formData, setFormData] = useState({
       return;
     }
 try {
-      const res = await fetch("http://localhost:3000/api/auth/login", {
+      const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

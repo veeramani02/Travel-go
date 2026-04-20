@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import "../Styles/vehicleModal.css";
 import CustomizedSnackbars from "./CustomizedSnackbars";
-import { PORT } from "../services/vehicleService";
+import API_BASE_URL from "../config/api";
 
 function VehicleModal({ onSave, onCancel }) {
   const [formData, setFormData] = useState({
@@ -131,7 +131,7 @@ function VehicleModal({ onSave, onCancel }) {
         imageFile.back
       ) {
         const res = await fetch(
-          `http://localhost:${PORT}/api/vehicle/uploads`,
+          `${API_BASE_URL}/api/vehicle/uploads`,
           {
             method: "POST",
             body: Data,

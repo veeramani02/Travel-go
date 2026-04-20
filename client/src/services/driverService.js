@@ -1,9 +1,9 @@
-export const PORT = 3000;
 export const VEHICLE_TYPES = ["Car", "Van", "Tourist Van", "SUV", "Bus"];
+import API_BASE_URL from "../config/api";
 
 export const getDriver = async () => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/driver/driver`, {
+    let res = await fetch(`${API_BASE_URL}/api/driver/driver`, {
       credentials: "include",
     });
     let data = await res.json();
@@ -15,7 +15,7 @@ export const getDriver = async () => {
 
 export const addDriver = async (formData) => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/driver/add`, {
+    let res = await fetch(`${API_BASE_URL}/api/driver/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export const addDriver = async (formData) => {
 export const updateDriver = async (_id, updatedData) => {
   try {
     const res = await fetch(
-      `http://localhost:${PORT}/api/driver/update/${_id}`,
+      `${API_BASE_URL}/api/driver/update/${_id}`,
       {
         method: "PUT",
         headers: {
@@ -80,7 +80,7 @@ export const updateDriver = async (_id, updatedData) => {
 export const deleteDriver = async (_id) => {
   try {
     const res = await fetch(
-      `http://localhost:${PORT}/api/driver/delete/${_id}`,
+      `${API_BASE_URL}/api/driver/delete/${_id}`,
       {
         method: "DELETE",
         credentials: "include",

@@ -3,10 +3,10 @@ import "../../Styles/EditDriver.css";
 import {
   getAvatarColor,
   VEHICLE_TYPES,
-  PORT,
 } from "../../services/driverService";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import { State, City } from "country-state-city";
+import API_BASE_URL from "../../config/api";
 
 export default function EditDriver({ Open, Close, Data, Onsave }) {
   const Profileref = useRef();
@@ -136,7 +136,7 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
       }
 
       if (profileFile) {
-        const res = await fetch(`http://localhost:${PORT}/api/driver/uploads`, {
+        const res = await fetch(`${API_BASE_URL}/api/driver/uploads`, {
           method: "POST",
           body: data,
           credentials: "include",

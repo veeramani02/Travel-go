@@ -3,7 +3,6 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
-import { PORT } from "../../client/src/services/vehicleService.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,9 +49,9 @@ const vehicleController = {
     { name: "documentFile", maxCount: 1 },
   ]),
 
-  
   uploadFiles: (req, res) => {
     try {
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
       let frontViewUrl = "";
       let sideViewUrl = "";
       let interiorViewUrl = "";
@@ -60,24 +59,24 @@ const vehicleController = {
       let documentUrl = "";
       if (req.files?.frontViewFile) {
         const file = req.files.frontViewFile[0];
-        frontViewUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+        frontViewUrl = `${baseUrl}/uploads/${file.filename}`;
       }
 
       if (req.files?.sideViewFile) {
         const file = req.files.sideViewFile[0];
-        sideViewUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+        sideViewUrl = `${baseUrl}/uploads/${file.filename}`;
       }
       if (req.files?.interiorViewFile) {
         const file = req.files.interiorViewFile[0];
-        interiorViewUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+        interiorViewUrl = `${baseUrl}/uploads/${file.filename}`;
       }
       if (req.files?.backViewFile) {
         const file = req.files.backViewFile[0];
-        backViewUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+        backViewUrl = `${baseUrl}/uploads/${file.filename}`;
       }
       if (req.files?.documentFile) {
         const file = req.files.documentFile[0];
-        documentUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+        documentUrl = `${baseUrl}/uploads/${file.filename}`;
       }
 
       res.json({

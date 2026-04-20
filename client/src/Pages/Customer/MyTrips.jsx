@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/MyTrips.css";
+import API_BASE_URL from "../../config/api";
 
 function MyTrips() {
   const navigate = useNavigate();
@@ -13,35 +14,28 @@ function MyTrips() {
     const fetchTrips = async () => {
       try {
         //  CURRENT TRIP
-        const latestRes = await fetch(
-          "http://localhost:3000/api/trip/latest",
-          {
-            credentials: "include",
-          }
-        );
+        const latestRes = await fetch(`${API_BASE_URL}/api/trip/latest`, {
+          credentials: "include",
+        });
 
         const latestData = await latestRes.json();
 
-        console.log("Latest Trip:", latestData); 
+        console.log("Latest Trip:", latestData);
 
         if (latestRes.ok && latestData) {
-          setCurrentTrip(latestData); 
+          setCurrentTrip(latestData);
         }
 
         //  PAST TRIPS
-        const pastRes = await fetch(
-          "http://localhost:3000/api/trip/past-trips",
-          {
-            credentials: "include",
-          }
-        );
+        const pastRes = await fetch(`${API_BASE_URL}/api/trip/past-trips`, {
+          credentials: "include",
+        });
 
         const pastData = await pastRes.json();
 
         if (pastRes.ok) {
           setPastTrips(pastData);
         }
-
       } catch (err) {
         console.error("Fetch Trips Error:", err);
       } finally {
@@ -70,9 +64,7 @@ function MyTrips() {
                 {currentTrip.destinationCity} ({currentTrip.destinationState})
               </span>
 
-              <span className="status active-status">
-                {currentTrip.status}
-              </span>
+              <span className="status active-status">{currentTrip.status}</span>
             </div>
 
             <div className="trip-details">
@@ -88,7 +80,6 @@ function MyTrips() {
               </p>
             </div>
 
-           
             <button
               className="track-btn"
               onClick={() =>
@@ -149,4 +140,3 @@ function MyTrips() {
 }
 
 export default MyTrips;
-
