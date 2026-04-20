@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import "../../Styles/AddDriver.css";
-import { addDriver, VEHICLE_TYPES, PORT } from "../../services/driverService";
+import { addDriver, VEHICLE_TYPES } from "../../services/driverService";
 import { CgProfile } from "react-icons/cg";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import { State, City } from "country-state-city";
+import API_BASE_URL from "../../config/api";
 
 export default function AddDriver({ openDriver, closeDriver }) {
   const [isOn, setIsOn] = useState(true);
@@ -57,7 +58,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       }
 
       if (profileFile || licenseFile) {
-        const res = await fetch(`http://localhost:${PORT}/api/driver/uploads`, {
+        const res = await fetch(`${API_BASE_URL}/api/driver/uploads`, {
           method: "POST",
           body: data,
           credentials: "include",

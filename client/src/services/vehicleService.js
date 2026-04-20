@@ -1,8 +1,8 @@
-export const PORT = 3000;
+import API_BASE_URL from "../config/api";
 
 export const getVehicle = async () => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/vehicle/vehicle`, {
+    let res = await fetch(`${API_BASE_URL}/api/vehicle/vehicle`, {
       credentials: "include",
     });
 
@@ -15,7 +15,7 @@ export const getVehicle = async () => {
 
 export const addVehicle = async (formData) => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/vehicle/add`, {
+    let res = await fetch(`${API_BASE_URL}/api/vehicle/add`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,17 +53,14 @@ export const addVehicle = async (formData) => {
 
 export const updateVehicle = async (_id, updatedData) => {
   try {
-    const res = await fetch(
-      `http://localhost:${PORT}/api/vehicle/update/${_id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-        credentials: "include",
+    const res = await fetch(`${API_BASE_URL}/api/vehicle/update/${_id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(updatedData),
+      credentials: "include",
+    });
 
     const data = await res.json();
 
@@ -80,17 +77,14 @@ export const updateVehicle = async (_id, updatedData) => {
 
 export const updateVehicleField = async (_id, updatedField) => {
   try {
-    const res = await fetch(
-      `http://localhost:${PORT}/api/vehicle/updatefield/${_id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedField),
-        credentials: "include",
+    const res = await fetch(`${API_BASE_URL}/api/vehicle/updatefield/${_id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(updatedField),
+      credentials: "include",
+    });
 
     const data = await res.json();
 
@@ -107,13 +101,10 @@ export const updateVehicleField = async (_id, updatedField) => {
 
 export const deleteVehicle = async (_id) => {
   try {
-    const res = await fetch(
-      `http://localhost:${PORT}/api/vehicle/delete/${_id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      },
-    );
+    const res = await fetch(`${API_BASE_URL}/api/vehicle/delete/${_id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     if (!res.ok) throw new Error("Delete failed");
   } catch (e) {

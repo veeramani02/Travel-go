@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import "../../Styles/Dues.css";
+import API_BASE_URL from "../../config/api";
+
 function Dues() {
   const [duesData, setDuesData] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
   const fetchDues = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/due/user-dues", {
+      const res = await fetch(`${API_BASE_URL}/api/due/user-dues`, {
         credentials: "include",
       });
 
@@ -61,7 +63,7 @@ useEffect(() => {
 const handlePay = async (dueId, scheduleIndex) => {
   try {
     const res = await fetch(
-      `http://localhost:3000/api/due/pay/${dueId}/${scheduleIndex}`,
+      `${API_BASE_URL}/api/due/pay/${dueId}/${scheduleIndex}`,
       {
         method: "POST",
         credentials: "include",
@@ -91,7 +93,7 @@ const handlePayAll = async () => {
   try {
     for (let item of duesData) {
       await fetch(
-        `http://localhost:3000/api/due/pay/${item.dueId}/${item.scheduleIndex}`,
+        `${API_BASE_URL}/api/due/pay/${item.dueId}/${item.scheduleIndex}`,
         {
           method: "POST",
           credentials: "include",

@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { createSearchParams, useNavigate } from "react-router-dom";
 import { State, City } from "country-state-city";
 import "../../Styles/BookTrip.css";
+import API_BASE_URL from "../../config/api";
 
 function BookTrip() {
   const navigate = useNavigate();
@@ -116,7 +117,7 @@ function BookTrip() {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/trip/create", {
+      const response = await fetch(`${API_BASE_URL}/api/trip/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

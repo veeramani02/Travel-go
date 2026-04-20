@@ -4,8 +4,6 @@ import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
 
-const PORT = 3000;
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -40,12 +38,13 @@ const userController = {
 
   uploadFiles: (req, res) => {
     try {
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
       let profileUrl = "";
       let licenseUrl = "";
 
       if (req.files?.profileFile) {
         const file = req.files.profileFile[0];
-        profileUrl = `http://localhost:${PORT}/uploads/${file.filename}`;
+        profileUrl = `${baseUrl}/uploads/${file.filename}`;
       }
 
       res.json({ profileUrl });

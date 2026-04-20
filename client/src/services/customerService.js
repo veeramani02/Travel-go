@@ -1,10 +1,10 @@
-export const PORT = 3000;
 export const VEHICLE_TYPES = ["Car", "Van", "Tourist Van", "SUV", "Bus"];
 export const status = ["Confirmed", "Pending", "Cancelled"];
+import API_BASE_URL from "../config/api";
 
 export const TripsData = async () => {
   try {
-    const latestRes = await fetch(`http://localhost:${PORT}/api/trip/trip`, {
+    const latestRes = await fetch(`${API_BASE_URL}/api/trip/trip`, {
       credentials: "include",
     });
     const res = await latestRes.json();
@@ -16,7 +16,7 @@ export const TripsData = async () => {
 
 export const vehicleData = async () => {
   try {
-    const res = await fetch(`http://localhost:${PORT}/api/vehicle/vehicle`, {
+    const res = await fetch(`${API_BASE_URL}/api/vehicle/vehicle`, {
       credentials: "include",
     });
     if (!res.ok) {
@@ -32,7 +32,7 @@ export const vehicleData = async () => {
 
 export const getDriver = async () => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/driver/driver`, {
+    let res = await fetch(`${API_BASE_URL}/api/driver/driver`, {
       credentials: "include",
     });
     let data = await res.json();
@@ -44,7 +44,7 @@ export const getDriver = async () => {
 
 export const getVehicle = async () => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/vehicle/vehicle`, {
+    let res = await fetch(`${API_BASE_URL}/api/vehicle/vehicle`, {
       credentials: "include",
     });
 
@@ -57,7 +57,7 @@ export const getVehicle = async () => {
 
 export const updateTrips = async (updatedField) => {
   try {
-    let res = await fetch(`http://localhost:${PORT}/api/trip/update`, {
+    let res = await fetch(`${API_BASE_URL}/api/trip/update`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +86,7 @@ export function getAvatarColor(name) {
 
 export const updateUser = async (id, updatedData) => {
   try {
-    const res = await fetch(`http://localhost:${PORT}/api/user/update/${id}`, {
+    const res = await fetch(`${API_BASE_URL}/api/user/update/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -101,7 +101,7 @@ export const updateUser = async (id, updatedData) => {
 
 export const sendEmail = async (to, subject, message) => {
   try {
-    const response = await fetch("http://localhost:3000/api/notify/email", {
+    const response = await fetch(`${API_BASE_URL}/api/notify/email`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -122,13 +122,13 @@ export const sendEmail = async (to, subject, message) => {
 
 export const sendSms = async (to, message) => {
   try {
-    const res = await fetch("http://localhost:3000/api/notify/sms", {
+    const res = await fetch(`${API_BASE_URL}/api/notify/sms`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: to,
+        to: `+91${to}`,
         message: message,
       }),
       credentials: "include",

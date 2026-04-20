@@ -9,7 +9,7 @@ const Voucher = () => {
 
   const fetchVouchers = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/voucher/my", {
+      const res = await fetch(`${API_BASE_URL}/api/voucher/my`, {
         method: "GET",
         credentials: "include",
       });

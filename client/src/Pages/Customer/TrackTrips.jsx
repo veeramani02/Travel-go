@@ -4,6 +4,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine";
 import "../../Styles/TrackTrip.css";
+import API_BASE_URL from "../../config/api";
 
 function TrackTrip() {
   const { tripId } = useParams();
@@ -18,7 +19,7 @@ function TrackTrip() {
     const fetchTrip = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/trip/latest`,
+          `${API_BASE_URL}/api/trip/latest`,
           {
             credentials: "include",
           }

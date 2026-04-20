@@ -11,6 +11,7 @@ import L from "leaflet";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import { Skeleton } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import API_BASE_URL from "../../config/api";
 
 export default function TripMap({ Coords }) {
   const [route, setRoute] = useState([]);
@@ -34,7 +35,7 @@ export default function TripMap({ Coords }) {
     const getRoute = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/api/trip/route?start=${Coords.source.lon},${Coords.source.lat}&end=${Coords.destination.lon},${Coords.destination.lat}`,
+          `${API_BASE_URL}/api/trip/route?start=${Coords.source.lon},${Coords.source.lat}&end=${Coords.destination.lon},${Coords.destination.lat}`,
           {
             credentials: "include",
           },

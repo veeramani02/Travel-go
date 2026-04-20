@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/Payments.css";
-
 import PaymentMethod from "../../components/payment/PaymentMethod";
 import CardPayment from "../../components/payment/CardPayment";
 import UpiPayment from "../../components/payment/UpiPayment";
 import CashPayment from "../../components/payment/CashPayment";
 import DuesPayment from "../../components/payment/DuesPayment";
+import API_BASE_URL from "../../config/api";
+
 function loadRazorpayScript() {
   return new Promise((resolve) => {
     if (document.getElementById("razorpay-sdk")) {
@@ -36,7 +37,7 @@ function Payments() {
   useEffect(() => {
     const fetchTrip = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/trip/latest", {
+        const res = await fetch(`${API_BASE_URL}/api/trip/latest`, {
           credentials: "include",
         });
         const data = await res.json();
@@ -52,7 +53,7 @@ function Payments() {
   }, []);
   const applyVoucher = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/voucher/apply", {
+      const res = await fetch(`${API_BASE_URL}/api/voucher/apply`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -70,7 +71,7 @@ function Payments() {
   };
 
   const createAndCompletePayment = async (transactionId) => {
-    const res = await fetch("http://localhost:3000/api/payments", {
+    const res = await fetch(`${API_BASE_URL}/api/payments`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -83,7 +84,7 @@ function Payments() {
     const data = await res.json();
     if (!res.ok) throw new Error(data.message);
     const updateRes = await fetch(
-      `http://localhost:3000/api/payments/${data.payment._id}`,
+      `${API_BASE_URL}/api/payments/${data.payment._id}`,
       {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -113,7 +114,7 @@ function Payments() {
       }
 
       const orderRes = await fetch(
-        "http://localhost:3000/api/payments/create-order",
+        `${API_BASE_URL}/api/payments/create-order`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -143,7 +144,7 @@ function Payments() {
           try {
            
             const verifyRes = await fetch(
-              "http://localhost:3000/api/payments/verify-payment",
+              `${API_BASE_URL}/api/payments/verify-payment`,
               {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -166,7 +167,7 @@ function Payments() {
             setPaymentSuccess(true);
           } catch (err) {
             console.error("Verification Error:", err);
-            alert("Payment verification failed ❌");
+            alert("Payment verification failed");
           } finally {
             setLoading(false);
           }
@@ -204,7 +205,7 @@ function Payments() {
         return;
       }
 
-      const res = await fetch("http://localhost:3000/api/payments", {
+      const res = await fetch(`${API_BASE_URL}/api/payments`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -219,7 +220,7 @@ function Payments() {
       if (!res.ok) throw new Error(data.message);
 
       const updateRes = await fetch(
-        `http://localhost:3000/api/payments/${data.payment._id}`,
+        `${API_BASE_URL}/api/payments/${data.payment._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -238,7 +239,7 @@ function Payments() {
       setPaymentSuccess(true);
     } catch (err) {
       console.error("Payment Error:", err);
-      alert("Payment Failed ❌");
+      alert("Payment Failed");
     } finally {
       setLoading(false);
     }

@@ -20,10 +20,10 @@ export default function AlertDialogSlide({
   open,
   onClose,
   onConfirm,
-  title = "Are you sure?",
-  message = "This action cannot be undone.",
-  confirmText = "Delete",
-  cancelText = "Cancel",
+  title,
+  message,
+  confirmText,
+  cancelText,
   loading = false,
 }) {
   return (
@@ -57,12 +57,12 @@ export default function AlertDialogSlide({
         </Box>
 
         <DialogTitle id="alert-dialog-title" sx={{ p: 0 }}>
-          <Typography fontWeight={800}>{title}</Typography>
+          <Typography fontWeight={800}>{title || "Are you sure?"}</Typography>
         </DialogTitle>
 
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            {message}
+            {message || "This action cannot be undone."}
           </DialogContentText>
         </DialogContent>
 
@@ -73,7 +73,7 @@ export default function AlertDialogSlide({
             fullWidth
             sx={{ borderRadius: "10px" }}
           >
-            {cancelText}
+            {cancelText || "Cancel"}
           </Button>
 
           <Button
@@ -89,7 +89,7 @@ export default function AlertDialogSlide({
               borderRadius: "10px",
             }}
           >
-            {loading ? "Processing..." : confirmText}
+            {loading ? "Processing..." : confirmText || "Delete"}
           </Button>
         </DialogActions>
       </Box>

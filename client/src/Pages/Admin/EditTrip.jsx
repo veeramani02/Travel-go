@@ -3,6 +3,7 @@ import "../../Styles/EditTrip.css";
 import {
   getDriver,
   getVehicle,
+  sendSms,
   status,
   updateTrips,
 } from "../../services/customerService.js";
@@ -21,6 +22,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     message: "",
     severity: "success",
   });
+  const [oldData, setOldData] = useState(trip);
 
   useEffect(() => {
     if (!trip) return;
@@ -64,8 +66,22 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
         });
         return;
       }
-      onsave(formData);
+      const isChanged = JSON.stringify(formData) !== JSON.stringify(oldData);
+      console.log(isChanged);
+      console.log(formData, oldData);
+      return;
+      // if (!isChanged) {
+      //   onClose();
+      //   console.log("closed");
+      //   return;
+      // }
       await updateTrips(formData);
+      onsave(formData);
+      let driver = activeDrivers.find((d) => formData.driverId === d._id);
+      sendSms(
+        driver.phone,
+        `Trips Assigned for you \ncustomer details\nName: ${formData.name} \nPhone: ${formData.phone} \nSource: ${formData.pickupCity} \nDestination: ${formData.destinationCity}`,
+      );
       onClose();
     } catch (e) {
       console.error(e.message);

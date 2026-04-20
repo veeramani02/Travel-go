@@ -215,7 +215,7 @@ export default function AdminDashboard() {
                   <div
                     className="bar-fill"
                     style={{
-                      width: `${percentage}%`,
+                      width: percentage ? `${percentage}%` : "0%",
                       backgroundColor: value.color,
                     }}
                   ></div>

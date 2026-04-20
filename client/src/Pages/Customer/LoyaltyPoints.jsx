@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import StarImage from "../../assets/star2.png"
 import "../../Styles/LoyaltyPoints.css"
+import API_BASE_URL from '../../config/api';
 
 function LoyaltyPoints() {
 
@@ -14,7 +15,7 @@ function LoyaltyPoints() {
 
   const fetchLoyalty = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/loyalty", {
+      const res = await fetch(`${API_BASE_URL}/api/loyalty`, {
         method: "GET",
         credentials: "include" 
       });
@@ -37,7 +38,7 @@ function LoyaltyPoints() {
   //  Redeem points
   const handleRedeem = async (pts) => {
     try {
-      const res = await fetch("http://localhost:3000/api/loyalty/redeem", {
+      const res = await fetch(`${API_BASE_URL}/api/loyalty/redeem`, {
         method: "POST",
         credentials: "include", 
         headers: {
