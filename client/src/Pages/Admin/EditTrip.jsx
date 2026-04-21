@@ -3,6 +3,7 @@ import "../../Styles/EditTrip.css";
 import {
   getDriver,
   getVehicle,
+  sendEmail,
   sendSms,
   status,
   updateTrips,
@@ -22,7 +23,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     message: "",
     severity: "success",
   });
-  const [oldData, setOldData] = useState(trip);
+  const [oldData, setOldData] = useState(trip?.Data);
 
   useEffect(() => {
     if (!trip) return;
@@ -31,6 +32,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     setPickupCities(pickup);
     setDestinationCities(destination);
     setFormData(trip.Data);
+    setOldData(trip.Data);
   }, [trip]);
 
   useEffect(() => {
@@ -69,22 +71,42 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
       const isChanged = JSON.stringify(formData) !== JSON.stringify(oldData);
       console.log(isChanged);
       console.log(formData, oldData);
-      return;
-      // if (!isChanged) {
-      //   onClose();
-      //   console.log("closed");
-      //   return;
-      // }
+      if (!isChanged) {
+        onClose();
+        return;
+      }
       await updateTrips(formData);
       onsave(formData);
       let driver = activeDrivers.find((d) => formData.driverId === d._id);
-      sendSms(
-        driver.phone,
-        `Trips Assigned for you \ncustomer details\nName: ${formData.name} \nPhone: ${formData.phone} \nSource: ${formData.pickupCity} \nDestination: ${formData.destinationCity}`,
-      );
-      onClose();
+      if (!driver) {
+        setSnackbar({
+          open: true,
+          message: "Driver not found",
+          severity: "error",
+        });
+        return;
+      }
+      const customerMsg = `Trip assigned to you.\n\nCustomer Details:\nName: ${formData.name}\nPhone: ${formData.phone}\nPickup Location: ${formData.pickupCity}\nDestination: ${formData.destinationCity}`;
+      const driverMsg = `Your trip has been assigned.\n\nDriver Details:\nName: ${driver.name}\nPhone: ${driver.phone}`;
+      if (formData.driverId !== oldData.driverId) {
+        sendSms(driver.phone, driverMsg);
+
+        if (driver?.email) sendEmail(driver?.email, driverMsg);
+
+        sendSms(formData.phone, customerMsg);
+        if (formData?.email) sendEmail(formData?.email, customerMsg);
+      }
+      setSnackbar({
+        open: true,
+        message: "Trip updated successfully",
+        severity: "success",
+      });
     } catch (e) {
-      console.error(e.message);
+      setSnackbar({
+        open: true,
+        message: e.message || "Something went wrong",
+        severity: "error",
+      });
     }
   }
 
@@ -154,11 +176,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                     <label htmlFor="">Vehicle Type</label>
                   </div>
                   <div>
-                    <input
-                      type="text"
-                      defaultValue={trip.Data.vehicleType}
-                      readOnly
-                    />
+                    <input type="text" value={trip.Data.vehicleType} readOnly />
                   </div>
                 </div>
                 <div className="edittrip-type-driver">
@@ -206,7 +224,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                       {activeVehicles.map((v) => (
                         <option
                           value={v._id}
-                          key={v.vehicleModel}
+                          key={v._id}
                         >{`${v.vehicleModel} (${v.vehicleType})`}</option>
                       ))}
                     </select>
@@ -264,7 +282,15 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                   </div>
                   <input
                     type="date"
-                    defaultValue={trip.Data.dateAndTime.split("T")[0]}
+                    value={formData.dateAndTime.split("T")[0]}
+                    onChange={(e) => {
+                      const time = formData.dateAndTime.split("T")[1];
+                      const date = e.target.value;
+                      setFormData({
+                        ...formData,
+                        dateAndTime: `${date}T${time}`,
+                      });
+                    }}
                   />
                 </div>
                 <div className="label">
@@ -274,12 +300,14 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
                   <input
                     type="time"
                     value={formData.dateAndTime.split("T")[1].split(".")[0]}
-                    onChange={(e) =>
+                    onChange={(e) => {
+                      const date = formData.dateAndTime.split("T")[0];
+                      const time = e.target.value;
                       setFormData({
                         ...formData,
-                        dateAndTime: e.target.value,
-                      })
-                    }
+                        dateAndTime: `${date}T${time}`,
+                      });
+                    }}
                   />
                 </div>
                 <div className="label">
