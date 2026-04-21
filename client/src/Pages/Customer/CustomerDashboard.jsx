@@ -29,7 +29,6 @@ function CustomerDashboard() {
           throw new Error("Failed to fetch dashboard data");
         }
         const data = await res.json();
-        console.log(data);
         setDashboard(data);
       } catch (err) {
         console.log(err);

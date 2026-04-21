@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/MyTrips.css";
 import API_BASE_URL from "../../config/api";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { PacmanLoader } from "react-spinners";
+
 
 function MyTrips() {
   const navigate = useNavigate();
@@ -9,6 +12,11 @@ function MyTrips() {
   const [currentTrip, setCurrentTrip] = useState(null);
   const [pastTrips, setPastTrips] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -37,7 +45,11 @@ function MyTrips() {
           setPastTrips(pastData);
         }
       } catch (err) {
-        console.error("Fetch Trips Error:", err);
+        setSnackbar({
+          open: true,
+          message: err.message,
+          severity: "error",
+        });
       } finally {
         setLoading(false);
       }
@@ -46,7 +58,12 @@ function MyTrips() {
     fetchTrips();
   }, []);
 
-  if (loading) return <h2>Loading trips...</h2>;
+  if (loading)
+    return (
+      <div className="loading-customerdashboard">
+        <PacmanLoader color="#1e40af" size={25} />
+      </div>
+    );
 
   return (
     <div className="mytrips-page">
@@ -135,6 +152,12 @@ function MyTrips() {
           </div>
         )}
       </div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
   );
 }

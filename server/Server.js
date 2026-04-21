@@ -15,11 +15,13 @@ import voucherRoute from "./routes/voucherRoutes.js";
 import dueRouter from "./routes/dueRoutes.js";
 import custRouter from "./routes/custRoutes.js";
 import NotifyRoutes from "./routes/NotifyRoutes.js";
+import { startDriverStatusChecker } from "./utils/driverStatusChecker.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
 connectDB();
+startDriverStatusChecker();
 app.use(cookieParser());
 app.use(
   cors({

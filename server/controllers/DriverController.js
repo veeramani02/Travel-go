@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
-
+import Trip from "../models/Trip.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -42,7 +42,12 @@ const driverController = {
       if (Object.keys(errors).length > 0) {
         return res.status(400).json({ errors });
       }
-      const driver = new Driver(req.body);
+      const hashedPassword = await bcrypt.hash("123456", 10);
+
+      const driver = new Driver({
+      ...req.body,
+      password: hashedPassword
+      });
       await driver.save();
       res.json({ general: "Driver added" });
     } catch (err) {
@@ -51,7 +56,6 @@ const driverController = {
       });
     }
   },
-
   getDrivers: async (req, res) => {
     try {
       const drivers = await Driver.find();
@@ -60,7 +64,6 @@ const driverController = {
       res.status(500).send(err.message);
     }
   },
-
   updateDriver: async (req, res) => {
     try {
       const { id } = req.params;
@@ -95,7 +98,6 @@ const driverController = {
       });
     }
   },
-
   deleteDriver: async (req, res) => {
     try {
       const { id } = req.params;
@@ -127,12 +129,10 @@ const driverController = {
       res.status(500).send("Error deleting driver");
     }
   },
-
   uploadMiddleware: upload.fields([
     { name: "profileFile", maxCount: 1 },
     { name: "licenseFile", maxCount: 1 },
   ]),
-
   uploadFiles: (req, res) => {
     try {
       const baseUrl = `${req.protocol}://${req.get("host")}`;
@@ -154,6 +154,47 @@ const driverController = {
       res.status(500).send(err.message);
     }
   },
+  goOnline:async(req,res)=>{
+    try{
+      const driverId=req.user._id;
+      const driver=await Driver.findByIdAndUpdate(driverId,{status:"online"},{new:true});
+      res.json({message:"You are online now",driver});
+    }
+    catch(err){
+      res.status(500).json({message:"Error going online",error:err.message});
+    }
+  },
+  goOffline:async(req,res)=>{
+    try{
+      const driverId=req.user._id;
+      const driver=await Driver.findByIdAndUpdate(driverId,{status:"offline"},{new:true});
+      res.json({message:"You are offline now",driver});
+    }
+    catch(err){
+      res.status(500).json({message:"Error going offline",error:err.message});
+    }
+  },
+  driverPing:async(req,res)=>{
+    try{
+      const driverId=req.user._id;
+      await Driver.findByIdAndUpdate(driverId,{lastseen:Date.now()});
+      res.json({message:"Ping received"});
+    }
+    catch(err){
+      res.status(500).json({message:"Error updating last seen",error:err.message});
+    }  
+  },
+  getDriverTrips:async(req,res)=>{
+    try{
+      const driverId=req.user._id;
+      const trips=await Trip.find({driver:driverId})
+      res.json(trips);
+    }
+    catch(err){
+      res.status(500).json({message:"Error fetching trips",error:err.message});
+    }
+  }
 };
+
 
 export default driverController;

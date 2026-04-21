@@ -1,7 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
-
+import Driver from "../models/Driver.js";
 
 export const signup = async (req, res) => {
   try {
@@ -41,24 +41,24 @@ export const signup = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
+      if (!email || !password) {
       return res.status(400).json({ message: "Email & Password required" });
-    }
-
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
+      }
+    let user = await User.findOne({ email });
+    let role="user";
+      if(!user){
+      user = await Driver.findOne({ email });
+      role="driver";
+      }
+      if (!user) {
+      return res.status(404).json({ message: "User not found" }); 
+      }
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+      if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-   
+      }
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user._id, role },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );

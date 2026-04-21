@@ -131,7 +131,7 @@ export default function AdminDashboard() {
         <div>
           <h1 className="title">Dashboard Overview</h1>
           <p>
-            Welcome back, <span>{userdata.user.name}</span> Here's what's
+            Welcome back, <span>{userdata.user.name}👋</span> Here's what's
             happening today.
           </p>
         </div>

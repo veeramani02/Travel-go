@@ -10,7 +10,7 @@ function LoyaltyPoints() {
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
-    serverity: "success",
+    severity: "success",
   });
 
   //  Fetch loyalty data
@@ -28,7 +28,11 @@ function LoyaltyPoints() {
       const data = await res.json();
 
       if (!res.ok) {
-        console.log("Error:", data.message);
+        setSnackbar({
+          open: true,
+          message: data.message || "Failed to fetch loyalty data",
+          severity: "error",
+        });
         return;
       }
 
@@ -59,13 +63,13 @@ function LoyaltyPoints() {
         setSnackbar({
           open: true,
           message: data.msg || "Not enough points",
-          serverity: "error",
+          severity: "error",
         });
       } else {
         setSnackbar({
           open: true,
           message: data.msg || "Voucher Redeemed 🎉",
-          serverity: "success",
+          severity: "success",
         });
         fetchLoyalty();
       }
@@ -73,7 +77,7 @@ function LoyaltyPoints() {
       setSnackbar({
         open: true,
         message: err.message,
-        serverity: "error",
+        severity: "error",
       });
     }
   };
@@ -180,7 +184,7 @@ function LoyaltyPoints() {
       <CustomizedSnackbars
         open={snackbar.open}
         message={snackbar.message}
-        serverity={snackbar.serverity}
+        severity={snackbar.severity}
         onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
       />
     </div>
