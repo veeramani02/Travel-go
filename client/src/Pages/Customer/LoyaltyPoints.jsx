@@ -1,12 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import StarImage from "../../assets/star2.png"
-import "../../Styles/LoyaltyPoints.css"
-import API_BASE_URL from '../../config/api';
+import React, { useEffect, useState } from "react";
+import StarImage from "../../assets/star2.png";
+import "../../Styles/LoyaltyPoints.css";
+import API_BASE_URL from "../../config/api";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 function LoyaltyPoints() {
-
   const [points, setPoints] = useState(0);
   const [history, setHistory] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    serverity: "success",
+  });
 
   //  Fetch loyalty data
   useEffect(() => {
@@ -17,7 +22,7 @@ function LoyaltyPoints() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/loyalty`, {
         method: "GET",
-        credentials: "include" 
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -29,7 +34,6 @@ function LoyaltyPoints() {
 
       setPoints(data.totalPoints);
       setHistory(data.history);
-
     } catch (err) {
       console.log("Fetch Loyalty Error:", err);
     }
@@ -40,37 +44,47 @@ function LoyaltyPoints() {
     try {
       const res = await fetch(`${API_BASE_URL}/api/loyalty/redeem`, {
         method: "POST",
-        credentials: "include", 
+        credentials: "include",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          pointsRequired: pts
-        })
+          pointsRequired: pts,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.msg || "Not enough points");
+        setSnackbar({
+          open: true,
+          message: data.msg || "Not enough points",
+          serverity: "error",
+        });
       } else {
-        alert(data.msg || "Voucher Redeemed 🎉");
-        fetchLoyalty(); 
+        setSnackbar({
+          open: true,
+          message: data.msg || "Voucher Redeemed 🎉",
+          serverity: "success",
+        });
+        fetchLoyalty();
       }
-
     } catch (err) {
-      console.log("Redeem Error:", err);
+      setSnackbar({
+        open: true,
+        message: err.message,
+        serverity: "error",
+      });
     }
   };
 
   return (
-    <div className='loyalty-container'>
-
+    <div className="loyalty-container">
       <h1 className="loyalty-title">Reward Points</h1>
 
       {/*  Reward Balance Card */}
       <div className="reward-card">
-        <div className='circle'>
+        <div className="circle">
           <img src={StarImage} alt="reward-star" />
         </div>
 
@@ -81,16 +95,15 @@ function LoyaltyPoints() {
       </div>
 
       {/*  Redeem Section */}
-      <p className='redeem-title'>Redeem Rewards</p>
+      <p className="redeem-title">Redeem Rewards</p>
 
       <div className="redeem-card">
-
         <div className="redeem-info">
           <div>
             <h4>20% Discount Voucher</h4>
             <p>(1500 pts)</p>
           </div>
-          <button 
+          <button
             className="redeem-btn"
             onClick={() => handleRedeem(1500)}
             disabled={points < 1500}
@@ -104,7 +117,7 @@ function LoyaltyPoints() {
             <h4>10% Discount Voucher</h4>
             <p>(1000 pts)</p>
           </div>
-          <button 
+          <button
             className="redeem-btn"
             onClick={() => handleRedeem(1000)}
             disabled={points < 1000}
@@ -118,7 +131,7 @@ function LoyaltyPoints() {
             <h4>5% Discount Voucher</h4>
             <p>(500 pts)</p>
           </div>
-          <button 
+          <button
             className="redeem-btn"
             onClick={() => handleRedeem(500)}
             disabled={points < 500}
@@ -126,12 +139,11 @@ function LoyaltyPoints() {
             Redeem
           </button>
         </div>
-
       </div>
 
       {/*  Points History Table */}
       <div className="loyalty-table-container">
-        <h2 className='loyalty-table-title'>Points History</h2>
+        <h2 className="loyalty-table-title">Points History</h2>
 
         <table>
           <thead>
@@ -148,23 +160,31 @@ function LoyaltyPoints() {
                 <td colSpan="3">No data available</td>
               </tr>
             ) : (
-              history.map(item => (
+              history.map((item) => (
                 <tr key={item._id}>
                   <td>{new Date(item.createdAt).toDateString()}</td>
                   <td>{item.activity}</td>
-                  <td className={item.points < 0 ? "points-negative" : "points-positive"}>
+                  <td
+                    className={
+                      item.points < 0 ? "points-negative" : "points-positive"
+                    }
+                  >
                     {item.points > 0 ? `+${item.points}` : item.points}
                   </td>
                 </tr>
               ))
             )}
           </tbody>
-
         </table>
       </div>
-
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        serverity={snackbar.serverity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
-  )
+  );
 }
 
-export default LoyaltyPoints
+export default LoyaltyPoints;

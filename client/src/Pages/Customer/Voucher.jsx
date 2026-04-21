@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/Voucher.css";
+import API_BASE_URL from "../../config/api";
 
 const Voucher = () => {
   const [vouchers, setVouchers] = useState([]);
@@ -16,7 +17,6 @@ const Voucher = () => {
 
       const data = await res.json();
 
-      
       const available = data.vouchers.filter(
         (v) => !v.isUsed && new Date(v.expiryDate) > new Date(),
       );
@@ -44,7 +44,6 @@ const Voucher = () => {
     <div style={{ textAlign: "center", marginTop: "30px" }}>
       <h2>My Vouchers</h2>
 
-     
       {vouchers.length === 0 ? (
         <div style={{ marginTop: "40px" }}>
           <p style={{ fontSize: "18px", color: "#555" }}>
@@ -70,7 +69,6 @@ const Voucher = () => {
           </button>
         </div>
       ) : (
-      
         vouchers.map((v) => (
           <div key={v._id} className="voucher-container">
             <div className="voucher-card">
@@ -84,12 +82,10 @@ const Voucher = () => {
                 </button>
               </div>
 
-           
               <p className="voucher-discount">
                 🎉 {v.discount}% OFF on your next trip
               </p>
 
-           
               <p className="voucher-expiry">
                 ⏳ Valid till: {new Date(v.expiryDate).toLocaleDateString()}
               </p>

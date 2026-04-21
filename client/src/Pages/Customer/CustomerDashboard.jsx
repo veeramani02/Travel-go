@@ -10,6 +10,7 @@ import { LuCalendarDays } from "react-icons/lu";
 import { FaRegStar } from "react-icons/fa6";
 import { LuCalendarClock } from "react-icons/lu";
 import API_BASE_URL from "../../config/api";
+import { PacmanLoader } from "react-spinners";
 
 function CustomerDashboard() {
   const navigate = useNavigate();
@@ -28,6 +29,7 @@ function CustomerDashboard() {
           throw new Error("Failed to fetch dashboard data");
         }
         const data = await res.json();
+        console.log(data);
         setDashboard(data);
       } catch (err) {
         console.log(err);
@@ -57,8 +59,8 @@ function CustomerDashboard() {
   };
   if (loading) {
     return (
-      <div style={{ textAlign: "center", padding: "40px", fontSize: "18px" }}>
-        Loading dashboard...
+      <div className="loading-customerdashboard">
+        <PacmanLoader color="#1e40af" size={25} />
       </div>
     );
   }
