@@ -5,6 +5,9 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine";
 import "../../Styles/TrackTrip.css";
 import API_BASE_URL from "../../config/api";
+import { Skeleton } from "@mui/material";
+import { PacmanLoader } from "react-spinners";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 function TrackTrip() {
   const { tripId } = useParams();
@@ -13,17 +16,18 @@ function TrackTrip() {
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
   const [loading, setLoading] = useState(true);
-
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   useEffect(() => {
     const fetchTrip = async () => {
       try {
-        const res = await fetch(
-          `${API_BASE_URL}/api/trip/latest`,
-          {
-            credentials: "include",
-          }
-        );
+        const res = await fetch(`${API_BASE_URL}/api/trip/latest`, {
+          credentials: "include",
+        });
 
         const data = await res.json();
 
@@ -31,7 +35,12 @@ function TrackTrip() {
           setTrip(data);
         }
       } catch (err) {
-        console.error(err);
+        setSnackbar((p) => ({
+          ...p,
+          open: true,
+          message: err.message,
+          severity: "error",
+        }));
       } finally {
         setLoading(false);
       }
@@ -40,11 +49,15 @@ function TrackTrip() {
     fetchTrip();
   }, [tripId]);
 
-  
   const getCoordinates = async (place) => {
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${place}&format=json`
+        `https://nominatim.openstreetmap.org/search?q=${place}&format=json`,
+        {
+          headers: {
+            "User-Agent": "MyTripApp/1.0",
+          },
+        },
       );
 
       const data = await res.json();
@@ -55,12 +68,16 @@ function TrackTrip() {
 
       return null;
     } catch (err) {
-      console.error("Geo Error:", err);
+      setSnackbar((p) => ({
+        ...p,
+        open: true,
+        message: err.message,
+        severity: "error",
+      }));
       return null;
     }
   };
 
-  
   useEffect(() => {
     if (!trip) return;
 
@@ -68,15 +85,20 @@ function TrackTrip() {
 
     const loadMap = async () => {
       const pickupCoords = await getCoordinates(
-        `${trip.pickupCity}, ${trip.pickupState}, India`
+        `${trip.pickupCity}, ${trip.pickupState}, India`,
       );
 
       const destCoords = await getCoordinates(
-        `${trip.destinationCity}, ${trip.destinationState}, India`
+        `${trip.destinationCity}, ${trip.destinationState}, India`,
       );
 
       if (!pickupCoords || !destCoords) {
-        console.error("Coordinates not found");
+        setSnackbar((p) => ({
+          ...p,
+          open: true,
+          message: "Coordinates not found",
+          severity: "error",
+        }));
         return;
       }
 
@@ -86,8 +108,8 @@ function TrackTrip() {
         attribution: "© OpenStreetMap contributors",
       }).addTo(map);
 
-     
       L.Routing.control({
+        serviceUrl: "https://router.project-osrm.org/route/v1",
         waypoints: [
           L.latLng(pickupCoords[0], pickupCoords[1]),
           L.latLng(destCoords[0], destCoords[1]),
@@ -108,6 +130,13 @@ function TrackTrip() {
 
           setDistance(distKm + " km");
           setDuration(`${hours} hr ${minutes} min`);
+
+          const bounds = L.latLngBounds([pickupCoords, destCoords]);
+
+          map.fitBounds(bounds, {
+            padding: [80, 80],
+            animate: true,
+          });
         })
         .addTo(map);
     };
@@ -121,8 +150,8 @@ function TrackTrip() {
 
   if (loading) {
     return (
-      <div className="track-page">
-        <h2>Loading Trip...</h2>
+      <div className="loading-customerdashboard">
+        <PacmanLoader color="#1e40af" size={25} />
       </div>
     );
   }
@@ -152,23 +181,45 @@ function TrackTrip() {
 
         <div className="trip-row">
           <span>Distance:</span>
-          <strong>{distance || "Calculating..."}</strong>
+          <strong>
+            {distance || (
+              <Skeleton
+                sx={{ borderRadius: "10px" }}
+                variant="rectangular"
+                height={20}
+                width={150}
+              />
+            )}
+          </strong>
         </div>
 
         <div className="trip-row">
           <span>Estimated Time:</span>
-          <strong>{duration || "Calculating..."}</strong>
+          <strong>
+            {duration || (
+              <Skeleton
+                sx={{ borderRadius: "10px" }}
+                variant="rectangular"
+                height={20}
+                width={150}
+              />
+            )}
+          </strong>
         </div>
 
         <div className="trip-row">
           <span>Status:</span>
-          <strong className="driver-status">
-            Driver On The Way 🚗
-          </strong>
+          <strong className="driver-status">Driver On The Way 🚗</strong>
         </div>
       </div>
 
       <div id="map" className="map-container"></div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
   );
 }

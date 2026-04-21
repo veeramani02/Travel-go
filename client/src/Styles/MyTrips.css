@@ -1,5 +1,4 @@
  .mytrips-page {
-  padding: 100px 30px 40px;
   background: var(--background);
   min-height: 100vh;
 }
@@ -76,10 +75,6 @@
 }
 
 @media (max-width: 768px) {
-  .mytrips-page {
-    
-    padding: 80px 15px 30px;
-  }
 
   .mytrips-title {
     font-size: 20px;
@@ -117,9 +112,6 @@
 
 
 @media (max-width: 480px) {
-  .mytrips-page {
-    padding-top: 70px;
-  }
 
   .trip-details p {
     font-size: 13px; 

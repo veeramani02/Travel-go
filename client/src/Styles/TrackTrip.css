@@ -1,5 +1,4 @@
- .track-page {
-  padding: 100px 30px 40px;
+.track-page {
   background: var(--background);
   min-height: 100vh;
 }
@@ -10,7 +9,6 @@
   margin-bottom: 25px;
   color: var(--primary);
 }
-
 
 .trip-info-card {
   background: white;
@@ -40,7 +38,6 @@
   color: var(--accent);
 }
 
-
 .map-container {
   height: 450px;
   width: 100%;
@@ -49,27 +46,24 @@
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
-
 .leaflet-routing-container {
   display: none !important;
 }
 
 @media (max-width: 768px) {
   .track-page {
-    
-    padding: 80px 15px 20px; 
+    padding: 80px 15px 20px;
   }
 
   .track-title {
     font-size: 20px;
     margin-bottom: 20px;
-    text-align: center; 
+    text-align: center;
   }
 
- 
   .trip-info-card {
     padding: 15px;
-   
+
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -81,6 +75,7 @@
     border-bottom: 1px solid #f0f0f0;
     padding-bottom: 8px;
   }
+  
 
   .trip-row:last-child {
     border-bottom: none;
@@ -96,20 +91,18 @@
     font-size: 15px;
   }
 
- 
   .map-container {
-    height: 350px; 
+    height: 350px;
     border-radius: 12px;
     margin-top: 10px;
   }
 }
 
-
 @media (max-width: 480px) {
   .map-container {
-    height: 300px; 
+    height: 300px;
   }
-  
+
   .track-page {
     padding-top: 70px;
   }

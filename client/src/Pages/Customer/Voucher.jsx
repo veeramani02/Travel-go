@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/Voucher.css";
 import API_BASE_URL from "../../config/api";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 const Voucher = () => {
   const [vouchers, setVouchers] = useState([]);
   const [copiedCode, setCopiedCode] = useState("");
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
   const fetchVouchers = async () => {
     try {
@@ -38,6 +44,14 @@ const Voucher = () => {
     setTimeout(() => {
       setCopiedCode("");
     }, 2000);
+    setSnackbar((p) => ({ ...p, open: false }));
+    setTimeout(() => {
+      setSnackbar({
+        open: true,
+        message: "Code copied successfully",
+        severity: "success",
+      });
+    }, 100);
   };
 
   return (
@@ -78,7 +92,7 @@ const Voucher = () => {
                 <span className="voucher-code">{v.code}</span>
 
                 <button className="copy-btn" onClick={() => handleCopy(v.code)}>
-                  Copy
+                  {copiedCode === v.code ? "Copied!" : "Copy"}
                 </button>
               </div>
 
@@ -89,14 +103,16 @@ const Voucher = () => {
               <p className="voucher-expiry">
                 ⏳ Valid till: {new Date(v.expiryDate).toLocaleDateString()}
               </p>
-
-              {copiedCode === v.code && (
-                <span className="copied-text">Copied!</span>
-              )}
             </div>
           </div>
         ))
       )}
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
   );
 };

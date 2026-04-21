@@ -91,10 +91,12 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
       if (formData.driverId !== oldData.driverId) {
         sendSms(driver.phone, driverMsg);
 
-        if (driver?.email) sendEmail(driver?.email, driverMsg);
+        if (driver?.email)
+          sendEmail(driver?.email, "TravelGo - Trip Assignment", driverMsg);
 
         sendSms(formData.phone, customerMsg);
-        if (formData?.email) sendEmail(formData?.email, customerMsg);
+        if (formData?.email)
+          sendEmail(formData?.email, "TravelGo - Trip Assignment", customerMsg);
       }
       setSnackbar({
         open: true,
