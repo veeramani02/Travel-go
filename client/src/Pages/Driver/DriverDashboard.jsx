@@ -1,15 +1,49 @@
-import React from 'react'
+import React, { useState,useEffect } from 'react'
 import CarImage from '../../assets/drivercar.png'
 import MoneyImage from '../../assets/money.png'
 import FlagImage from '../../assets/flag.svg'
 import "../../Styles/DriverDashboard.css"
+import API_BASE_URL from "../../config/api";
 
 export default function Driver() {
+  const [status,setStatus]=useState("offline")
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/driver/me`, {
+    credentials: "include"
+  })
+    .then(res => res.json())
+    .then(data => {
+      setStatus(data.status); 
+    });
+}, []);
+console.log(API_BASE_URL)
+  const goOnline = async () => {
+  alert("You are going online 🚖");
+
+  await fetch(`${API_BASE_URL}/api/driver/online`, {
+    method: "POST",
+    credentials: "include"
+  });
+
+  setStatus("online");
+};
+const goOffline = async () => {
+  await fetch(`${API_BASE_URL}/api/driver/offline`, {
+    method: "POST",
+    credentials: "include"
+  });
+
+  setStatus("offline");
+};
   return (
     <div className='driver-container'>
 
       <h1 className="driver-title">Driver Dashboard</h1>
-
+   {status === "offline" ? (
+  <button onClick={goOnline}>Go Online</button>
+) : (
+  <button onClick={goOffline}>Go Offline</button>
+)}
       {/* Summary Cards */}
       <div className='driver-cards'>
 
@@ -110,3 +144,4 @@ export default function Driver() {
     </div>
   )
 }
+

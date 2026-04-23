@@ -6,7 +6,7 @@ import userRouter from "./routes/userRoutes.js";
 import cors from "cors";
 import triprouter from "./routes/tripRoutes.js";
 import cookieParser from "cookie-parser";
-import driverRouter from "./routes/driverRoutes.js";
+
 import PaymentRouter from "./routes/PaymentRoutes.js";
 import vehicleRoutes from "./routes/vehicleRoutes.js";
 
@@ -16,6 +16,7 @@ import dueRouter from "./routes/dueRoutes.js";
 import custRouter from "./routes/custRoutes.js";
 import NotifyRoutes from "./routes/NotifyRoutes.js";
 import { startDriverStatusChecker } from "./utils/driverStatusChecker.js";
+import driverRoutes from "./routes/driverRoutes.js";
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,7 +35,7 @@ app.use("/api/auth", router);
 app.use("/api/user", userRouter);
 app.use("/api/trip", triprouter);
 app.use("/uploads", express.static("uploads"));
-app.use("/api/driver", driverRouter);
+app.use("/api/driver", driverRoutes);
 app.use("/api/payments", PaymentRouter);
 app.use("/api/vehicle", vehicleRoutes);
 app.use("/api/payments", PaymentRouter);
@@ -43,6 +44,8 @@ app.use("/api/voucher", voucherRoute);
 app.use("/api/due", dueRouter);
 app.use("/api/dashboard", custRouter);
 app.use("/api/notify", NotifyRoutes);
+
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
+

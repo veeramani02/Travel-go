@@ -193,6 +193,19 @@ const driverController = {
     catch(err){
       res.status(500).json({message:"Error fetching trips",error:err.message});
     }
+  },
+  getDriverProfile:async(req,res)=>{
+    try{
+     const driver =await Driver.findById(req.user._id)
+     if(!driver){
+      return res.status(404).json({message:"Driver not found"});
+     }
+     res.json(driver);
+     console.log("API hit");
+    }
+    catch(err){
+      res.status(500).json({message:"Error fetching profile",error:err.message});
+    }
   }
 };
 

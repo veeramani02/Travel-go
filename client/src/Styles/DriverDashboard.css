@@ -1,4 +1,4 @@
-.driver-container {
+ .driver-container {
     width: 100%;
     min-height: 100vh;
     padding: 40px;
@@ -128,4 +128,5 @@
     .driver-recent-table {
         min-width: 500px;
     }
-}
+} 
+ 
