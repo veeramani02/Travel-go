@@ -172,6 +172,11 @@ input:checked + .slider:before {
   border-bottom: 1px solid #eee;
 }
 
+.settings-caption {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
 .security-left {
   display: flex;
   align-items: center;

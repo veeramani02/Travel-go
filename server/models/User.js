@@ -15,6 +15,7 @@ const userSchema = new mongoose.Schema(
     pushNotify: { type: Boolean, default: false },
     smsNotify: { type: Boolean, default: false },
     twoStepVerification: { type: Boolean, default: false },
+    passwordChangedAt: Date,
   },
   { timestamps: true },
 );

@@ -137,6 +137,29 @@ function Settings() {
     if (success) setIsEditing(true);
   };
 
+  const getTimeAgo = (date) => {
+    if (!date) return "not avaliable";
+
+    const now = new Date();
+    const past = new Date(date);
+
+    const diff = Math.floor((now - past) / 1000);
+
+    const minutes = Math.floor(diff / 60);
+    const hours = Math.floor(diff / 3600);
+    const days = Math.floor(diff / 86400);
+    const months = Math.floor(diff / (86400 * 30));
+    const years = Math.floor(diff / (86400 * 365));
+
+    if (years > 0) return `${years} year(s) ago`;
+    if (months > 0) return `${months} month(s) ago`;
+    if (days > 0) return `${days} day(s) ago`;
+    if (hours > 0) return `${hours} hour(s) ago`;
+    if (minutes > 0) return `${minutes} min(s) ago`;
+
+    return "Just now";
+  };
+
   return (
     <div className="settings-page">
       <div className="settings-header">
@@ -316,16 +339,13 @@ function Settings() {
 
             <div>
               <h4>Password</h4>
-              <p>Last changed 3 months ago</p>
+              <p className="settings-caption">Last changed {getTimeAgo(user?.passwordChangedAt)}</p>
             </div>
           </div>
 
-          <button
-            className="link-btn"
-            onClick={() => navigate("changepassword")}
-          >
+          <p className="link-btn" onClick={() => navigate("changepassword")}>
             Change
-          </button>
+          </p>
         </div>
 
         <div className="security-item">
@@ -334,11 +354,21 @@ function Settings() {
 
             <div>
               <h4>Two-Factor Authentication</h4>
-              <p>Add an extra layer of security</p>
+              <p className="settings-caption">Add an extra layer of security</p>
             </div>
           </div>
 
-          <button className="link-btn">Enable</button>
+          <p
+            className="link-btn"
+            onClick={() =>
+              setUser((u) => ({
+                ...u,
+                twoStepVerification: !u.twoStepVerification,
+              }))
+            }
+          >
+            {user?.twoStepVerification ? "Enabled" : "Enable"}
+          </p>
         </div>
       </div>
 

@@ -6,6 +6,7 @@ import CustomizedSnackbars from "./CustomizedSnackbars";
 import API_BASE_URL from "../config/api";
 import { sendEmail, sendSms } from "../services/customerService";
 import { useAuth } from "../Context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Changepasswordpage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +23,7 @@ export default function Changepasswordpage() {
     severity: "success",
   });
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     console.log(user);
@@ -170,6 +172,13 @@ export default function Changepasswordpage() {
               <div className="changepasswordbtn-div">
                 <button className="changepasswordbtn" type="submit">
                   Change Password
+                </button>
+                <button
+                  className="changepasswordbtn"
+                  type="button"
+                  onClick={() => navigate("/admin/settings")}
+                >
+                  Back to settings
                 </button>
               </div>
             </div>
