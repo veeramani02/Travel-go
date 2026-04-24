@@ -13,6 +13,10 @@ const driverSchema = new mongoose.Schema({
   status: String,
   state: String,
   city: String,
+  role: {
+  type: String,
+  default: "driver"
+},
   rating:{
     type:Number,
     default:0

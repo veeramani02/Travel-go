@@ -177,7 +177,7 @@ const driverController = {
   driverPing:async(req,res)=>{
     try{
       const driverId=req.user._id;
-      await Driver.findByIdAndUpdate(driverId,{lastseen:Date.now()});
+      await Driver.findByIdAndUpdate(driverId,{lastSeen:Date.now()});
       res.json({message:"Ping received"});
     }
     catch(err){
@@ -194,19 +194,34 @@ const driverController = {
       res.status(500).json({message:"Error fetching trips",error:err.message});
     }
   },
-  getDriverProfile:async(req,res)=>{
-    try{
-     const driver =await Driver.findById(req.user._id)
-     if(!driver){
-      return res.status(404).json({message:"Driver not found"});
-     }
-     res.json(driver);
-     console.log("API hit");
+  // getDriverProfile:async(req,res)=>{
+  //   try{
+  //    const driver =await Driver.findById(req.user._id)
+  //    if(!driver){
+  //     return res.status(404).json({message:"Driver not found"});
+  //    }
+  //    res.json(driver);
+  //    console.log("API hit");
+  //   }
+  //   catch(err){
+  //     res.status(500).json({message:"Error fetching profile",error:err.message});
+  //   }
+  // }
+  getDriverProfile: async (req, res) => {
+  console.log("🔥 API HIT");
+
+  try {
+    const driver = await Driver.findOne({ email: req.user.email });
+
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
     }
-    catch(err){
-      res.status(500).json({message:"Error fetching profile",error:err.message});
-    }
+
+    res.json(driver);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
+}
 };
 
 

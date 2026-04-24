@@ -22,7 +22,5 @@ driverRoutes.post("/offline", protect, authorizeRoles("driver"), driverControlle
 driverRoutes.post("/ping", protect, authorizeRoles("driver"), driverController.driverPing);
 driverRoutes.get("/my-trips", protect, authorizeRoles("driver"), driverController.getDriverTrips);
 driverRoutes.get("/me", protect, authorizeRoles("driver"), driverController.getDriverProfile);
-driverRoutes.get("/me", (req, res) => {
-  res.send("ME ROUTE WORKING");
-});
+
 export default driverRoutes;
