@@ -15,7 +15,7 @@ import voucherRoute from "./routes/voucherRoutes.js";
 import dueRouter from "./routes/dueRoutes.js";
 import custRouter from "./routes/custRoutes.js";
 import NotifyRoutes from "./routes/NotifyRoutes.js";
-import { startDriverStatusChecker } from "./utils/driverStatusChecker.js";
+import startDriverStatusChecker from "./utils/driverStatusChecker.js";
 import driverRoutes from "./routes/driverRoutes.js";
 dotenv.config();
 const app = express();
@@ -48,4 +48,3 @@ app.use("/api/notify", NotifyRoutes);
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
 });
-

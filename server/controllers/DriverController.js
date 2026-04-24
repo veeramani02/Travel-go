@@ -45,8 +45,8 @@ const driverController = {
       const hashedPassword = await bcrypt.hash("123456", 10);
 
       const driver = new Driver({
-      ...req.body,
-      password: hashedPassword
+        ...req.body,
+        password: hashedPassword,
       });
       await driver.save();
       res.json({ general: "Driver added" });
@@ -154,60 +154,68 @@ const driverController = {
       res.status(500).send(err.message);
     }
   },
-  goOnline:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      const driver=await Driver.findByIdAndUpdate(driverId,{status:"online"},{new:true});
-      res.json({message:"You are online now",driver});
-    }
-    catch(err){
-      res.status(500).json({message:"Error going online",error:err.message});
-    }
-  },
-  goOffline:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      const driver=await Driver.findByIdAndUpdate(driverId,{status:"offline"},{new:true});
-      res.json({message:"You are offline now",driver});
-    }
-    catch(err){
-      res.status(500).json({message:"Error going offline",error:err.message});
+  goOnline: async (req, res) => {
+    try {
+      const driverId = req.user._id;
+      const driver = await Driver.findByIdAndUpdate(
+        driverId,
+        { status: "online" },
+        { new: true },
+      );
+      res.json({ message: "You are online now", driver });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error going online", error: err.message });
     }
   },
-  driverPing:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      await Driver.findByIdAndUpdate(driverId,{lastseen:Date.now()});
-      res.json({message:"Ping received"});
+  goOffline: async (req, res) => {
+    try {
+      const driverId = req.user._id;
+      const driver = await Driver.findByIdAndUpdate(
+        driverId,
+        { status: "offline" },
+        { new: true },
+      );
+      res.json({ message: "You are offline now", driver });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error going offline", error: err.message });
     }
-    catch(err){
-      res.status(500).json({message:"Error updating last seen",error:err.message});
-    }  
   },
-  getDriverTrips:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      const trips=await Trip.find({driver:driverId})
+  driverPing: async (req, res) => {
+    try {
+      const driverId = req.user._id;
+      await Driver.findByIdAndUpdate(driverId, { lastseen: Date.now() });
+      res.json({ message: "Ping received" });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error updating last seen", error: err.message });
+    }
+  },
+  getDriverTrips: async (req, res) => {
+    try {
+      const driverId = req.user._id;
+      const trips = await Trip.find({ driver: driverId });
       res.json(trips);
-    }
-    catch(err){
-      res.status(500).json({message:"Error fetching trips",error:err.message});
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching trips", error: err.message });
     }
   },
-  getDriverProfile:async(req,res)=>{
-    try{
-     const driver =await Driver.findById(req.user._id)
-     if(!driver){
-      return res.status(404).json({message:"Driver not found"});
-     }
-     res.json(driver);
-     console.log("API hit");
+  getDriverProfile: async (req, res) => {
+    try {
+      res.json(req.user);
+      console.log("API hit");
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching profile", error: err.message });
     }
-    catch(err){
-      res.status(500).json({message:"Error fetching profile",error:err.message});
-    }
-  }
+  },
 };
-
 
 export default driverController;

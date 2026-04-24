@@ -5,13 +5,13 @@ import { useAuth } from "../../Context/AuthContext";
 import API_BASE_URL from "../../config/api";
 
 function Login() {
-  const{setUser}=useAuth()
+  const { setUser } = useAuth();
   const navigate = useNavigate();
-const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
- const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const handleChange = (e) => {
     setFormData({
@@ -22,11 +22,11 @@ const [formData, setFormData] = useState({
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-  if (!formData.email || !formData.password) {
+    if (!formData.email || !formData.password) {
       setError("All fields are required");
       return;
     }
-try {
+    try {
       const res = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: "POST",
         headers: {
@@ -35,13 +35,13 @@ try {
         credentials: "include",
         body: JSON.stringify(formData),
       });
-  const data = await res.json();
-  if (!res.ok) {
+      const data = await res.json();
+      if (!res.ok) {
         setError(data.message);
         return;
       }
-   const role = data.user.role;
-    setUser(data.user)
+      const role = data.user.role;
+      setUser(data.user);
       navigate(`/${role}/dashboard`);
     } catch (err) {
       console.log(err);

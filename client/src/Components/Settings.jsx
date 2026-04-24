@@ -4,7 +4,7 @@ import { FaLock } from "react-icons/fa";
 import { MdSecurity } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
 import { useAuth } from "../Context/AuthContext";
-import CustomizedSnackbar from "./CustomizedSnackbars";
+import CustomizedSnackbars from "./CustomizedSnackbars";
 import {
   getAvatarColor,
   sendEmail,
@@ -12,6 +12,7 @@ import {
   updateUser,
 } from "../services/customerService";
 import API_BASE_URL from "../config/api";
+import { useNavigate } from "react-router-dom";
 
 function Settings() {
   const [profileImage, setProfileImage] = useState(null);
@@ -25,6 +26,7 @@ function Settings() {
   const ProfileRef = useRef();
   const [profileFile, setProfileFile] = useState(null);
   const [oldData, setOldData] = useState(user);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (ProfileRef.current) {
@@ -138,7 +140,7 @@ function Settings() {
   return (
     <div className="settings-page">
       <div className="settings-header">
-        <h1>System Settings</h1>
+        <h1 className="title">System Settings</h1>
         <p>Configure your fleet management preferences.</p>
       </div>
       <div className="settings-card">
@@ -318,7 +320,12 @@ function Settings() {
             </div>
           </div>
 
-          <button className="link-btn">Change</button>
+          <button
+            className="link-btn"
+            onClick={() => navigate("changepassword")}
+          >
+            Change
+          </button>
         </div>
 
         <div className="security-item">
@@ -343,7 +350,7 @@ function Settings() {
           Save Changes
         </button>
       </div>
-      <CustomizedSnackbar
+      <CustomizedSnackbars
         open={snackbar.open}
         message={snackbar.message}
         severity={snackbar.severity}

@@ -5,10 +5,30 @@ import { authorizeRoles } from "../middleware/roleMiddleware.js";
 console.log("🔥 DRIVER ROUTES FILE LOADED");
 const driverRoutes = express.Router();
 
-driverRoutes.post("/add", protect,authorizeRoles("admin"), driverController.addDriver);
-driverRoutes.get("/driver", protect,authorizeRoles("admin"), driverController.getDrivers);
-driverRoutes.put("/update/:id", protect,authorizeRoles("admin"), driverController.updateDriver);
-driverRoutes.delete("/delete/:id", protect,authorizeRoles("admin"), driverController.deleteDriver);
+driverRoutes.post(
+  "/add",
+  protect,
+  authorizeRoles("admin"),
+  driverController.addDriver,
+);
+driverRoutes.get(
+  "/driver",
+  protect,
+  authorizeRoles("admin"),
+  driverController.getDrivers,
+);
+driverRoutes.put(
+  "/update/:id",
+  protect,
+  authorizeRoles("admin"),
+  driverController.updateDriver,
+);
+driverRoutes.delete(
+  "/delete/:id",
+  protect,
+  authorizeRoles("admin"),
+  driverController.deleteDriver,
+);
 
 driverRoutes.post(
   "/uploads",
@@ -17,11 +37,36 @@ driverRoutes.post(
   driverController.uploadMiddleware,
   driverController.uploadFiles,
 );
-driverRoutes.post("/online", protect, authorizeRoles("driver"), driverController.goOnline);
-driverRoutes.post("/offline", protect, authorizeRoles("driver"), driverController.goOffline);
-driverRoutes.post("/ping", protect, authorizeRoles("driver"), driverController.driverPing);
-driverRoutes.get("/my-trips", protect, authorizeRoles("driver"), driverController.getDriverTrips);
-driverRoutes.get("/me", protect, authorizeRoles("driver"), driverController.getDriverProfile);
+driverRoutes.post(
+  "/online",
+  protect,
+  authorizeRoles("driver"),
+  driverController.goOnline,
+);
+driverRoutes.post(
+  "/offline",
+  protect,
+  authorizeRoles("driver"),
+  driverController.goOffline,
+);
+driverRoutes.post(
+  "/ping",
+  protect,
+  authorizeRoles("driver"),
+  driverController.driverPing,
+);
+driverRoutes.get(
+  "/my-trips",
+  protect,
+  authorizeRoles("driver"),
+  driverController.getDriverTrips,
+);
+driverRoutes.get(
+  "/me",
+  protect,
+  authorizeRoles("driver"),
+  driverController.getDriverProfile,
+);
 driverRoutes.get("/me", (req, res) => {
   res.send("ME ROUTE WORKING");
 });

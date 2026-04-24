@@ -9,6 +9,7 @@ import Login from "./Pages/Auth/Login";
 import LandingPage from "./Pages/LandingPage";
 import DashboardLayout from "./Layouts/DashboardLayout";
 import Signup from "./Pages/Auth/Signup";
+import Changepasswordpage from "./Components/Changepasswordpage";
 
 // Customer
 import CustomerDashboard from "./Pages/Customer/CustomerDashboard";
@@ -216,6 +217,14 @@ function App() {
             element={
               <ProtectedRoute role="admin">
                 <Settings />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/settings/changepassword"
+            element={
+              <ProtectedRoute role="admin">
+                <Changepasswordpage />
               </ProtectedRoute>
             }
           />

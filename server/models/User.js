@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
     emailNotify: { type: Boolean, default: true },
     pushNotify: { type: Boolean, default: false },
     smsNotify: { type: Boolean, default: false },
+    twoStepVerification: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

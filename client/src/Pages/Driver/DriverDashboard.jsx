@@ -1,54 +1,65 @@
-import React, { useState,useEffect } from 'react'
-import CarImage from '../../assets/drivercar.png'
-import MoneyImage from '../../assets/money.png'
-import FlagImage from '../../assets/flag.svg'
-import "../../Styles/DriverDashboard.css"
+import React, { useState, useEffect } from "react";
+import CarImage from "../../assets/drivercar.png";
+import MoneyImage from "../../assets/money.png";
+import FlagImage from "../../assets/flag.svg";
+import "../../Styles/DriverDashboard.css";
 import API_BASE_URL from "../../config/api";
 
 export default function Driver() {
-  const [status,setStatus]=useState("offline")
+  const [status, setStatus] = useState("offline");
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/driver/me`, {
-    credentials: "include"
-  })
-    .then(res => res.json())
-    .then(data => {
-      setStatus(data.status); 
-    });
-}, []);
-console.log(API_BASE_URL)
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/driver/me`, {
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status}`);
+        }
+
+        const data = await res.json();
+
+        console.log("API DATA:", data); 
+
+        setStatus(data.status);
+      } catch (err) {
+        console.error("Fetch error:", err.message);
+      }
+    };
+
+    fetchData();
+  }, []);
   const goOnline = async () => {
-  alert("You are going online 🚖");
+    alert("You are going online 🚖");
 
-  await fetch(`${API_BASE_URL}/api/driver/online`, {
-    method: "POST",
-    credentials: "include"
-  });
+    await fetch(`${API_BASE_URL}/api/driver/online`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  setStatus("online");
-};
-const goOffline = async () => {
-  await fetch(`${API_BASE_URL}/api/driver/offline`, {
-    method: "POST",
-    credentials: "include"
-  });
+    setStatus("online");
+  };
+  const goOffline = async () => {
+    await fetch(`${API_BASE_URL}/api/driver/offline`, {
+      method: "POST",
+      credentials: "include",
+    });
 
-  setStatus("offline");
-};
+    setStatus("offline");
+  };
   return (
-    <div className='driver-container'>
-
+    <div className="driver-container">
       <h1 className="driver-title">Driver Dashboard</h1>
-   {status === "offline" ? (
-  <button onClick={goOnline}>Go Online</button>
-) : (
-  <button onClick={goOffline}>Go Offline</button>
-)}
+      {status === "offline" ? (
+        <button onClick={goOnline}>Go Online</button>
+      ) : (
+        <button onClick={goOffline}>Go Offline</button>
+      )}
       {/* Summary Cards */}
-      <div className='driver-cards'>
-
-        <div className='driver-card'>
-          <div className='driver-circle'>
+      <div className="driver-cards">
+        <div className="driver-card">
+          <div className="driver-circle">
             <img src={CarImage} alt="distance" />
           </div>
           <div className="driver-info">
@@ -57,8 +68,8 @@ const goOffline = async () => {
           </div>
         </div>
 
-        <div className='driver-card'>
-          <div className='driver-circle'>
+        <div className="driver-card">
+          <div className="driver-circle">
             <img src={MoneyImage} alt="money" />
           </div>
           <div className="driver-info">
@@ -67,8 +78,8 @@ const goOffline = async () => {
           </div>
         </div>
 
-        <div className='driver-card'>
-          <div className='driver-circle'>
+        <div className="driver-card">
+          <div className="driver-circle">
             <img src={FlagImage} alt="trips" />
           </div>
           <div className="driver-info">
@@ -76,12 +87,10 @@ const goOffline = async () => {
             <h2 className="driver-value">20</h2>
           </div>
         </div>
-
       </div>
 
-      <div className='driver-table-section'>
-
-        <div className='driver-recent'>
+      <div className="driver-table-section">
+        <div className="driver-recent">
           <p className="driver-recent-title">Recent Trips</p>
 
           <div className="driver-table-wrapper">
@@ -136,12 +145,8 @@ const goOffline = async () => {
               </tbody>
             </table>
           </div>
-
         </div>
-
       </div>
-
     </div>
-  )
+  );
 }
-
