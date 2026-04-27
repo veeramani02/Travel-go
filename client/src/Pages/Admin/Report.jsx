@@ -14,37 +14,21 @@ import {
 } from "recharts";
 
 import { PieChart, Pie, Cell } from "recharts";
-
-import "../../Styles/Report.css";
 import {
   getDriver,
   getVehicle,
   TripsData,
 } from "../../services/customerService";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 function Report() {
   const [range, setRange] = useState("weekly");
-
-  /* Trip Data */
-
-  const tripData = [
-    { day: "Mon", completed: 40, cancelled: 4 },
-    { day: "Tue", completed: 30, cancelled: 2 },
-    { day: "Wed", completed: 20, cancelled: 5 },
-    { day: "Thu", completed: 27, cancelled: 3 },
-    { day: "Fri", completed: 18, cancelled: 1 },
-    { day: "Sat", completed: 23, cancelled: 2 },
-    { day: "Sun", completed: 34, cancelled: 6 },
-  ];
-
-  /* Vehicle Utilization */
-
-  const vehicleData = [
-    { name: "Bus", value: 25 },
-    { name: "SUV", value: 30 },
-    { name: "Sedan", value: 28 },
-    { name: "Van", value: 17 },
-  ];
+  let bus = 0,
+    suv = 0,
+    sedan = 0,
+    van = 0,
+    lc = 0;
+  const [tripData, setTripData] = useState([]);
 
   const COLORS = ["#f59e0b", "#10b981", "#3b82f6", "#f97316"];
 
@@ -56,22 +40,176 @@ function Report() {
   const [customers, setCustomers] = useState([]);
   const [drivers, setDrivers] = useState([]);
   const [vehicles, setVehicles] = useState([]);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  vehicles.forEach((v) => {
+    let vehicleType = v?.vehicleType?.toLowerCase().trim();
+    switch (vehicleType) {
+      case "bus":
+        bus++;
+        break;
+      case "suv":
+        suv++;
+        break;
+      case "sedan":
+        sedan++;
+        break;
+      case "van":
+        van++;
+        break;
+      case "luxury coach":
+        lc++;
+        break;
+    }
+  });
+  const vehicleData = [
+    { name: "Bus", value: bus },
+    { name: "SUV", value: suv },
+    { name: "Sedan", value: sedan },
+    { name: "Van", value: van },
+    { name: "Luxury Coach", value: lc },
+  ];
+
+  const getWeeklyData = (trips) => {
+    const result = {
+      Mon: { day: "Mon", completed: 0, cancelled: 0 },
+      Tue: { day: "Tue", completed: 0, cancelled: 0 },
+      Wed: { day: "Wed", completed: 0, cancelled: 0 },
+      Thu: { day: "Thu", completed: 0, cancelled: 0 },
+      Fri: { day: "Fri", completed: 0, cancelled: 0 },
+      Sat: { day: "Sat", completed: 0, cancelled: 0 },
+      Sun: { day: "Sun", completed: 0, cancelled: 0 },
+    };
+
+    trips.forEach((trip) => {
+      const d = new Date(trip.dateAndTime);
+
+      const dayName = d.toLocaleDateString("en-US", {
+        weekday: "short",
+      });
+
+      if (trip.status === "completed") {
+        result[dayName].completed++;
+      } else if (trip.status === "cancelled") {
+        result[day].cancelled++;
+      }
+    });
+    return Object.values(result);
+  };
+
+  const getMonthlyData = (trips) => {
+    const result = {};
+    const now = new Date();
+
+    trips.forEach((trip) => {
+      const d = new Date(trip.dateAndTime);
+
+      if (
+        d.getMonth() === now.getMonth() &&
+        d.getFullYear() === now.getFullYear()
+      ) {
+        const day = d.getDate();
+        const month = d.toLocaleDateString("en-US", { month: "short" });
+
+        if (!result[day]) {
+          result[day] = { day: `${day} ${month}`, completed: 0, cancelled: 0 };
+        }
+
+        if (trip.status === "completed") {
+          result[day].completed++;
+        } else if (trip.status === "cancelled") {
+          result[day].cancelled++;
+        }
+      }
+    });
+
+    return Object.values(result).sort((a, b) => a.day - b.day);
+  };
+
+  const getYearlyData = (trips) => {
+    const result = {
+      Jan: { day: "Jan", completed: 0, cancelled: 0 },
+      Feb: { day: "Feb", completed: 0, cancelled: 0 },
+      Mar: { day: "Mar", completed: 0, cancelled: 0 },
+      Apr: { day: "Apr", completed: 0, cancelled: 0 },
+      May: { day: "May", completed: 0, cancelled: 0 },
+      Jun: { day: "Jun", completed: 0, cancelled: 0 },
+      Jul: { day: "Jul", completed: 0, cancelled: 0 },
+      Aug: { day: "Aug", completed: 0, cancelled: 0 },
+      Sep: { day: "Sep", completed: 0, cancelled: 0 },
+      Oct: { day: "Oct", completed: 0, cancelled: 0 },
+      Nov: { day: "Nov", completed: 0, cancelled: 0 },
+      Dec: { day: "Dec", completed: 0, cancelled: 0 },
+    };
+
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    trips.forEach((trip) => {
+      const d = new Date(trip.dateAndTime);
+
+      // only current year
+      if (d.getFullYear() === currentYear) {
+        const monthName = d.toLocaleDateString("en-US", {
+          month: "short",
+        });
+
+        if (trip.status === "completed") {
+          result[monthName].completed++;
+        } else if (trip.status === "cancelled") {
+          result[day].cancelled++;
+        }
+      }
+    });
+
+    return Object.values(result);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
-      const [customer, driver, vehicle] = await Promise.all([
-        TripsData(),
-        getDriver(),
-        getVehicle(),
-      ]);
-      setCustomers(customer);
-      setDrivers(driver);
-      setVehicles(vehicle);
-      console.log(driver);
-      console.log(customer);
+      try {
+        const [customer, driver, vehicle] = await Promise.all([
+          TripsData(),
+          getDriver(),
+          getVehicle(),
+        ]);
+        setCustomers(customer);
+        setDrivers(driver);
+        setVehicles(vehicle);
+        console.log(driver);
+        console.log(vehicle);
+        console.log(customer);
+      } catch (e) {
+        setSnackbar({
+          open: true,
+          message: e.message,
+          severity: "error",
+        });
+      }
     };
     fetchData();
   }, []);
+
+  const processData = () => {
+    switch (range) {
+      case "weekly":
+        return getWeeklyData(customers);
+      case "monthly":
+        return getMonthlyData(customers);
+      case "yearly":
+        return getYearlyData(customers);
+      default:
+        return [];
+    }
+  };
+
+  useEffect(() => {
+    if (!customers.length) return;
+    setTripData(processData());
+  }, [range, customers]);
 
   return (
     <div className="reportPage">
@@ -176,6 +314,12 @@ function Report() {
           ))}
         </div>
       </div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
     </div>
   );
 }
