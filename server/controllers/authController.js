@@ -45,11 +45,20 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Email & Password required" });
       }
     let user = await User.findOne({ email });
-    let role="user";
-      if(!user){
-      user = await Driver.findOne({ email });
-      role="driver";
-      }
+    // let role="user";
+    //   if(!user){
+    //   user = await Driver.findOne({ email });
+    //   role="driver";
+    //   }
+    let role;
+
+
+if (user) {
+  role = user.role; 
+} else {
+  user = await Driver.findOne({ email });
+  role = "driver";
+}
       if (!user) {
       return res.status(404).json({ message: "User not found" }); 
       }

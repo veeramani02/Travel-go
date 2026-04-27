@@ -35,11 +35,14 @@
 .document-info,
 .vehicle-details {
     display: flex;
-    justify-content: space-between;
-    gap: 15px;
-    flex-wrap: wrap;        
+    gap:15px;
+    flex-wrap: wrap; 
+     
 }
-
+.details,.validation{
+   
+    flex:1;
+}
 .input select,
 .input input {            
     padding: 6px 14px;

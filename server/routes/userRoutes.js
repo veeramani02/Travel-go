@@ -28,5 +28,6 @@ userRouter.post(
   userController.uploadMiddleware,
   userController.uploadFiles,
 );
+userRouter.post("/changepassword", protect, userController.changePassword);
 
 export default userRouter;

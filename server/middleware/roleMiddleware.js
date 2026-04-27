@@ -12,7 +12,7 @@
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
 
-    // 🔥 ADD THIS CHECK
+    
     if (!req.user) {
       return res.status(401).json({
         message: "User not authenticated"

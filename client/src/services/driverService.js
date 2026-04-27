@@ -24,6 +24,7 @@ export const addDriver = async (formData) => {
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
+        password:formData.password,
         profile: formData.profile,
         license: formData.license,
         vehicleNo: formData.vehicleNo,

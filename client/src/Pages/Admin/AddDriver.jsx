@@ -25,6 +25,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
     name: "",
     phone: "",
     email: "",
+    password:"",
     profile: "",
     vehicleType: "",
     vehicleNo: "",
@@ -148,6 +149,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       name: "",
       phone: "",
       email: "",
+      password:"",
       profile: "",
       vehicleType: "",
       vehicleNo: "",
@@ -173,7 +175,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
   function handleRemoveProfileFile() {
     setProfilePreview(null);
     setProfileFile(null);
-    //if (profilePreview) URL.revokeObjectURL(profilePreview);
+   
   }
 
   function handleRemoveLicenseFile() {
@@ -199,6 +201,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
         <h1 className="addDriver-title">Add New Driver</h1>
         <p>Personal Details</p>
         <div className="personal-details">
+          <div className="details">
           <div className="input">
             <label htmlFor="name">Full Name</label>
             <input
@@ -223,6 +226,8 @@ export default function AddDriver({ openDriver, closeDriver }) {
               required
             />
           </div>
+          </div>
+          <div className="validation">
           <div className="input">
             <label htmlFor="email">Email Address</label>
             <input
@@ -234,7 +239,21 @@ export default function AddDriver({ openDriver, closeDriver }) {
               onChange={handleChange}
             />
           </div>
+          
+           <div className="input">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Enter password"
+              value={formData.password}
+              onChange={handleChange}
+            />
+          </div>
+          </div>
         </div>
+        
         <div className="addDriver-upload-picture">
           <h3>Profile Picture</h3>
           <div className="driver-profile-picture-section">

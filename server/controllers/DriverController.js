@@ -4,6 +4,8 @@ import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
 import Trip from "../models/Trip.js";
+import User from "../models/user.js";
+import bcrypt from "bcryptjs";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -19,43 +21,112 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const driverController = {
-  addDriver: async (req, res) => {
-    try {
-      let { name, phone, email, state, city, vehicleType, vehicleNo, license } =
-        req.body;
-      let errors = {};
-      if (!name || name.trim().length < 3)
-        errors.name = "Name must be at least 3 characters long";
-      if (!phone) errors.phone = "Enter the Phone Number";
-      let firstDigit = phone.toString()[0];
-      let validateDigit = ["8", "7", "9", "6"];
-      if (phone.toString().length !== 10 || !validateDigit.includes(firstDigit))
-        errors.phone = "Invalid Phone Number";
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (email && !emailRegex.test(email))
-        errors.email = "Invalid Email Address";
-      if (!state || !city) errors.state = "Select State and City";
-      if (vehicleType) {
-        if (!vehicleNo) errors.vehicleNo = "Enter the Vehicle Number";
-      }
-      if (!license) errors.license = "Upload a License Image";
-      if (Object.keys(errors).length > 0) {
-        return res.status(400).json({ errors });
-      }
-      const hashedPassword = await bcrypt.hash("123456", 10);
+  // addDriver: async (req, res) => {
+  //   try {
+  //     let { name, phone, email, state, city, vehicleType, vehicleNo, license } =
+  //       req.body;
+  //     let errors = {};
+  //     if (!name || name.trim().length < 3)
+  //       errors.name = "Name must be at least 3 characters long";
+  //     if (!phone) errors.phone = "Enter the Phone Number";
+  //     let firstDigit = phone.toString()[0];
+  //     let validateDigit = ["8", "7", "9", "6"];
+  //     if (phone.toString().length !== 10 || !validateDigit.includes(firstDigit))
+  //       errors.phone = "Invalid Phone Number";
+  //     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  //     if (email && !emailRegex.test(email))
+  //       errors.email = "Invalid Email Address";
+  //     if (!state || !city) errors.state = "Select State and City";
+  //     if (vehicleType) {
+  //       if (!vehicleNo) errors.vehicleNo = "Enter the Vehicle Number";
+  //     }
+  //     if (!license) errors.license = "Upload a License Image";
+  //     if (Object.keys(errors).length > 0) {
+  //       return res.status(400).json({ errors });
+  //     }
+  //     const hashedPassword = await bcrypt.hash("123456", 10);
 
-      const driver = new Driver({
-      ...req.body,
-      password: hashedPassword
-      });
-      await driver.save();
-      res.json({ general: "Driver added" });
-    } catch (err) {
-      res.status(500).json({
-        errors: { general: err.message },
+  //     const driver = new Driver({
+  //       ...req.body,
+  //       password: hashedPassword,
+  //     });
+  //     await driver.save();
+  //     res.json({ general: "Driver added" });
+  //   } catch (err) {
+  //     res.status(500).json({
+  //       errors: { general: err.message },
+  //     });
+  //   }
+  // },
+  addDriver: async (req, res) => {
+  try {
+    let { name, phone, email, state, city, vehicleType, vehicleNo, license } =
+      req.body;
+
+    let errors = {};
+
+    if (!name || name.trim().length < 3)
+      errors.name = "Name must be at least 3 characters long";
+
+    if (!phone) errors.phone = "Enter the Phone Number";
+
+    let firstDigit = phone.toString()[0];
+    let validateDigit = ["8", "7", "9", "6"];
+
+    if (phone.toString().length !== 10 || !validateDigit.includes(firstDigit))
+      errors.phone = "Invalid Phone Number";
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email))
+      errors.email = "Invalid Email Address";
+
+    if (!state || !city) errors.state = "Select State and City";
+
+    if (vehicleType) {
+      if (!vehicleNo) errors.vehicleNo = "Enter the Vehicle Number";
+    }
+
+    if (!license) errors.license = "Upload a License Image";
+
+    if (Object.keys(errors).length > 0) {
+      return res.status(400).json({ errors });
+    }
+
+   
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({
+        errors: { email: "Driver already exists with this email" },
       });
     }
-  },
+
+  
+    const hashedPassword = await bcrypt.hash("123456", 10);
+
+    await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      phone,
+      role: "driver",
+    });
+
+    
+    const driver = new Driver({
+      ...req.body,
+      password: hashedPassword,
+      status: "offline", 
+    });
+
+    await driver.save();
+
+    res.json({ general: "Driver added successfully" });
+  } catch (err) {
+    res.status(500).json({
+      errors: { general: err.message },
+    });
+  }
+},
   getDrivers: async (req, res) => {
     try {
       const drivers = await Driver.find();
@@ -154,75 +225,126 @@ const driverController = {
       res.status(500).send(err.message);
     }
   },
-  goOnline:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      const driver=await Driver.findByIdAndUpdate(driverId,{status:"online"},{new:true});
-      res.json({message:"You are online now",driver});
-    }
-    catch(err){
-      res.status(500).json({message:"Error going online",error:err.message});
-    }
-  },
-  goOffline:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      const driver=await Driver.findByIdAndUpdate(driverId,{status:"offline"},{new:true});
-      res.json({message:"You are offline now",driver});
-    }
-    catch(err){
-      res.status(500).json({message:"Error going offline",error:err.message});
-    }
-  },
-  driverPing:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      await Driver.findByIdAndUpdate(driverId,{lastSeen:Date.now()});
-      res.json({message:"Ping received"});
-    }
-    catch(err){
-      res.status(500).json({message:"Error updating last seen",error:err.message});
-    }  
-  },
-  getDriverTrips:async(req,res)=>{
-    try{
-      const driverId=req.user._id;
-      const trips=await Trip.find({driver:driverId})
-      res.json(trips);
-    }
-    catch(err){
-      res.status(500).json({message:"Error fetching trips",error:err.message});
-    }
-  },
-  // getDriverProfile:async(req,res)=>{
-  //   try{
-  //    const driver =await Driver.findById(req.user._id)
-  //    if(!driver){
-  //     return res.status(404).json({message:"Driver not found"});
-  //    }
-  //    res.json(driver);
-  //    console.log("API hit");
-  //   }
-  //   catch(err){
-  //     res.status(500).json({message:"Error fetching profile",error:err.message});
-  //   }
-  // }
-  getDriverProfile: async (req, res) => {
-  console.log("🔥 API HIT");
 
+  //   goOnline: async (req, res) => {
+  //   try {
+  //     const driver =await Driver.findById(req.user._id);
+  //     if (!driver) {
+  //       return res.status(404).json({ message: "Driver not found" });
+  //     }
+  //     driver.status = "online";
+  //     await driver.save();
+  //     res.json({ message: "You are online now", driver });
+  //      console.log("UPDATED DRIVER:", driver);
+  //   } catch (err) {
+  //     res
+  //       .status(500)
+  //       .json({ message: "Error going online", error: err.message });
+  //   }
+  // },
+  goOnline: async (req, res) => {
   try {
+    console.log("REQ USER:", req.user);
+
+    const driver = await Driver.findOne({ email: req.user.email });
+
+    if (!driver) {
+      console.log("DRIVER NOT FOUND ❌");
+      return res.status(404).json({ message: "Driver not found" });
+    }
+
+    driver.status = "online";
+    await driver.save();
+
+    console.log("UPDATED DRIVER:", driver);
+
+    res.json({ message: "You are online now", driver });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error going online",
+      error: err.message,
+    });
+  }
+},
+  // goOffline: async (req, res) => {
+  //   try {
+  //     const driverId = req.user._id;
+  //     const driver = await Driver.findByIdAndUpdate(
+  //       driverId,
+  //       { status: "offline" },
+  //       { new: true },
+  //     );
+  //     res.json({ message: "You are offline now", driver });
+  //   } catch (err) {
+  //     res
+  //       .status(500)
+  //       .json({ message: "Error going offline", error: err.message });
+  //   }
+  // },
+  goOffline: async (req, res) => {
+  try {
+    console.log("REQ USER:", req.user); 
+
     const driver = await Driver.findOne({ email: req.user.email });
 
     if (!driver) {
       return res.status(404).json({ message: "Driver not found" });
     }
 
+    driver.status = "offline";
+    await driver.save();
+
+    console.log("UPDATED DRIVER:", driver);
+
+    res.json({ message: "You are offline now", driver });
+  } catch (err) {
+    console.log("ERROR:", err.message);
+    res.status(500).json({
+      message: "Error going offline",
+      error: err.message,
+    });
+  }
+},
+  driverPing: async (req, res) => {
+    try {
+      const driverId = req.user._id;
+      await Driver.findByIdAndUpdate(driverId, { lastseen: Date.now() });
+      res.json({ message: "Ping received" });
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error updating last seen", error: err.message });
+    }
+  },
+  getDriverTrips: async (req, res) => {
+    try {
+      const driverId = req.user._id;
+      const trips = await Trip.find({ driver: driverId });
+      res.json(trips);
+    } catch (err) {
+      res
+        .status(500)
+        .json({ message: "Error fetching trips", error: err.message });
+    }
+  },
+  getDriverProfile: async (req, res) => {
+    try {
+     const driver = await Driver.findOne({ email: req.user.email });
     res.json(driver);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
-}
+  },
+  getOnlineDrivers: async (req, res) => {
+  try {
+    const drivers = await Driver.find({ status: "online" }).select(
+      "name phone profile vehicleType vehicleNo rating status lastseen"
+    );
+    res.json(drivers);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching online drivers", error: err.message });
+  }
+},
 };
-
 
 export default driverController;

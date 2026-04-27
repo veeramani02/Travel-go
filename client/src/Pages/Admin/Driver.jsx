@@ -13,10 +13,10 @@ import { MdDelete } from "react-icons/md";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars.jsx";
 import AlertDialogSlide from "../../Components/AlertDialogSlide.jsx";
 import { PacmanLoader } from "react-spinners";
-
+import API_BASE_URL from "../../config/api";
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);
-  const status = ["All", "Active", "Inactive", "On Trip"];
+  const status = ["All", "Online", "Offline", "On Trip"];
   const [drivers, setDrivers] = useState([]);
   const [filteredDrivers, setFilteredDrivers] = useState([]);
   const [active, setActive] = useState("All");
@@ -30,27 +30,44 @@ export default function Driver() {
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
   const [DeleteData, setDeletedata] = useState("");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const data = await getDriver();
-        setDrivers(data);
-      } catch (err) {
-        setSnackbarMessage("Failed to load drivers");
-        setSnackbarSeverity("error");
-        setSnackbarOpen(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       setLoading(true);
+  //       const data = await getDriver();
+  //       setDrivers(data);
+  //     } catch (err) {
+  //       setSnackbarMessage("Failed to load drivers");
+  //       setSnackbarSeverity("error");
+  //       setSnackbarOpen(true);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const data = await getDriver();
+      console.log("ALL DRIVERS:", data);
 
+    setDrivers(data);   
+      setFilteredDrivers(data);
+    } catch (err) {
+      setSnackbarMessage("Failed to load drivers");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchData();
+}, []);
   useEffect(() => {
     handleFilter(active, searchText);
   }, [drivers, active, searchText]);
-
   async function handleUpdateDriver(updatedvalue) {
     try {
       const oldvalue = drivers.find((d) => d._id === updatedvalue._id);
@@ -120,7 +137,6 @@ export default function Driver() {
       setSnackbarOpen(true);
     }
   }
-
   function handleFilter(active, search) {
     let filter = [...drivers];
     if (search)
@@ -168,16 +184,38 @@ export default function Driver() {
       <div className="driver-button-container">
         {status.map((value, index) => (
           <div key={index}>
-            <button
-              onClick={() => {
-                setActive(value);
-              }}
-              className={
-                active === value ? "active-button" : "non-active-button"
-              }
-            >
-              {value}
-            </button>
+           
+      <button
+      onClick={async () => {
+      setActive(value);
+
+    if (value === "Online") {
+      const res = await fetch(`${API_BASE_URL}/api/driver/online`, {
+        credentials: "include",
+      });
+
+      const data = await res.json();
+      setFilteredDrivers(data);
+    } 
+    else if (value === "All") {
+      const data = await getDriver();
+      setFilteredDrivers(data);
+    } 
+    else {
+      const data = await getDriver();
+
+      const filtered = data.filter(
+        (d) => d.status.toLowerCase() === value.toLowerCase()
+      );
+
+      setFilteredDrivers(filtered);
+    }
+  }}
+  className={active === value ? "active-button" : "non-active-button"}
+>
+  {value}
+</button>
+
           </div>
         ))}
       </div>

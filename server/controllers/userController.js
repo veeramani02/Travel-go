@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import multer from "multer";
 import { fileURLToPath } from "url";
+import bcrypt from "bcryptjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,6 +20,26 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const userController = {
+  changePassword: async (req, res) => {
+    let { currentPassword, newPassword } = req.body;
+    try {
+      const userId = req.user.id;
+      const user = await User.findById(userId);
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+      if (!isMatch) {
+        return res.status(400).json({ message: "Wrong current password" });
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+      user.passwordChangedAt = new Date();
+      await user.save();
+      res.json({ message: "Password updated successfully" });
+    } catch (err) {
+      res.status(500).send(err.message);
+    }
+  },
+
   updateUser: async (req, res) => {
     try {
       const { id } = req.params;
