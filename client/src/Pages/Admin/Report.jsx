@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import "../../Styles/report.css";
@@ -20,6 +20,7 @@ import {
   TripsData,
 } from "../../services/customerService";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { CSVLink } from "react-csv";
 
 function Report() {
   const [range, setRange] = useState("weekly");
@@ -29,9 +30,7 @@ function Report() {
     van = 0,
     lc = 0;
   const [tripData, setTripData] = useState([]);
-
   const COLORS = ["#f59e0b", "#10b981", "#3b82f6", "#f97316"];
-
   const reportData = [
     { name: "Total Fuel cost", value: "$12,450", cost: "+5.2% vs last month" },
     { name: "Maintenance Cost", value: "$3,200", cost: "-2.15% vs last month" },
@@ -72,7 +71,7 @@ function Report() {
     { name: "Van", value: van },
     { name: "Luxury Coach", value: lc },
   ];
-
+  const csvRef = useRef();
   const getWeeklyData = (trips) => {
     const result = {
       Mon: { day: "Mon", completed: 0, cancelled: 0 },
@@ -151,7 +150,6 @@ function Report() {
     trips.forEach((trip) => {
       const d = new Date(trip.dateAndTime);
 
-      // only current year
       if (d.getFullYear() === currentYear) {
         const monthName = d.toLocaleDateString("en-US", {
           month: "short",
@@ -211,6 +209,10 @@ function Report() {
     setTripData(processData());
   }, [range, customers]);
 
+  const handleDownload = () => {
+    csvRef.current.link.click();
+  };
+
   return (
     <div className="reportPage">
       {/* HEADER */}
@@ -242,7 +244,15 @@ function Report() {
             </Button>
           </ButtonGroup>
 
-          <Button className="reportExportBtn">Export PDF</Button>
+          <Button className="reportExportBtn" onClick={handleDownload}>
+            Export PDF
+          </Button>
+          <CSVLink
+            data={processData()}
+            filename="report.csv"
+            ref={csvRef}
+            style={{ display: "none" }}
+          />
         </div>
       </div>
 
@@ -299,7 +309,7 @@ function Report() {
           </ResponsiveContainer>
         </div>
       </div>
-      <div>
+      {/* <div>
         <div className="detailed-header">
           <h1>Detailed Report</h1>
           <p>View All Data</p>
@@ -313,7 +323,7 @@ function Report() {
             </div>
           ))}
         </div>
-      </div>
+      </div> */}
       <CustomizedSnackbars
         open={snackbar.open}
         message={snackbar.message}

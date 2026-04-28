@@ -169,9 +169,6 @@ function Settings() {
       <div className="settings-card">
         <div className="edit-profile-div">
           <h2 className="card-title">Profile & Account</h2>
-          <button type="button" onClick={() => setIsEditing((p) => !p)}>
-            <FaRegEdit /> Edit
-          </button>
         </div>
         <div className="profile-section">
           <label htmlFor="avatarUpload">
@@ -290,8 +287,15 @@ function Settings() {
               name="emailNotify"
               checked={user?.emailNotify || false}
               onChange={handleInputChange}
+              disabled={isEditing}
             />
-            <span className="slider"></span>
+            <span
+              className="slider"
+              style={{
+                cursor: isEditing ? "not-allowed" : "pointer",
+                opacity: isEditing ? 0.6 : 1,
+              }}
+            ></span>
           </label>
         </div>
 
@@ -307,8 +311,15 @@ function Settings() {
               name="pushNotify"
               checked={user?.pushNotify || false}
               onChange={handleInputChange}
+              disabled={isEditing}
             />
-            <span className="slider"></span>
+            <span
+              className="slider"
+              style={{
+                cursor: isEditing ? "not-allowed" : "pointer",
+                opacity: isEditing ? 0.6 : 1,
+              }}
+            ></span>
           </label>
         </div>
 
@@ -324,8 +335,15 @@ function Settings() {
               name="smsNotify"
               checked={user?.smsNotify || false}
               onChange={handleInputChange}
+              disabled={isEditing}
             />
-            <span className="slider"></span>
+            <span
+              className="slider"
+              style={{
+                cursor: isEditing ? "not-allowed" : "pointer",
+                opacity: isEditing ? 0.6 : 1,
+              }}
+            ></span>
           </label>
         </div>
       </div>
@@ -339,11 +357,23 @@ function Settings() {
 
             <div>
               <h4>Password</h4>
-              <p className="settings-caption">Last changed {getTimeAgo(user?.passwordChangedAt)}</p>
+              <p className="settings-caption">
+                Last changed {getTimeAgo(user?.passwordChangedAt)}
+              </p>
             </div>
           </div>
 
-          <p className="link-btn" onClick={() => navigate("changepassword")}>
+          <p
+            className="link-btn"
+            style={{
+              cursor: isEditing ? "not-allowed" : "pointer",
+              opacity: isEditing ? 0.6 : 1,
+            }}
+            onClick={() => {
+              if (isEditing) return;
+              navigate("changepassword");
+            }}
+          >
             Change
           </p>
         </div>
@@ -360,14 +390,19 @@ function Settings() {
 
           <p
             className="link-btn"
-            onClick={() =>
+            onClick={() => {
+              if (isEditing) return;
               setUser((u) => ({
                 ...u,
                 twoStepVerification: !u.twoStepVerification,
-              }))
-            }
+              }));
+            }}
+            style={{
+              cursor: isEditing ? "not-allowed" : "pointer",
+              opacity: isEditing ? 0.6 : 1,
+            }}
           >
-            {user?.twoStepVerification ? "Enabled" : "Enable"}
+            {user?.twoStepVerification ? "Enabled" : "Disabled"}
           </p>
         </div>
       </div>
@@ -376,9 +411,20 @@ function Settings() {
         <button className="cancel-btn" onClick={() => handleCancel()}>
           Cancel
         </button>
-        <button className=" settings-save-btn" onClick={() => handleSave()}>
-          Save Changes
-        </button>
+
+        {!isEditing ? (
+          <button className="settings-save-btn" onClick={() => handleSave()}>
+            Save Changes
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="settings-save-btn"
+            onClick={() => setIsEditing((p) => !p)}
+          >
+            <FaRegEdit /> Edit
+          </button>
+        )}
       </div>
       <CustomizedSnackbars
         open={snackbar.open}

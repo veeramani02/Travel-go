@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import "../../Styles/VehicleDetails.css";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { updateVehicle } from "../../services/vehicleService"; 3
+import { updateVehicle } from "../../services/vehicleService";
+3;
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 function VehicleDetails() {
@@ -81,7 +82,9 @@ function VehicleDetails() {
                 alt="front"
               />
             ) : (
-              <div className="no_image_vehicle">
+              <div
+                className="no_image_vehicle"
+              >
                 <p>No Front Image</p>
               </div>
             )}

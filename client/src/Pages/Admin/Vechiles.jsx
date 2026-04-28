@@ -78,6 +78,7 @@ function Vehicles() {
     let fetchData = async () => {
       const data = await getVehicle();
       setVehicleList(data);
+      console.log(data);
     };
     fetchData();
   }, []);
@@ -221,7 +222,13 @@ function Vehicles() {
             </div>
 
             <div className="vehicle-info">
-              {carIcon[vehicle.vehicleType] || <FaCarSide />}
+              {vehicle?.frontView ? (
+                <div className="vehicle-vehicleImage">
+                  <img src={vehicle?.frontView} />{" "}
+                </div>
+              ) : (
+                <FaCarSide />
+              )}
               <h3>{vehicle.vehicleModel}</h3>
               <p>{vehicle.vehicleNo}</p>
               <span className="vehicle-type">{vehicle.vehicleType}</span>
