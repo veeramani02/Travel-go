@@ -316,17 +316,26 @@ const driverController = {
         .json({ message: "Error updating last seen", error: err.message });
     }
   },
-  getDriverTrips: async (req, res) => {
-    try {
-      const driverId = req.user._id;
-      const trips = await Trip.find({ driver: driverId });
-      res.json(trips);
-    } catch (err) {
-      res
-        .status(500)
-        .json({ message: "Error fetching trips", error: err.message });
+ getDriverTrips: async (req, res) => {
+  try {
+    const driver = await Driver.findOne({ email: req.user.email });
+
+    if (!driver) {
+      return res.status(404).json({ message: "Driver not found" });
     }
-  },
+
+    const trips = await Trip.find({
+      driverId: driver._id.toString(),
+    }).sort({ createdAt: -1 });
+
+    res.json(trips);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching driver trips",
+      error: err.message,
+    });
+  }
+},
   getDriverProfile: async (req, res) => {
     try {
      const driver = await Driver.findOne({ email: req.user.email });
@@ -335,6 +344,63 @@ const driverController = {
     res.status(500).json({ message: err.message });
   }
   },
+//   getDriverTrips: async (req, res) => {
+//   try {
+//     const driver = await Driver.findOne({ email: req.user.email });
+
+//     console.log("LOGGED DRIVER:", driver);
+
+//     const allTrips = await Trip.find();
+
+//     console.log("ALL TRIPS:", allTrips);
+
+//     res.json(allTrips);
+//   } catch (err) {
+//     res.status(500).json({
+//       message: "Error fetching driver trips",
+//       error: err.message,
+//     });
+//   }
+// },
+
+getDriverTrips: async (req, res) => {
+  try {
+    console.log("REQ USER:", req.user);
+
+    if (!req.user || !req.user.email) {
+      return res.status(401).json({
+        message: "Unauthorized user",
+      });
+    }
+
+    const driver = await Driver.findOne({
+      email: req.user.email,
+    });
+
+    if (!driver) {
+      return res.status(404).json({
+        message: "Driver not found",
+      });
+    }
+
+    console.log("DRIVER FOUND:", driver);
+
+    const trips = await Trip.find({
+      driverId: { $exists: true, $ne: null },
+    }).sort({ createdAt: -1 });
+
+    console.log("ALL DRIVER TRIPS:", trips);
+
+    res.status(200).json(trips);
+  } catch (err) {
+    console.log("GET DRIVER TRIPS ERROR:", err);
+
+    res.status(500).json({
+      message: "Error fetching driver trips",
+      error: err.message,
+    });
+  }
+},
   getOnlineDrivers: async (req, res) => {
   try {
     const drivers = await Driver.find({ status: "online" }).select(
@@ -343,6 +409,28 @@ const driverController = {
     res.json(drivers);
   } catch (err) {
     res.status(500).json({ message: "Error fetching online drivers", error: err.message });
+  }
+},
+getDriversByStatus: async (req, res) => {
+  try {
+    const { status } = req.params;
+
+    let query = {};
+
+    if (status.toLowerCase() !== "all") {
+      query.status = status.toLowerCase();
+    }
+
+    const drivers = await Driver.find(query).select(
+      "name phone profile vehicleType vehicleNo rating status lastseen state city totalTrips joinedDate"
+    );
+
+    res.json(drivers);
+  } catch (err) {
+    res.status(500).json({
+      message: "Error fetching drivers by status",
+      error: err.message,
+    });
   }
 },
 };

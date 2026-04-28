@@ -19,7 +19,7 @@ const tripSchema = new mongoose.Schema(
     specialRequest: { type: String },
     status: {
       type: String,
-      enum: ["pending", "current", "completed", "cancelled"],
+      enum: ["pending","assigned", "current", "completed", "cancelled"],
       default: "pending",
     },
     paymentStatus: {

@@ -47,7 +47,7 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
     fetchData();
   }, []);
   const activeDrivers = drivers.filter(
-    (value) => value?.status?.toLowerCase().trim() === "active",
+    (value) => value?.status?.toLowerCase().trim() === "online",
   );
   const activeVehicles = vehicles.filter(
     (value) => value?.status?.toLowerCase().trim() === "available",

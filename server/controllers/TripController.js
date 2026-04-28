@@ -115,31 +115,83 @@ export const getRoute = async (req, res) => {
   }
 };
 
+// export const updateTrips = async (req, res) => {
+//   try {
+//     console.log(req.body);
+//     const { _id, driverId, vehicleId } = req.body;
+
+//     if (!driverId)
+//       return res.status(400).json({ message: "Assign driver require" });
+//     if (!vehicleId)
+//       return res.status(400).json({ message: "Assign vehicle require" });
+
+//     if (!_id) {
+//       return res.status(400).json({ message: "Trip ID is required" });
+//     }
+
+//     const updatedTrip = await Trip.findByIdAndUpdate(
+//       _id,
+//       {
+//         ...(driverId && { driverId }),
+//         ...(vehicleId && { vehicleId }),
+//       },
+//       { new: true },
+//     );
+
+//     if (!updatedTrip) {
+//       return res.status(404).json({ message: "Trip not found" });
+//     }
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Trip updated successfully",
+//       trip: updatedTrip,
+//     });
+//   } catch (e) {
+//     return res.status(500).json({ message: e.message });
+//   }
 export const updateTrips = async (req, res) => {
   try {
     console.log(req.body);
+
     const { _id, driverId, vehicleId } = req.body;
 
     if (!driverId)
-      return res.status(400).json({ message: "Assign driver require" });
+      return res.status(400).json({
+        message: "Assign driver require",
+      });
+
     if (!vehicleId)
-      return res.status(400).json({ message: "Assign vehicle require" });
+      return res.status(400).json({
+        message: "Assign vehicle require",
+      });
 
     if (!_id) {
-      return res.status(400).json({ message: "Trip ID is required" });
+      return res.status(400).json({
+        message: "Trip ID is required",
+      });
     }
 
     const updatedTrip = await Trip.findByIdAndUpdate(
       _id,
       {
-        ...(driverId && { driverId }),
+        ...(driverId && {
+          driverId: driverId.toString(),
+        }),
+
         ...(vehicleId && { vehicleId }),
+
+        ...(driverId && {
+          status: "assigned",
+        }),
       },
-      { new: true },
+      { new: true }
     );
 
     if (!updatedTrip) {
-      return res.status(404).json({ message: "Trip not found" });
+      return res.status(404).json({
+        message: "Trip not found",
+      });
     }
 
     return res.status(200).json({
@@ -148,6 +200,8 @@ export const updateTrips = async (req, res) => {
       trip: updatedTrip,
     });
   } catch (e) {
-    return res.status(500).json({ message: e.message });
+    return res.status(500).json({
+      message: e.message,
+    });
   }
 };

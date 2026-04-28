@@ -85,5 +85,10 @@ driverRoutes.get(
   authorizeRoles("admin"),
   driverController.getOnlineDrivers,
 );
-
+driverRoutes.get(
+  "/status/:status",
+  protect,
+  authorizeRoles("admin"),
+  driverController.getDriversByStatus
+);
 export default driverRoutes;

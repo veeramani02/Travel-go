@@ -30,24 +30,62 @@ export default function Driver() {
 
     fetchData();
   }, []);
+  // const goOnline = async () => {
+  //   alert("You are going online 🚖");
+
+  //   await fetch(`${API_BASE_URL}/api/driver/online`, {
+  //     method: "POST",
+  //     credentials: "include",
+  //   });
+
+  //   setStatus("online");
+  // };
+  // const goOffline = async (res) => {
+  //   await fetch(`${API_BASE_URL}/api/driver/offline`, {
+  //     method: "POST",
+  //     credentials: "include",
+  //   });
+  //   alert("You are going offline 🛑");
+  //    const data = await res.json();
+  //     console.log("OFFLINE RESPONSE:", data);
+  //   setStatus("offline");
+  // };
   const goOnline = async () => {
+  try {
     alert("You are going online 🚖");
 
-    await fetch(`${API_BASE_URL}/api/driver/online`, {
+    const res = await fetch(`${API_BASE_URL}/api/driver/online`, {
       method: "POST",
       credentials: "include",
     });
 
-    setStatus("online");
-  };
+    const data = await res.json();
+
+    console.log("ONLINE RESPONSE:", data);
+
+    setStatus(data.driver.status);
+  } catch (err) {
+    console.error("Online error:", err.message);
+  }
+};
   const goOffline = async () => {
-    await fetch(`${API_BASE_URL}/api/driver/offline`, {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/driver/offline`, {
       method: "POST",
       credentials: "include",
     });
 
-    setStatus("offline");
-  };
+    const data = await res.json();
+
+    console.log("OFFLINE RESPONSE:", data);
+
+    alert("You are going offline 🛑");
+
+    setStatus(data.driver.status); 
+  } catch (err) {
+    console.error("Offline error:", err.message);
+  }
+};
   return (
     <div className="driver-container">
       <h1 className="driver-title">Driver Dashboard</h1>

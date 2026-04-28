@@ -186,32 +186,35 @@ useEffect(() => {
           <div key={index}>
            
       <button
-      onClick={async () => {
-      setActive(value);
+   onClick={async () => {
+  setActive(value);
 
-    if (value === "Online") {
-      const res = await fetch(`${API_BASE_URL}/api/driver/online`, {
-        credentials: "include",
-      });
+  try {
+    const allDrivers = await getDriver();
 
-      const data = await res.json();
-      setFilteredDrivers(data);
-    } 
-    else if (value === "All") {
-      const data = await getDriver();
-      setFilteredDrivers(data);
-    } 
-    else {
-      const data = await getDriver();
+    setDrivers(allDrivers);
 
-      const filtered = data.filter(
-        (d) => d.status.toLowerCase() === value.toLowerCase()
+    let filtered = allDrivers;
+
+    if (value.toLowerCase() !== "all") {
+      filtered = allDrivers.filter(
+        (d) =>
+          d.status &&
+          d.status.trim().toLowerCase() === value.trim().toLowerCase()
       );
-
-      setFilteredDrivers(filtered);
     }
-  }}
-  className={active === value ? "active-button" : "non-active-button"}
+
+    setFilteredDrivers(filtered);
+
+    console.log("FILTERED:", filtered);
+  } catch (err) {
+    console.error(err);
+    setSnackbarMessage("Failed to filter drivers");
+    setSnackbarSeverity("error");
+    setSnackbarOpen(true);
+  }
+}}
+className={active === value ? "active-button" : "non-active-button"}
 >
   {value}
 </button>
