@@ -222,13 +222,13 @@ function Vehicles() {
             </div>
 
             <div className="vehicle-info">
-              {vehicle?.frontView ? (
-                <div className="vehicle-vehicleImage">
-                  <img src={vehicle?.frontView} />{" "}
-                </div>
-              ) : (
-                <FaCarSide />
-              )}
+              <div className="vehicle-image">
+                {vehicle?.frontView ? (
+                  <img src={vehicle.frontView} alt="vehicle" />
+                ) : (
+                  <FaCarSide className="vehicle-icon" />
+                )}
+              </div>
               <h3>{vehicle.vehicleModel}</h3>
               <p>{vehicle.vehicleNo}</p>
               <span className="vehicle-type">{vehicle.vehicleType}</span>

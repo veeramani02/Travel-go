@@ -358,7 +358,26 @@
   cursor: pointer;
 }
 
-.vehicle-vehicleImage img{
-  width: 60px;
-  height: 60px;
+.vehicle-image {
+  width: 70px;
+  height: 70px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Image */
+.vehicle-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Default icon */
+.vehicle-icon {
+  font-size: 32px;
+  color: #64748b;
 }
