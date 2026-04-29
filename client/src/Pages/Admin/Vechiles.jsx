@@ -20,6 +20,10 @@ import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import { useLocation } from "react-router-dom";
 import { TbCarSuvFilled } from "react-icons/tb";
 import { FaVanShuttle } from "react-icons/fa6";
+import { SiTicktick } from "react-icons/si";
+import { FaCar } from "react-icons/fa";
+import { FaTools } from "react-icons/fa";
+import { MdOutlineSpeed } from "react-icons/md";
 
 function Vehicles() {
   const navigate = useNavigate();
@@ -66,12 +70,32 @@ function Vehicles() {
     {
       title: "Available",
       count: availableCount,
-      img: check,
+      img: <SiTicktick />,
       status: "<FaCarSide />",
+      color: "#22c55e",
+      background: "#f0fdf4",
     },
-    { title: "InUse", count: inUseCount, img: deliverytruck },
-    { title: "Maintenance", count: maintenanceCount, img: tool },
-    { title: "TotalFleet", count: totalFleet, img: speedometer },
+    {
+      title: "InUse",
+      count: inUseCount,
+      img: <FaCar />,
+      color: "#6b69f1",
+      background: "#eef2ff",
+    },
+    {
+      title: "Maintenance",
+      count: maintenanceCount,
+      img: <FaTools />,
+      color: "#f59e0b",
+      background: "#fffbeb",
+    },
+    {
+      title: "TotalFleet",
+      count: totalFleet,
+      img: <MdOutlineSpeed />,
+      color: "#ef4444",
+      background: "#fef2f2",
+    },
   ];
 
   useEffect(() => {
@@ -175,14 +199,20 @@ function Vehicles() {
 
       <div className="stats-container">
         {stats.map((item, index) => (
-          <div className="stat-card" key={index}>
+          <div
+            className="stat-card"
+            key={index}
+            style={{ borderLeftColor: item.color }}
+          >
+            <div
+              className="v-icon"
+              style={{ color: item.color, background: item.background }}
+            >
+              {item.img}
+            </div>
             <div>
               <p>{item.title}</p>
-              <h1 className={`count-${item.title}`}>{item.count}</h1>
-            </div>
-
-            <div>
-              <img src={item.img} className={`icon-${item.title}`} />
+              <h1>{item.count}</h1>
             </div>
           </div>
         ))}

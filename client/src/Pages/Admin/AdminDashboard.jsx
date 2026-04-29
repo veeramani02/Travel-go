@@ -54,21 +54,33 @@ export default function AdminDashboard() {
   );
 
   const stats = [
-    { symbol: <TbMoneybag />, label: "Total Revenue", value: `Rs.6888.00` },
+    {
+      symbol: <TbMoneybag />,
+      label: "Total Revenue",
+      value: `Rs.6888.00`,
+      color: "#22c55e",
+      background: "#f0fdf4",
+    },
     {
       symbol: <IoCarOutline />,
       label: "Active Trips",
       value: onTrip.length,
+      color: "#3b82f6",
+      background: "#eff6ff",
     },
     {
       symbol: <TbUserCheck />,
       label: "Active Drivers",
       value: activeDrivers.length,
+      color: "#3b82f6",
+      background: "#eff6ff",
     },
     {
       symbol: <MdOutlinePendingActions />,
       label: "Pending Requests",
       value: pendingRequest.length,
+      color: "#ef4444",
+      background: "#fef2f2",
     },
   ];
 
@@ -139,10 +151,21 @@ export default function AdminDashboard() {
 
       <div className="card-container">
         {stats.map((item, index) => (
-          <div className="card-div" key={index}>
-            <div className="card-symbol">{item.symbol}</div>
-            <p>{item.label}</p>
-            <h1>{item.value}</h1>
+          <div
+            className="card-div"
+            key={index}
+            style={{ borderLeftColor: item.color }}
+          >
+            <div
+              className="card-symbol"
+              style={{ color: item.color, background: item.background }}
+            >
+              {item.symbol}
+            </div>
+            <div>
+              <p className="ad-label">{item.label}</p>
+              <h1 className="ad-value">{item.value}</h1>
+            </div>
           </div>
         ))}
       </div>

@@ -194,19 +194,32 @@ function VehicleDetails() {
             {image.front ? (
               <img
                 src={image.front}
-                onClick={() => setMainImage(image.front)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.front);
+                    return;
+                  }
+                  frontRef.current.click();
+                }}
                 alt="front"
               />
             ) : vehicleImages.front ? (
               <img
                 src={vehicleImages.front}
-                onClick={() => setMainImage(vehicleImages.front)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.front);
+                    return;
+                  }
+                  frontRef.current.click();
+                }}
                 alt="front"
               />
             ) : (
               <div
                 className={`no_image_vehicle ${isEditing ? "editing" : ""}`}
                 onClick={() => {
+                  if (!isEditing) return;
                   frontRef.current.click();
                 }}
                 style={{ cursor: !isEditing ? "not-allowed" : "" }}
@@ -218,20 +231,32 @@ function VehicleDetails() {
             {image.side ? (
               <img
                 src={image.side}
-                onClick={() => setMainImage(image.side)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.side);
+                    return;
+                  }
+                  sideRef.current.click();
+                }}
                 alt="side"
               />
             ) : vehicleImages.side ? (
               <img
                 src={vehicleImages.side}
-                onClick={() => setMainImage(vehicleImages.side)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.side);
+                    return;
+                  }
+                  sideRef.current.click();
+                }}
                 alt="side"
               />
             ) : (
               <div
                 className={`no_image_vehicle ${isEditing ? "editing" : ""}`}
                 onClick={() => {
-                  
+                  if (!isEditing) return;
                   sideRef.current.click();
                 }}
                 style={{ cursor: !isEditing ? "not-allowed" : "" }}
@@ -242,19 +267,32 @@ function VehicleDetails() {
             {image.interior ? (
               <img
                 src={image.interior}
-                onClick={() => setMainImage(image.interior)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.interior);
+                    return;
+                  }
+                  interiorRef.current.click();
+                }}
                 alt="interior"
               />
             ) : vehicleImages.interior ? (
               <img
                 src={vehicleImages.interior}
-                onClick={() => setMainImage(vehicleImages.interior)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.interior);
+                    return;
+                  }
+                  interiorRef.current.click();
+                }}
                 alt="interior"
               />
             ) : (
               <div
                 className={`no_image_vehicle ${isEditing ? "editing" : ""}`}
                 onClick={() => {
+                  if (!isEditing) return;
                   interiorRef.current.click();
                 }}
                 style={{ cursor: !isEditing ? "not-allowed" : "" }}
@@ -265,19 +303,32 @@ function VehicleDetails() {
             {image.back ? (
               <img
                 src={image.back}
-                onClick={() => setMainImage(image.back)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.back);
+                    return;
+                  }
+                  backRef.current.click();
+                }}
                 alt="back"
               />
             ) : vehicleImages.back ? (
               <img
                 src={vehicleImages.back}
-                onClick={() => setMainImage(vehicleImages.back)}
+                onClick={() => {
+                  if (!isEditing) {
+                    setMainImage(vehicleImages.back);
+                    return;
+                  }
+                  backRef.current.click();
+                }}
                 alt="back"
               />
             ) : (
               <div
                 className={`no_image_vehicle ${isEditing ? "editing" : ""}`}
                 onClick={() => {
+                  if (!isEditing) return;
                   backRef.current.click();
                 }}
                 style={{ cursor: !isEditing ? "not-allowed" : "" }}

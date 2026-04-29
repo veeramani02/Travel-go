@@ -33,17 +33,27 @@
   margin-bottom: 20px;
 }
 .stat-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   background: white;
   padding: 20px;
   border-radius: 10px;
+  border-left: 4px solid transparent;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
 }
 .stat-card p {
-  color: #777;
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 4px;
+  font-weight: 500;
 }
-.stat-card h2 {
-  margin-top: 5px;
+.stat-card h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
 }
 .filter-container {
   display: flex;
@@ -131,17 +141,9 @@
   border-radius: 6px;
   cursor: pointer;
 }
-.stat-card img {
-  width: 40px;
-  height: 40px;
-}
-.stat-card {
-  display: flex;
-  text-align: center;
-  justify-content: space-around;
-  align-items: center;
-}
+
 .stat-card:hover {
+  cursor: pointer;
   transform: translateY(-4px);
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
 }
@@ -155,52 +157,33 @@
     transform: translateX(0);
   }
 }
-.icon-Available {
-  background-color: #71f2b6;
-  border-radius: 10px;
-  padding: 10px;
+.v-icon {
+  width: 46px;
+  height: 46px;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
 }
-.count-Available {
-  color: green;
-}
-.icon-InUse {
-  background-color: rgba(107, 105, 241, 0.825);
-  border-radius: 10px;
-  padding: 5px;
-}
-.count-InUse {
-  color: rgba(107, 105, 241, 0.825);
-}
-.icon-Maintenance {
-  background-color: rgba(241, 180, 105, 0.825);
-  border-radius: 10px;
-  padding: 8px;
-}
-.count-Maintenance {
-  color: rgba(241, 180, 105, 0.825);
-}
-.icon-TotalFleet {
-  background-color: rgb(243, 94, 131);
-  padding: 6px;
-  border-radius: 10px;
-}
-.count-TotalFleet {
-  color: rgb(243, 94, 131);
-}
+
 .vehicles-header div h1 {
   color: var(--primary);
 }
+
 .vehicle-action {
   display: flex;
   justify-content: start;
   column-gap: 20px;
   align-items: center;
 }
+
 .screwicon {
   width: 25px;
   height: 30px;
   cursor: pointer;
 }
+
 .vehicle-status span {
   padding: 4px 10px;
   border-radius: 6px;
@@ -369,14 +352,12 @@
   overflow: hidden;
 }
 
-/* Image */
 .vehicle-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Default icon */
 .vehicle-icon {
   font-size: 32px;
   color: #64748b;
