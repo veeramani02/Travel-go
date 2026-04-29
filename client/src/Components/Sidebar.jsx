@@ -16,6 +16,7 @@ import {
 import { TbReportAnalytics } from "react-icons/tb";
 import { IoSettingsOutline } from "react-icons/io5";
 import { RiCoupon2Line } from "react-icons/ri";
+import { FaMoneyCheckAlt } from "react-icons/fa";
 import { useAuth } from "../Context/AuthContext";
 import "../Styles/Sidebar.css";
 
@@ -38,6 +39,7 @@ function Sidebar() {
     voucher: <RiCoupon2Line />,
     Salary: <FiDollarSign />,
     Rewards: <FiAward />,
+    Payroll: <FaMoneyCheckAlt />,
     dues: <FiCalendar />,
     Report: <TbReportAnalytics />,
     Settings: <IoSettingsOutline />,
@@ -50,6 +52,7 @@ function Sidebar() {
       { name: "Trips", path: "/admin/trips" },
       { name: "Drivers", path: "/admin/driver" },
       { name: "Vehicles", path: "/admin/vehicles" },
+      { name: "Payroll", path: "/admin/payroll" },
       { name: "Report", path: "/admin/report" },
       { name: "Settings", path: "/admin/settings" },
     ],
@@ -61,12 +64,14 @@ function Sidebar() {
       { name: "Rewards", path: "/customer/LoyaltyPoints" },
       { name: "voucher", path: "/customer/Vouchers" },
       { name: "dues", path: "/customer/Dues" },
+        { name: "Settings", path: "/customer/settings" },
     ],
     driver: [
       { name: "Dashboard", path: "/driver/dashboard" },
       { name: "Assigned Trips", path: "/driver/trips" },
       { name: "Salary", path: "/driver/salary" },
-      { name: "Rewards", path: "/driver/rewards" },
+      // { name: "Rewards", path: "/driver/rewards" },
+      { name: "Settings", path: "/driver/settings" },
     ],
   };
 

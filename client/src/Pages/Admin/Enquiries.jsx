@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../../Styles/Enquiries.css";
-import { FiSearch, FiUser, FiCalendar, FiCheckCircle } from "react-icons/fi";
+import {
+  FiSearch,
+  FiUser,
+  FiCalendar,
+  FiCheckCircle,
+  FiAlertCircle,
+} from "react-icons/fi";
+
 import TripviewDetails from "./TripviewDetails";
 import EditTrip from "./EditTrip";
 import { getVehicle, TripsData } from "../../services/customerService";
@@ -212,13 +219,32 @@ export default function Enquiries() {
                         );
                       })()}
                     </td>
-                    <td>
+                    {/* <td>
                       <span
                         className={`status-pill ${value.status.toLowerCase().split(" ")}`}
                       >
                         {value.status}
                       </span>
-                    </td>
+                    </td> */}
+                    <td>
+  <span
+    className={`status-pill ${value.status.toLowerCase().split(" ")}`}
+  >
+    {["confirmed", "assigned", "completed"].includes(
+      value.status.toLowerCase()
+    ) ? (
+      <>
+        <FiCheckCircle style={{ marginRight: "5px" }} />
+        {value.status}
+      </>
+    ) : (
+      <>
+        <FiAlertCircle style={{ marginRight: "5px" }} />
+        {value.status}
+      </>
+    )}
+  </span>
+</td>
                     <td>
                       <div className="button-container">
                         <button

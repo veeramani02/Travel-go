@@ -22,7 +22,7 @@ import TrackTrip from "./Pages/Customer/TrackTrips";
 import Voucher from "./Pages/Customer/Voucher";
 import LoyaltyPoints from "./Pages/Customer/LoyaltyPoints";
 import Dues from "./Pages/Customer/Dues";
-
+import Settings from "./Components/Settings";
 // Admin
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import Enquiries from "./Pages/Admin/Enquiries";
@@ -31,14 +31,15 @@ import Driver from "./Pages/Admin/Driver";
 import VehicleDetails from "./Pages/Admin/ViewVehicleDetails";
 import Report from "./Pages/Admin/Report";
 import Trips from "./Pages/Admin/Trips";
-import Settings from "./Components/Settings";
+import AdminPayroll from "./Pages/Admin/AdminPayroll";
+// import Settings from "./Components/Settings";
 
 // Driver
 import DriverDashboard from "./Pages/Driver/DriverDashboard";
 import Rewards from "./Pages/Driver/Rewards";
 import Salary from "./Pages/Driver/Salary";
 import AssignedTrips from "./Pages/Driver/AssignedTrips";
-
+// import settings from "./Components/Settings";
 function App() {
   const { user, loading } = useAuth();
 
@@ -147,6 +148,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+          path="/customer/settings"
+            element={
+              <ProtectedRoute role="customer">
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin */}
           <Route
@@ -211,6 +220,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/admin/payroll"
+            element={ 
+              <ProtectedRoute role="admin">
+                <AdminPayroll />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/admin/settings"
@@ -247,7 +264,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-
+{/* 
           <Route
             path="/driver/rewards"
             element={
@@ -255,7 +272,7 @@ function App() {
                 <Rewards />
               </ProtectedRoute>
             }
-          />
+          /> */}
 
           <Route
             path="/driver/trips"
@@ -265,7 +282,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+           <Route
+            path="/driver/settings"
+            element={
+              <ProtectedRoute role="driver">
+                <Settings />
+              </ProtectedRoute>
+            }
+          />
         </Route>
+       
       </Routes>
     </BrowserRouter>
   );
