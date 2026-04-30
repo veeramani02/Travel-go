@@ -1,159 +1,15 @@
-// import React, { useState } from "react";
-// import "../../Styles/Assignedtrips.css";
-// import { recentTripActivityData } from "../../Data/Data";
-// import TripMap from "../Admin/TripMap";
-
-// function AssignedTrips() {
-//   const [coords, setCoords] = useState(null);
-//   const [openMap, setOpenMap] = useState(false);
-//   const [assignedTrip, setAssignedTrip] = useState(null);
-// const [completedTrips, setCompletedTrips] = useState([]);
-//   const value = {
-//     source: "Chennai",
-//     destination: "Bangalore",
-//   };
-
-//   const getCoordinates = async (value) => {
-//     try {
-//       const sourceUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.source}`;
-//       const destinationUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.destination}`;
-//       const sourceRes = await fetch(sourceUrl, {
-//         headers: {
-//           Accept: "application/json",
-//         },
-//       });
-
-//       const destinationRes = await fetch(destinationUrl, {
-//         headers: {
-//           Accept: "application/json",
-//         },
-//       });
-
-//       const sourceData = await sourceRes.json();
-//       const destinationData = await destinationRes.json();
-//       if (sourceData.length > 0 && destinationData.length > 0) {
-//         setCoords({
-//           source: {
-//             lat: parseFloat(sourceData[0].lat),
-//             lon: parseFloat(sourceData[0].lon),
-//           },
-//           destination: {
-//             lat: parseFloat(destinationData[0].lat),
-//             lon: parseFloat(destinationData[0].lon),
-//           },
-//         });
-//         setOpenMap(true);
-//       } else {
-//         console.log("Location not found");
-//       }
-//     } catch (error) {
-//       console.error("Geocoding error:", error);
-//     }
-//   };
-//   return (
-//     <>
-//       {openMap ? (
-//         <div className="assigned-map-container">
-//           <h1 className="assigned-map-title">Map View</h1>
-//           {coords && <TripMap Coords={coords} />}
-//           <div className="assigned-map-button">
-//             <button
-//               onClick={() => {
-//                 setOpenMap(false);
-//                 setCoords(null);
-//               }}
-//             >
-//               ← Back To Main
-//             </button>
-//           </div>
-//         </div>
-//       ) : (
-//         <div className="driver-assigned-section">
-//           <h2 className="driver-section-title">Assigned Trip</h2>
-
-//           <div className="driver-assigned-card">
-//             <div className="driver-assigned-info">
-//               <p>
-//                 <strong>Trip ID:</strong> 45892
-//               </p>
-//               <p>
-//                 <strong>Pickup:</strong> Chennai
-//               </p>
-//               <p>
-//                 <strong>Destination:</strong> Bangalore
-//               </p>
-//               <p>
-//                 <strong>Date:</strong> 20 Oct 2026
-//               </p>
-//               <p>
-//                 <strong>Status:</strong> Assigned
-//               </p>
-//             </div>
-
-//             <div className="driver-assigned-actions">
-//               <button
-//                 className="driver-route-btn"
-//                 onClick={() => getCoordinates(value)}
-//               >
-//                 View Route
-//               </button>
-//             </div>
-//           </div>
-//           <div className="driver-completed-section">
-//             <h2 className="driver-section-title">Completed Trips</h2>
-
-//             <div className="driver-table-wrapper">
-//               <table className="driver-table driver-completed-table">
-//                 <thead>
-//                   <tr>
-//                     <th>Trip ID</th>
-//                     <th>Date</th>
-//                     <th>Route</th>
-//                     <th>Earnings</th>
-//                     <th>Status</th>
-//                   </tr>
-//                 </thead>
-
-//                 <tbody>
-//                   {recentTripActivityData.map((value) => (
-//                     <tr key={value.tripId}>
-//                       <td>{value.tripId}</td>
-//                       <td>{value.date}</td>
-//                       <td>
-//                         {value.source.split(" ")[0]} →{" "}
-//                         {value.destination.split(", ")[0]}
-//                       </td>
-//                       <td>200</td>
-//                       <td>
-//                         <span
-//                           className={`status-pill ${value.status.toLowerCase()}`}
-//                         >
-//                           {value.status}
-//                         </span>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </>
-//   );
-// }
-
-// export default AssignedTrips;
 import React, { useState, useEffect } from "react";
 import "../../Styles/Assignedtrips.css";
 import TripMap from "../Admin/TripMap";
 import API_BASE_URL from "../../config/api";
+import { PacmanLoader } from "react-spinners";
 
 function AssignedTrips() {
   const [coords, setCoords] = useState(null);
   const [openMap, setOpenMap] = useState(false);
   const [assignedTrip, setAssignedTrip] = useState(null);
   const [completedTrips, setCompletedTrips] = useState([]);
+  const [loadingMap, setLoadingMap] = useState(false);
 
   useEffect(() => {
     const fetchTrips = async () => {
@@ -173,11 +29,11 @@ function AssignedTrips() {
         const activeTrip = data.find(
           (trip) =>
             trip.status?.toLowerCase() === "assigned" ||
-            trip.status?.toLowerCase() === "current"
+            trip.status?.toLowerCase() === "current",
         );
 
         const completed = data.filter(
-          (trip) => trip.status?.toLowerCase() === "completed"
+          (trip) => trip.status?.toLowerCase() === "completed",
         );
 
         setAssignedTrip(activeTrip || null);
@@ -188,20 +44,28 @@ function AssignedTrips() {
     };
 
     fetchTrips();
-  }, []);
+  }, [API_BASE_URL]);
 
   const getCoordinates = async (value) => {
     try {
-      const sourceUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.source}`;
-      const destinationUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${value.destination}`;
+      setLoadingMap(true);
+      const sourceUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value.source)}`;
+      const destinationUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(value.destination)}`;
 
-      const sourceRes = await fetch(sourceUrl, {
-        headers: { Accept: "application/json" },
-      });
-
-      const destinationRes = await fetch(destinationUrl, {
-        headers: { Accept: "application/json" },
-      });
+      const [sourceRes, destinationRes] = await Promise.all([
+        fetch(sourceUrl, {
+          headers: {
+            Accept: "application/json",
+            "User-Agent": "your-app-name",
+          },
+        }),
+        fetch(destinationUrl, {
+          headers: {
+            Accept: "application/json",
+            "User-Agent": "your-app-name",
+          },
+        }),
+      ]);
 
       const sourceData = await sourceRes.json();
       const destinationData = await destinationRes.json();
@@ -219,16 +83,26 @@ function AssignedTrips() {
         });
 
         setOpenMap(true);
+        setLoadingMap(false);
       } else {
         console.log("Location not found");
       }
     } catch (error) {
       console.error("Geocoding error:", error);
+      setLoadingMap(false);
     }
   };
 
+  const handleViewRoute = () => {
+    if (!assignedTrip) return;
+    getCoordinates({
+      source: assignedTrip.pickupCity,
+      destination: assignedTrip.destinationCity,
+    });
+  };
+
   return (
-    <>
+    <div className="at-container">
       {openMap ? (
         <div className="assigned-map-container">
           <h1 className="assigned-map-title">Map View</h1>
@@ -260,14 +134,11 @@ function AssignedTrips() {
                   <strong>Pickup:</strong> {assignedTrip.pickupCity}
                 </p>
                 <p>
-                  <strong>Destination:</strong>{" "}
-                  {assignedTrip.destinationCity}
+                  <strong>Destination:</strong> {assignedTrip.destinationCity}
                 </p>
                 <p>
                   <strong>Date:</strong>{" "}
-                  {new Date(
-                    assignedTrip.dateAndTime
-                  ).toLocaleDateString()}
+                  {new Date(assignedTrip.dateAndTime).toLocaleDateString()}
                 </p>
                 <p>
                   <strong>Status:</strong> {assignedTrip.status}
@@ -277,12 +148,7 @@ function AssignedTrips() {
               <div className="driver-assigned-actions">
                 <button
                   className="driver-route-btn"
-                  onClick={() =>
-                    getCoordinates({
-                      source: assignedTrip.pickupCity,
-                      destination: assignedTrip.destinationCity,
-                    })
-                  }
+                  onClick={() => handleViewRoute()}
                 >
                   View Route
                 </button>
@@ -313,9 +179,7 @@ function AssignedTrips() {
                       <tr key={trip._id}>
                         <td>{trip._id}</td>
                         <td>
-                          {new Date(
-                            trip.dateAndTime
-                          ).toLocaleDateString()}
+                          {new Date(trip.dateAndTime).toLocaleDateString()}
                         </td>
                         <td>
                           {trip.pickupCity} → {trip.destinationCity}
@@ -339,7 +203,12 @@ function AssignedTrips() {
           </div>
         </div>
       )}
-    </>
+      {loadingMap && (
+        <div className="at-loading">
+          <PacmanLoader color="#1e40af" size={25} />
+        </div>
+      )}
+    </div>
   );
 }
 

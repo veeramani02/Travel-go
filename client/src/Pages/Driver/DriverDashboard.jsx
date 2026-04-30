@@ -4,9 +4,27 @@ import MoneyImage from "../../assets/money.png";
 import FlagImage from "../../assets/flag.svg";
 import "../../Styles/DriverDashboard.css";
 import API_BASE_URL from "../../config/api";
+import { FaCar } from "react-icons/fa";
+import { RiMoneyRupeeCircleLine } from "react-icons/ri";
+import { FaFlagCheckered } from "react-icons/fa";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import AlertDialogSlide from "../../Components/AlertDialogSlide";
 
 export default function Driver() {
   const [status, setStatus] = useState("offline");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    message: "Are you sure you want to Go Online?",
+    title: "Go online?",
+    confirmText: "Confirm",
+  });
+  const [pendingAction, setPendingAction] = useState(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -20,7 +38,7 @@ export default function Driver() {
 
         const data = await res.json();
 
-        console.log("API DATA:", data); 
+        console.log("API DATA:", data);
 
         setStatus(data.status);
       } catch (err) {
@@ -30,75 +48,98 @@ export default function Driver() {
 
     fetchData();
   }, []);
-  // const goOnline = async () => {
-  //   alert("You are going online 🚖");
 
-  //   await fetch(`${API_BASE_URL}/api/driver/online`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //   });
-
-  //   setStatus("online");
-  // };
-  // const goOffline = async (res) => {
-  //   await fetch(`${API_BASE_URL}/api/driver/offline`, {
-  //     method: "POST",
-  //     credentials: "include",
-  //   });
-  //   alert("You are going offline 🛑");
-  //    const data = await res.json();
-  //     console.log("OFFLINE RESPONSE:", data);
-  //   setStatus("offline");
-  // };
   const goOnline = async () => {
-  try {
-    alert("You are going online 🚖");
-
-    const res = await fetch(`${API_BASE_URL}/api/driver/online`, {
-      method: "POST",
-      credentials: "include",
-    });
-
-    const data = await res.json();
-
-    console.log("ONLINE RESPONSE:", data);
-
-    setStatus(data.driver.status);
-  } catch (err) {
-    console.error("Online error:", err.message);
-  }
-};
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/driver/online`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      setSnackbar({
+        open: true,
+        message: "You are going Online ✅",
+        severity: "success",
+      });
+      setStatus(data.driver.status);
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: err.message,
+        severity: "error",
+      });
+    }
+  };
   const goOffline = async () => {
-  try {
-    const res = await fetch(`${API_BASE_URL}/api/driver/offline`, {
-      method: "POST",
-      credentials: "include",
-    });
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/driver/offline`, {
+        method: "POST",
+        credentials: "include",
+      });
+      const data = await res.json();
+      setSnackbar({
+        open: true,
+        message: "You are going offline 🛑",
+        severity: "success",
+      });
 
-    const data = await res.json();
+      setStatus(data.driver.status);
+    } catch (err) {
+      setSnackbar({
+        open: true,
+        message: err.message,
+        severity: "error",
+      });
+    }
+  };
 
-    console.log("OFFLINE RESPONSE:", data);
-
-    alert("You are going offline 🛑");
-
-    setStatus(data.driver.status); 
-  } catch (err) {
-    console.error("Offline error:", err.message);
+  function handleStatus(type) {
+    if (type === "ONLINE") {
+      setPendingAction("ONLINE");
+      setConfirmDialog({
+        open: true,
+        message: "Are you sure you want to Go Online?",
+        title: "Go Online",
+        confirmText: "Confirm",
+      });
+    }
+    if (type === "OFFLINE") {
+      setPendingAction("OFFLINE");
+      setConfirmDialog({
+        open: true,
+        message: "Are you sure you want to Go Offline?",
+        title: "Go Offline",
+        confirmText: "Confirm",
+      });
+    }
   }
-};
+
+  const handleConfirm = () => {
+    if (pendingAction === "ONLINE") {
+      goOnline();
+    } else if (pendingAction === "OFFLINE") {
+      goOffline();
+    }
+    setConfirmDialog((p) => ({ ...p, open: false }));
+    setPendingAction(null);
+  };
+
   return (
     <div className="driver-container">
-      <h1 className="driver-title">Driver Dashboard</h1>
-      {status === "offline" ? (
-        <button onClick={goOnline}>Go Online</button>
-      ) : (
-        <button onClick={goOffline}>Go Offline</button>
-      )}
+      <div className="dc-title-button">
+        <h1 className="driver-title">Driver Dashboard</h1>
+        {status === "offline" ? (
+          <button onClick={() => handleStatus("ONLINE")}>Go Online</button>
+        ) : (
+          <button onClick={() => handleStatus("OFFLINE")}>Go Offline</button>
+        )}
+      </div>
+
       {/* Summary Cards */}
       <div className="driver-cards">
-        <div className="driver-card">
-          <div className="driver-circle">
-            <img src={CarImage} alt="distance" />
+        <div className="driver-card dc-car-card">
+          <div className="driver-circle dc-car">
+            <FaCar />
           </div>
           <div className="driver-info">
             <p className="driver-label">Total Distance (Month)</p>
@@ -106,9 +147,9 @@ export default function Driver() {
           </div>
         </div>
 
-        <div className="driver-card">
-          <div className="driver-circle">
-            <img src={MoneyImage} alt="money" />
+        <div className="driver-card dc-money-card">
+          <div className="driver-circle dc-money">
+            <RiMoneyRupeeCircleLine />
           </div>
           <div className="driver-info">
             <p className="driver-label">Money Earn (Month)</p>
@@ -116,9 +157,9 @@ export default function Driver() {
           </div>
         </div>
 
-        <div className="driver-card">
-          <div className="driver-circle">
-            <img src={FlagImage} alt="trips" />
+        <div className="driver-card dc-trip-card">
+          <div className="driver-circle dc-trip">
+            <FaFlagCheckered />
           </div>
           <div className="driver-info">
             <p className="driver-label">Trips Completed (Month)</p>
@@ -185,6 +226,20 @@ export default function Driver() {
           </div>
         </div>
       </div>
+      <CustomizedSnackbars
+        open={snackbar.open}
+        message={snackbar.message}
+        severity={snackbar.severity}
+        onClose={() => setSnackbar((p) => ({ ...p, open: false }))}
+      />
+      <AlertDialogSlide
+        open={confirmDialog.open}
+        message={confirmDialog.message}
+        title={confirmDialog.title}
+        confirmText={confirmDialog.confirmText}
+        onClose={() => setConfirmDialog((p) => ({ ...p, open: false }))}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
