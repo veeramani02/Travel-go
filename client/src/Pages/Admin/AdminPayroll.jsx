@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect} from "react";
 import {
   FiUsers,
   FiDollarSign,
@@ -12,106 +12,91 @@ import {
   FiAlertCircle,
 } from "react-icons/fi";
 import "../../Styles/AdminPayroll.css";
+import API_BASE_URL from "../../config/api";
 
-// ─── Dummy Data ───────────────────────────────────────────────────────────────
-const initialDrivers = [
-  {
-    id: "DRV001",
-    name: "Ravi Kumar",
-    trips: 142,
-    baseSalary: 18000,
-    incentive: 3200,
-    bonus: 1000,
-    deductions: 500,
-    status: "Paid",
-  },
-  {
-    id: "DRV002",
-    name: "Suresh Babu",
-    trips: 98,
-    baseSalary: 16000,
-    incentive: 2100,
-    bonus: 500,
-    deductions: 300,
-    status: "Pending",
-  },
-  {
-    id: "DRV003",
-    name: "Murugan S",
-    trips: 175,
-    baseSalary: 20000,
-    incentive: 4500,
-    bonus: 2000,
-    deductions: 800,
-    status: "Paid",
-  },
-  {
-    id: "DRV004",
-    name: "Arjun Raj",
-    trips: 60,
-    baseSalary: 14000,
-    incentive: 1200,
-    bonus: 0,
-    deductions: 200,
-    status: "Pending",
-  },
-  {
-    id: "DRV005",
-    name: "Karthik M",
-    trips: 130,
-    baseSalary: 17500,
-    incentive: 2800,
-    bonus: 800,
-    deductions: 400,
-    status: "Paid",
-  },
-  {
-    id: "DRV006",
-    name: "Vijay Anand",
-    trips: 88,
-    baseSalary: 15500,
-    incentive: 1900,
-    bonus: 300,
-    deductions: 250,
-    status: "Pending",
-  },
-];
-
-const monthlyHistory = [
-  { month: "March 2025", totalPaid: "₹2,34,500", pending: "₹18,200" },
-  { month: "February 2025", totalPaid: "₹2,18,000", pending: "₹12,500" },
-  { month: "January 2025", totalPaid: "₹2,45,000", pending: "₹9,800" },
-  { month: "December 2024", totalPaid: "₹2,60,000", pending: "₹6,500" },
-];
-
-// ─── Helper ───────────────────────────────────────────────────────────────────
 const calcFinal = (d) =>
   (d.baseSalary || 0) + (d.incentive || 0) + (d.bonus || 0) - (d.deductions || 0);
-
 const fmt = (n) => `₹${Number(n).toLocaleString("en-IN")}`;
+const getCurrentMonth = () => {
+  const now = new Date();
+  return `${now.toLocaleString("default", { month: "long" })} ${now.getFullYear()}`;
+};
+const generateMonthlyHistory = (drivers) => {
+  const totalPaid = drivers
+    .filter((d) => d.status === "Paid")
+    .reduce((sum, d) => sum + calcFinal(d), 0);
 
-// ─── Component ────────────────────────────────────────────────────────────────
+  const pendingAmount = drivers
+    .filter((d) => d.status === "Pending")
+    .reduce((sum, d) => sum + calcFinal(d), 0);
+
+  return [
+    {
+      month: getCurrentMonth(),
+      totalPaid: fmt(totalPaid),
+      pending: fmt(pendingAmount),
+    },
+  ];
+};
 export default function AdminPayroll() {
-  const [drivers, setDrivers] = useState(initialDrivers);
+  const [drivers, setDrivers] = useState([])
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const [modal, setModal] = useState(null); // holds driver being edited
+  const [modal, setModal] = useState(null); 
   const [form, setForm] = useState({});
-
-  // Summary stats
   const totalDrivers = drivers.length;
   const monthlySalary = drivers.reduce((s, d) => s + calcFinal(d), 0);
   const totalIncentives = drivers.reduce((s, d) => s + d.incentive, 0);
   const pendingCount = drivers.filter((d) => d.status === "Pending").length;
-
-  // Filtered list
+  const monthlyHistory = generateMonthlyHistory(drivers);
   const visible = drivers.filter((d) => {
     const matchSearch = d.name.toLowerCase().includes(search.toLowerCase());
     const matchFilter = filter === "All" || d.status === filter;
     return matchSearch && matchFilter;
   });
+  useEffect(() => {
+  fetchDriversPayroll();
+}, []);
+  const fetchDriversPayroll = async () => {
+    try {
+    const response = await fetch(`${API_BASE_URL}/api/driver/driver`, {
+      method: "GET",
+      credentials: "include",
+    });
+      if (!response.ok) {
+      throw new Error("Failed to fetch drivers");
+    }
+    const data = await response.json();
+      const payrollData = data.map((driver, index) => {
+        const totalTrips = driver.totalTrips || 0;
+        const baseSalary = 15000;
+        const incentive = totalTrips * 200;
+        const bonus = totalTrips > 40 ? 3000 : 1000;
+        const deductions = 500;
+        const currentMonth = getCurrentMonth();
+return {
+  id: driver._id || `DRV${index + 1}`,
+  name: driver.name,
+  trips: totalTrips,
+  baseSalary: driver.payroll?.baseSalary || baseSalary,
+  incentive: driver.payroll?.incentive || incentive,
+  bonus: driver.payroll?.bonus || bonus,
+  deductions: driver.payroll?.deductions || deductions,
+  
+  status:
+    driver.payroll?.month === currentMonth
+      ? driver.payroll.status
+      : "Pending",
+  month: currentMonth,
+};
+    });
 
-  // Open modal
+  setDrivers(payrollData);
+  } catch (error) {
+    console.error("Payroll Fetch Error:", error);
+  }
+};
+ 
   const openModal = (driver) => {
     setModal(driver);
     setForm({
@@ -119,7 +104,7 @@ export default function AdminPayroll() {
       incentive: driver.incentive,
       bonus: driver.bonus,
       deductions: driver.deductions,
-      month: "April 2025",
+     month: getCurrentMonth(),
     });
   };
 
@@ -128,8 +113,32 @@ export default function AdminPayroll() {
   const handleFormChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: Number(value) || 0 }));
   };
+  const handleMarkPaid = async () => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/api/driver/driver/payroll/${modal.id}`,
+      {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          month: getCurrentMonth(),
+          status: "Paid",
+          paidDate: new Date(),
+         baseSalary: form.baseSalary,
+              incentive: form.incentive,
+              bonus: form.bonus,
+              deductions: form.deductions,
+        }),
+      }
+    );
 
-  const handleMarkPaid = () => {
+    if (!response.ok) {
+      throw new Error("Failed to update payroll");
+    }
+
     setDrivers((prev) =>
       prev.map((d) =>
         d.id === modal.id
@@ -140,18 +149,21 @@ export default function AdminPayroll() {
               bonus: form.bonus,
               deductions: form.deductions,
               status: "Paid",
+              month: getCurrentMonth(),
+             
             }
           : d
       )
     );
+
     closeModal();
-  };
-
+  } catch (error) {
+    console.error("Payroll Update Error:", error);
+  }
+};
   const finalPreview = calcFinal(form);
-
   return (
     <div className="ap-page">
-      {/* ── Page Header ── */}
       <div className="ap-header">
         <div>
           <h1 className="ap-title">Driver Payroll Management</h1>
@@ -160,9 +172,7 @@ export default function AdminPayroll() {
           </p>
         </div>
       </div>
-
-      {/* ── Summary Cards ── */}
-      <div className="ap-cards">
+    <div className="ap-cards">
         <div className="ap-card ap-card--blue">
           <div className="ap-card__icon">
             <FiUsers />
@@ -172,7 +182,6 @@ export default function AdminPayroll() {
             <h2 className="ap-card__value">{totalDrivers}</h2>
           </div>
         </div>
-
         <div className="ap-card ap-card--orange">
           <div className="ap-card__icon">
             <FiDollarSign />
@@ -182,17 +191,15 @@ export default function AdminPayroll() {
             <h2 className="ap-card__value">{fmt(monthlySalary)}</h2>
           </div>
         </div>
-
-        <div className="ap-card ap-card--green">
-          <div className="ap-card__icon">
+          <div className="ap-card ap-card--green">
+            <div className="ap-card__icon">
             <FiTrendingUp />
-          </div>
+            </div>
           <div>
             <p className="ap-card__label">Total Incentives</p>
             <h2 className="ap-card__value">{fmt(totalIncentives)}</h2>
           </div>
         </div>
-
         <div className="ap-card ap-card--red">
           <div className="ap-card__icon">
             <FiClock />
@@ -203,8 +210,6 @@ export default function AdminPayroll() {
           </div>
         </div>
       </div>
-
-      {/* ── Controls ── */}
       <div className="ap-controls">
         <div className="ap-search">
           <FiSearch className="ap-search__icon" />
@@ -216,8 +221,7 @@ export default function AdminPayroll() {
             className="ap-search__input"
           />
         </div>
-
-        <div className="ap-filters">
+      <div className="ap-filters">
           {["All", "Paid", "Pending"].map((opt) => (
             <button
               key={opt}
@@ -228,13 +232,10 @@ export default function AdminPayroll() {
             </button>
           ))}
         </div>
-
-        <button className="ap-export-btn">
+         <button className="ap-export-btn">
           <FiDownload /> Export Payroll
         </button>
       </div>
-
-      {/* ── Payroll Table ── */}
       <div className="ap-table-card">
         <div className="ap-table-wrapper">
           <table className="ap-table">
@@ -285,12 +286,21 @@ export default function AdminPayroll() {
                       </span>
                     </td>
                     <td>
-                      <button
-                        className="ap-update-btn"
-                        onClick={() => openModal(d)}
-                      >
-                        <FiEdit2 /> Update
-                      </button>
+                     <button
+  className="ap-update-btn"
+  onClick={() => openModal(d)}
+  disabled={d.status === "Paid"}
+>
+  {d.status === "Paid" ? (
+    <>
+      <FiCheckCircle /> Paid
+    </>
+  ) : (
+    <>
+      <FiEdit2 /> Update
+    </>
+  )}
+</button>
                     </td>
                   </tr>
                 ))
@@ -299,8 +309,6 @@ export default function AdminPayroll() {
           </table>
         </div>
       </div>
-
-      {/* ── Monthly History ── */}
       <div className="ap-history">
         <h3 className="ap-section-title">Monthly Payroll History</h3>
         <div className="ap-table-card">
@@ -327,8 +335,7 @@ export default function AdminPayroll() {
         </div>
       </div>
 
-      {/* ── Update Modal ── */}
-      {modal && (
+     {modal && (
         <div className="ap-overlay" onClick={closeModal}>
           <div className="ap-modal" onClick={(e) => e.stopPropagation()}>
             <div className="ap-modal__header">
@@ -337,14 +344,11 @@ export default function AdminPayroll() {
                 <FiX />
               </button>
             </div>
-
             <div className="ap-modal__body">
-              {/* Driver Name (readonly) */}
               <div className="ap-field">
                 <label>Driver Name</label>
                 <input type="text" value={modal.name} readOnly className="ap-input ap-input--readonly" />
               </div>
-
               <div className="ap-field-row">
                 <div className="ap-field">
                   <label>Base Salary (₹)</label>
@@ -365,7 +369,6 @@ export default function AdminPayroll() {
                   />
                 </div>
               </div>
-
               <div className="ap-field-row">
                 <div className="ap-field">
                   <label>Bonus (₹)</label>
@@ -386,7 +389,6 @@ export default function AdminPayroll() {
                   />
                 </div>
               </div>
-
               <div className="ap-field">
                 <label>Month</label>
                 <input
@@ -396,8 +398,6 @@ export default function AdminPayroll() {
                   className="ap-input"
                 />
               </div>
-
-              {/* Auto-calculated Final Salary */}
               <div className="ap-final-box">
                 <span>Final Salary</span>
                 <span className="ap-final-box__amount">{fmt(finalPreview)}</span>
@@ -406,8 +406,7 @@ export default function AdminPayroll() {
                 = Base Salary + Incentive + Bonus − Deductions
               </p>
             </div>
-
-            <div className="ap-modal__footer">
+           <div className="ap-modal__footer">
               <button className="ap-cancel-btn" onClick={closeModal}>
                 Cancel
               </button>

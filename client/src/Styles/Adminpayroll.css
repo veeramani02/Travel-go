@@ -513,6 +513,10 @@
 .ap-paid-btn:hover {
   background: #d97706;
 }
+.ap-update-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
 
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 1024px) {

@@ -42,7 +42,7 @@ export default function AdminDashboard() {
   }, []);
 
   const activeDrivers = drivers.filter(
-    (value) => value?.status?.toLowerCase().trim() === "active",
+    (value) => value?.status?.toLowerCase().trim() === "online",
   );
   const onTrip = trips.filter(
     (value) =>

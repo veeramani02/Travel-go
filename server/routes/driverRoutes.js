@@ -67,6 +67,7 @@ driverRoutes.get(
   authorizeRoles("driver"),
   driverController.getDriverProfile,
 );
+driverRoutes.patch("/driver/payroll/:id", protect, authorizeRoles("admin"), driverController.updatePayroll);
 driverRoutes.post(
   "/online",
   protect,    

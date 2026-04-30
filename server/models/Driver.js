@@ -34,7 +34,23 @@ const driverSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-
+ payroll: {
+  month: String,
+  status: {
+    type: String,
+    default: "Pending",
+  },
+  paidDate: String,
+  baseSalary: Number,
+  incentive: Number,
+  bonus: Number,
+  deductions: Number,
+  finalSalary: Number,
+  paidAmount: {
+    type: Number,
+    default: 0,
+  },
+}
 });
 
 export default mongoose.model("Driver", driverSchema);
