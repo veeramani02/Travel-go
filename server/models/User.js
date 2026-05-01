@@ -16,6 +16,14 @@ const userSchema = new mongoose.Schema(
     smsNotify: { type: Boolean, default: false },
     twoStepVerification: { type: Boolean, default: false },
     passwordChangedAt: Date,
+    resetPasswordToken: {
+      type: String,
+      default: null,
+    },
+    resetPasswordExpires:{
+      type: Date,
+      default: null,
+    },
   },
   { timestamps: true },
 );

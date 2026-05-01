@@ -10,7 +10,8 @@ import LandingPage from "./Pages/LandingPage";
 import DashboardLayout from "./Layouts/DashboardLayout";
 import Signup from "./Pages/Auth/Signup";
 import Changepasswordpage from "./Components/Changepasswordpage";
-
+import ForgotPassword from "./Pages/Auth/ForgetPassword";
+import ResetPassword from "./Pages/Auth/ResetPassword";
 // Customer
 import CustomerDashboard from "./Pages/Customer/CustomerDashboard";
 import BookTrip from "./Pages/Customer/BookTrip";
@@ -23,6 +24,7 @@ import Voucher from "./Pages/Customer/Voucher";
 import LoyaltyPoints from "./Pages/Customer/LoyaltyPoints";
 import Dues from "./Pages/Customer/Dues";
 import Settings from "./Components/Settings";
+
 // Admin
 import AdminDashboard from "./Pages/Admin/AdminDashboard";
 import Enquiries from "./Pages/Admin/Enquiries";
@@ -32,6 +34,7 @@ import VehicleDetails from "./Pages/Admin/ViewVehicleDetails";
 import Report from "./Pages/Admin/Report";
 import Trips from "./Pages/Admin/Trips";
 import AdminPayroll from "./Pages/Admin/AdminPayroll";
+
 // import Settings from "./Components/Settings";
 
 // Driver
@@ -64,6 +67,8 @@ function App() {
         />
 
         <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+         <Route path="/reset-password/:token" element={<ResetPassword />} />
 
         {/*  Protected Layout */}
         <Route element={<DashboardLayout />}>
