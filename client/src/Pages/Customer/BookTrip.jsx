@@ -8,7 +8,8 @@ function BookTrip() {
   const navigate = useNavigate();
   const inputRefs = useRef({});
   const phoneRegex = /^[6-9]\d{9}$/;
-
+  const [estimatedDuration, setEstimatedDuration] = useState(4);
+  const [estimatedDistance, setEstimatedDistance] = useState(0);
   const [errors, setErrors] = useState({});
 
   const [pickupStates, setPickupStates] = useState([]);
@@ -73,83 +74,394 @@ function BookTrip() {
     const cities = City.getCitiesOfState("IN", stateCode);
     setDestinationCities(cities);
   };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+//   const getCoordinates = async (city, state) => {
+//   const response = await fetch(
+//     `https://nominatim.openstreetmap.org/search?city=${city}&state=${state}&country=India&format=json&limit=1`
+//   );
 
-    let validationErrors = {};
+//   const data = await response.json();
 
-    if (formData.name.trim().length < 3) {
-      validationErrors.name = "Name must be at least 3 characters.";
-    }
+//   if (!data.length) {
+//     throw new Error(`Coordinates not found for ${city}`);
+//   }
 
-    if (!phoneRegex.test(formData.phone)) {
-      validationErrors.phone = "Invalid Phone Number.";
-    }
+//   return {
+//     lat: data[0].lat,
+//     lon: data[0].lon,
+//   };
+// };
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      validationErrors.email = "Please enter valid email.";
-    }
+//     let validationErrors = {};
 
-    if (!formData.pickupState)
-      validationErrors.pickupState = "Select pickup state.";
-    if (!formData.pickupCity)
-      validationErrors.pickupCity = "Select pickup city.";
-    if (!formData.destinationState)
-      validationErrors.destinationState = "Select destination state.";
-    if (!formData.destinationCity)
-      validationErrors.destinationCity = "Select destination city.";
+//     if (formData.name.trim().length < 3) {
+//       validationErrors.name = "Name must be at least 3 characters.";
+//     }
 
-    const selectedDate = new Date(formData.travelDate);
-    if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
-      validationErrors.travelDate = "Select future date & time.";
-    }
+//     if (!phoneRegex.test(formData.phone)) {
+//       validationErrors.phone = "Invalid Phone Number.";
+//     }
 
-    if (!formData.vehicleType)
-      validationErrors.vehicleType = "Select vehicle type.";
-    if (!formData.passengers || parseInt(formData.passengers) <= 0) {
-      validationErrors.passengers = "Minimum 1 passenger required.";
-    }
+//     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//     if (!emailRegex.test(formData.email)) {
+//       validationErrors.email = "Please enter valid email.";
+//     }
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+//     if (!formData.pickupState)
+//       validationErrors.pickupState = "Select pickup state.";
+//     if (!formData.pickupCity)
+//       validationErrors.pickupCity = "Select pickup city.";
+//     if (!formData.destinationState)
+//       validationErrors.destinationState = "Select destination state.";
+//     if (!formData.destinationCity)
+//       validationErrors.destinationCity = "Select destination city.";
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/trip/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          ...formData,
-          dateAndTime: formData.travelDate,
-        }),
-      });
+//     const selectedDate = new Date(formData.travelDate);
+//     if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
+//       validationErrors.travelDate = "Select future date & time.";
+//     }
 
-      const data = await response.json();
+//     if (!formData.vehicleType)
+//       validationErrors.vehicleType = "Select vehicle type.";
+//     if (!formData.passengers || parseInt(formData.passengers) <= 0) {
+//       validationErrors.passengers = "Minimum 1 passenger required.";
+//     }
 
-      console.log("API Response:", data);
+//     if (Object.keys(validationErrors).length > 0) {
+//       setErrors(validationErrors);
+//       return;
+//     }
 
-      if (!response.ok) {
-        throw new Error(data.message || "Trip creation failed");
-      }
+//     try {
+//       const response = await fetch(`${API_BASE_URL}/api/trip/create`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         credentials: "include",
+//         body: JSON.stringify({
+//           ...formData,
+//           dateAndTime: formData.travelDate,
+//         }),
+//       });
 
-      const tripId = data.trip._id;
+//       const data = await response.json();
 
-      console.log("Trip Created:", tripId);
+//       console.log("API Response:", data);
+
+//       if (!response.ok) {
+//         throw new Error(data.message || "Trip creation failed");
+//       }
+
+//       const tripId = data.trip._id;
+
+//       console.log("Trip Created:", tripId);
 
    
-    navigate("/customer/payment", { state: { tripId } });
+//     navigate("/customer/payment", { state: { tripId } });
 
+//   } catch (error) {
+//     console.error("ERROR:", error);
+//     alert(error.message);
+//   }
+// };
+ // ONLY replace your handleSubmit function inside BookTrip.jsx
+const getCoordinates = async (city, stateCode) => {
+  const stateObj = State.getStateByCodeAndCountry(stateCode, "IN");
+  const stateName = stateObj?.name || stateCode;
+
+  const response = await fetch(
+    `https://nominatim.openstreetmap.org/search?city=${city}&state=${stateName}&country=India&format=json&limit=1`
+  );
+
+  const data = await response.json();
+
+  if (!data.length) {
+    throw new Error(`Coordinates not found for ${city}`);
+  }
+
+  return {
+    lat: parseFloat(data[0].lat),
+    lon: parseFloat(data[0].lon),
+  };
+};
+// const handleSubmit = async (e) => {
+//   e.preventDefault();
+
+//   let validationErrors = {};
+
+//   if (formData.name.trim().length < 3) {
+//     validationErrors.name = "Name must be at least 3 characters.";
+//   }
+
+//   if (!phoneRegex.test(formData.phone)) {
+//     validationErrors.phone = "Invalid Phone Number.";
+//   }
+
+//   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//   if (!emailRegex.test(formData.email)) {
+//     validationErrors.email = "Please enter valid email.";
+//   }
+
+//   if (!formData.pickupState)
+//     validationErrors.pickupState = "Select pickup state.";
+
+//   if (!formData.pickupCity)
+//     validationErrors.pickupCity = "Select pickup city.";
+
+//   if (!formData.destinationState)
+//     validationErrors.destinationState = "Select destination state.";
+
+//   if (!formData.destinationCity)
+//     validationErrors.destinationCity = "Select destination city.";
+
+//   const selectedDate = new Date(formData.travelDate);
+
+//   if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
+//     validationErrors.travelDate = "Select future date & time.";
+//   }
+
+//   if (!formData.vehicleType)
+//     validationErrors.vehicleType = "Select vehicle type.";
+
+//   if (!formData.passengers || parseInt(formData.passengers) <= 0) {
+//     validationErrors.passengers = "Minimum 1 passenger required.";
+//   }
+
+//   if (Object.keys(validationErrors).length > 0) {
+//     setErrors(validationErrors);
+//     return;
+//   }
+
+//   try {
+//     // GET PICKUP COORDINATES
+//     const pickupCoords = await getCoordinates(
+//       formData.pickupCity,
+//       formData.pickupState
+//     );
+
+//     // GET DESTINATION COORDINATES
+//     const destinationCoords = await getCoordinates(
+//       formData.destinationCity,
+//       formData.destinationState
+//     );
+
+//     // GET ROUTE DISTANCE + DURATION
+//     const routeResponse = await fetch(
+//       `${API_BASE_URL}/api/trip/route?start=${pickupCoords.lon},${pickupCoords.lat}&end=${destinationCoords.lon},${destinationCoords.lat}`
+//     );
+
+//     const routeData = await routeResponse.json();
+
+//     let tripEstimatedDuration = 4; // fallback
+//     let tripEstimatedDistance = 0;
+
+//    if (
+//   routeData.code === "Ok" &&
+//   routeData.routes &&
+//   routeData.routes.length > 0
+// ) {
+//   tripEstimatedDuration = routeData.routes[0].duration / 3600; // Hours
+//   tripEstimatedDistance = routeData.routes[0].distance / 1000; // KM
+// }
+
+//     setEstimatedDuration(tripEstimatedDuration);
+//     setEstimatedDistance(tripEstimatedDistance);
+
+//     console.log("Estimated Duration:", tripEstimatedDuration);
+//     console.log("Estimated Distance:", tripEstimatedDistance);
+
+//     // CREATE TRIP
+//     const response = await fetch(`${API_BASE_URL}/api/trip/create`, {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       credentials: "include",
+//       body: JSON.stringify({
+//         ...formData,
+//         dateAndTime: formData.travelDate,
+
+//         estimatedDuration: tripEstimatedDuration,
+//         estimatedDistance: tripEstimatedDistance,
+
+//         pickupCoordinates: pickupCoords,
+//         destinationCoordinates: destinationCoords,
+//       }),
+//     });
+
+//     const data = await response.json();
+
+//     console.log("API Response:", data);
+
+//     if (!response.ok) {
+//       throw new Error(data.message || "Trip creation failed");
+//     }
+
+//     const tripId = data.trip._id;
+
+//     console.log("Trip Created:", tripId);
+
+//     navigate("/customer/payment", {
+//       state: {
+//         tripId,
+//         estimatedDuration: tripEstimatedDuration,
+//         estimatedDistance: tripEstimatedDistance,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("ERROR:", error);
+//     alert(error.message);
+//   }
+// };
+// FULL FIX — Replace ONLY getCoordinates + handleSubmit inside BookTrip.jsx
+
+// REMOVE old getCoordinates completely and use this:
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  let validationErrors = {};
+
+  if (formData.name.trim().length < 3) {
+    validationErrors.name = "Name must be at least 3 characters.";
+  }
+
+  if (!phoneRegex.test(formData.phone)) {
+    validationErrors.phone = "Invalid Phone Number.";
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(formData.email)) {
+    validationErrors.email = "Please enter valid email.";
+  }
+
+  if (!formData.pickupState)
+    validationErrors.pickupState = "Select pickup state.";
+
+  if (!formData.pickupCity)
+    validationErrors.pickupCity = "Select pickup city.";
+
+  if (!formData.destinationState)
+    validationErrors.destinationState = "Select destination state.";
+
+  if (!formData.destinationCity)
+    validationErrors.destinationCity = "Select destination city.";
+
+  const selectedDate = new Date(formData.travelDate);
+
+  if (isNaN(selectedDate.getTime()) || selectedDate <= new Date()) {
+    validationErrors.travelDate = "Select future date & time.";
+  }
+
+  if (!formData.vehicleType)
+    validationErrors.vehicleType = "Select vehicle type.";
+
+  if (!formData.passengers || parseInt(formData.passengers) <= 0) {
+    validationErrors.passengers = "Minimum 1 passenger required.";
+  }
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  try {
+    // DIRECT CITY DATA FROM country-state-city PACKAGE
+    const pickupCityData = pickupCities.find(
+      (city) => city.name === formData.pickupCity
+    );
+
+    const destinationCityData = destinationCities.find(
+      (city) => city.name === formData.destinationCity
+    );
+
+    if (!pickupCityData || !destinationCityData) {
+      throw new Error("City coordinates not found");
+    }
+
+    const pickupCoords = {
+      lat: parseFloat(pickupCityData.latitude),
+      lon: parseFloat(pickupCityData.longitude),
+    };
+
+    const destinationCoords = {
+      lat: parseFloat(destinationCityData.latitude),
+      lon: parseFloat(destinationCityData.longitude),
+    };
+
+    console.log("Pickup Coordinates:", pickupCoords);
+    console.log("Destination Coordinates:", destinationCoords);
+
+    // ROUTE API
+    const routeResponse = await fetch(
+      `${API_BASE_URL}/api/trip/route?start=${pickupCoords.lon},${pickupCoords.lat}&end=${destinationCoords.lon},${destinationCoords.lat}`
+    );
+
+    const routeData = await routeResponse.json();
+
+    console.log("Route Data:", routeData);
+
+    let tripEstimatedDuration = 4; // fallback
+    let tripEstimatedDistance = 0;
+
+    if (
+      routeData.code === "Ok" &&
+      routeData.routes &&
+      routeData.routes.length > 0
+    ) {
+      tripEstimatedDuration = routeData.routes[0].duration / 3600; // hrs
+      tripEstimatedDistance = routeData.routes[0].distance / 1000; // km
+    }
+
+    setEstimatedDuration(tripEstimatedDuration);
+    setEstimatedDistance(tripEstimatedDistance);
+
+    console.log("Estimated Duration:", tripEstimatedDuration);
+    console.log("Estimated Distance:", tripEstimatedDistance);
+
+    // CREATE TRIP
+    const response = await fetch(`${API_BASE_URL}/api/trip/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        ...formData,
+        dateAndTime: formData.travelDate,
+
+        estimatedDuration: tripEstimatedDuration,
+        estimatedDistance: tripEstimatedDistance,
+
+        pickupCoordinates: pickupCoords,
+        destinationCoordinates: destinationCoords,
+      }),
+    });
+
+    const data = await response.json();
+
+    console.log("API Response:", data);
+
+    if (!response.ok) {
+      throw new Error(data.message || "Trip creation failed");
+    }
+
+    const tripId = data.trip._id;
+
+    navigate("/customer/payment", {
+      state: {
+        tripId,
+        estimatedDuration: tripEstimatedDuration,
+        estimatedDistance: tripEstimatedDistance,
+      },
+    });
   } catch (error) {
     console.error("ERROR:", error);
     alert(error.message);
   }
-};
-  const renderError = (field) =>
+};  
+const renderError = (field) =>
     errors[field] ? (
       <p style={{ color: "red", fontSize: "12px", marginTop: "4px" }}>
         {errors[field]}

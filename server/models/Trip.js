@@ -36,7 +36,37 @@ const tripSchema = new mongoose.Schema(
     orderId: {
     type: String,
     },
+    estimatedDuration:{
+    type: Number,
+    default: 0,
+    },
+    estimatedDistance:{  
+    type: Number,
+    default: 0,
+    },
+    pickupCoordinates: {
+    lat: {
+    type: Number,
+    default: 0,
+    },
+    lon: {
+    type: Number,
+    default: 0,
+    },
+},
+
+  destinationCoordinates: {
+  lat: {
+    type: Number,
+    default: 0,
   },
+  lon: {
+    type: Number,
+    default: 0,
+  },
+},
+  },
+
 
   { timestamps: true },
 );

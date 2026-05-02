@@ -15,6 +15,10 @@ export const createTrip = async (req, res) => {
       specialRequest,
       driverId,
       vehicleId,
+      estimatedDuration,
+      estimatedDistance,
+      pickupCoordinates,
+      destinationCoordinates,
     } = req.body;
     const dateobj = new Date(dateAndTime);
     const date = dateobj;
@@ -44,6 +48,10 @@ export const createTrip = async (req, res) => {
       paymentStatus: "pending",
       driverId,
       vehicleId,
+      estimatedDuration,
+      estimatedDistance,
+      pickupCoordinates,
+      destinationCoordinates,
     });
     res.status(201).json({
       success: true,
@@ -57,8 +65,55 @@ export const createTrip = async (req, res) => {
     });
   }
 };
+export const updateTripStatuses = async () => {
+  const now = new Date();
+
+  const trips = await Trip.find({
+    status: { $in: ["assigned", "current"] },
+  });
+
+  for (let trip of trips) {
+    const tripDate = new Date(trip.dateAndTime);
+
+    // Assigned → Current
+    if (trip.status === "assigned" && tripDate <= now) {
+      trip.status = "current";
+    }
+
+    // Current → Completed (example: 4 hrs after start)
+   const endTime = new Date(
+  tripDate.getTime() + (trip.estimatedDuration||4) * 60 * 60 * 1000
+);
+
+if (trip.status === "current" && now >= endTime) {
+  trip.status = "completed";
+}
+if (trip.isModified()) {
+  await trip.save();
+}
+
+  }
+};
+// export const getLatestTrip = async (req, res) => {
+//   try {
+//     const trip = await Trip.findOne({ userId: req.user._id }).sort({
+//       createdAt: -1,
+//     });
+
+//     if (!trip) {
+//       return res.status(404).json({ message: "No trips found" });
+//     }
+
+//     res.json(trip);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 export const getLatestTrip = async (req, res) => {
   try {
+    // AUTO STATUS UPDATE
+    await updateTripStatuses();
+
     const trip = await Trip.findOne({ userId: req.user._id }).sort({
       createdAt: -1,
     });
@@ -74,6 +129,7 @@ export const getLatestTrip = async (req, res) => {
 };
 export const getPastTrips = async (req, res) => {
   try {
+    await updateTripStatuses();
     const userId = req.user._id;
     const pastTrips = await Trip.find({ userId })
       .sort({ createdAt: -1 })
@@ -86,20 +142,39 @@ export const getPastTrips = async (req, res) => {
   }
 };
 
+// export const getTrips = async (req, res) => {
+//   try {
+//     const trip = await Trip.find();
+
+//     if (!trip) {
+//       return res.status(404).json({ message: "No trips found" });
+//     }
+
+//     res.json(trip);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 export const getTrips = async (req, res) => {
   try {
+    // AUTO STATUS UPDATE
+    await updateTripStatuses();
+
     const trip = await Trip.find();
 
-    if (!trip) {
-      return res.status(404).json({ message: "No trips found" });
+    if (!trip || trip.length === 0) {
+      return res.status(404).json({
+        message: "No trips found",
+      });
     }
 
     res.json(trip);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
-
 export const getRoute = async (req, res) => {
   const { start, end } = req.query;
 
@@ -153,7 +228,7 @@ export const getRoute = async (req, res) => {
 export const updateTrips = async (req, res) => {
   try {
     console.log(req.body);
-
+    await updateTripStatuses();
     const { _id, driverId, vehicleId } = req.body;
 
     if (!driverId)
@@ -202,6 +277,81 @@ export const updateTrips = async (req, res) => {
   } catch (e) {
     return res.status(500).json({
       message: e.message,
+    });
+  }
+};
+// export const cancelTrip = async (req, res) => {
+//   try {
+//     const { tripId } = req.params;
+
+//     const trip = await Trip.findById(tripId);
+
+//     if (!trip) {
+//       return res.status(404).json({
+//         message: "Trip not found",
+//       });
+//     }
+
+//     // already completed trips cancel panna koodadhu
+//     if (trip.status === "completed") {
+//       return res.status(400).json({
+//         message: "Completed trip cannot be cancelled",
+//       });
+//     }
+
+//     trip.status = "cancelled";
+
+//     await trip.save();
+
+//     return res.status(200).json({
+//       success: true,
+//       message: "Trip cancelled successfully",
+//       trip,
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       message: error.message,
+//     });
+//   }
+// };
+export const cancelTrip = async (req, res) => {
+  try {
+    const { tripId } = req.params;
+
+    const trip = await Trip.findById(tripId);
+
+    if (!trip) {
+      return res.status(404).json({
+        message: "Trip not found",
+      });
+    }
+
+    // Already completed trips cancel panna mudiyadhu
+    if (trip.status === "completed") {
+      return res.status(400).json({
+        message: "Completed trip cannot be cancelled",
+      });
+    }
+
+    // Already cancelled check
+    if (trip.status === "cancelled") {
+      return res.status(400).json({
+        message: "Trip is already cancelled",
+      });
+    }
+
+    trip.status = "cancelled";
+
+    await trip.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Trip cancelled successfully",
+      trip,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
     });
   }
 };
