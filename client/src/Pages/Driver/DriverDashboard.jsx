@@ -9,6 +9,7 @@ import { RiMoneyRupeeCircleLine } from "react-icons/ri";
 import { FaFlagCheckered } from "react-icons/fa";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import AlertDialogSlide from "../../Components/AlertDialogSlide";
+import { TripsData } from "../../services/customerService";
 
 export default function Driver() {
   const [status, setStatus] = useState("offline");
@@ -19,33 +20,42 @@ export default function Driver() {
   });
   const [confirmDialog, setConfirmDialog] = useState({
     open: false,
-    message: "Are you sure you want to Go Online?",
-    title: "Go online?",
-    confirmText: "Confirm",
+    message: "",
+    title: "",
+    confirmText: "",
   });
   const [pendingAction, setPendingAction] = useState(null);
+  const [driver, setDriver] = useState([]);
+  const [trips, setTrips] = useState([]);
+  const today = new Date().toISOString().slice(0, 10);
+  const [completedTrips, setCompletedTrips] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/driver/me`, {
-          credentials: "include",
-        });
+        const [res, trip] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/driver/me`, {
+            credentials: "include",
+          }),
+          TripsData(),
+        ]);
 
         if (!res.ok) {
           throw new Error(`Error: ${res.status}`);
         }
-
         const data = await res.json();
+        setDriver(data);
 
-        console.log("API DATA:", data);
-
+        setTrips(trip.filter((v) => v.driverId === data._id));
+        console.log("trips", trip);
+        setCompletedTrips(
+          trip.filter((v) => v.status.toLowerCase().trim() === "completed"),
+        );
         setStatus(data.status);
       } catch (err) {
         console.error("Fetch error:", err.message);
       }
     };
-
     fetchData();
   }, []);
 
@@ -153,7 +163,7 @@ export default function Driver() {
           </div>
           <div className="driver-info">
             <p className="driver-label">Money Earn (Month)</p>
-            <h2 className="driver-value">₹25,000</h2>
+            <h2 className="driver-value">{driver?.payroll?.paidAmount}</h2>
           </div>
         </div>
 
@@ -163,7 +173,7 @@ export default function Driver() {
           </div>
           <div className="driver-info">
             <p className="driver-label">Trips Completed (Month)</p>
-            <h2 className="driver-value">20</h2>
+            <h2 className="driver-value">{completedTrips.length}</h2>
           </div>
         </div>
       </div>
@@ -183,18 +193,18 @@ export default function Driver() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>39393</td>
-                  <td>17 Oct</td>
-                  <td>Chennai → Bangalore</td>
-                  <td>In Progress</td>
-                </tr>
-                <tr>
-                  <td>39394</td>
-                  <td>15 Oct</td>
-                  <td>Mumbai → Pune</td>
-                  <td>Completed</td>
-                </tr>
+                {trips
+                  .filter((v) => v.dateAndTime.slice(0, 10) <= today)
+                  .map((v) => (
+                    <tr key={v._id}>
+                      <td>{v._id.slice(0, 4).toUpperCase()}</td>
+                      <td>{v.dateAndTime.slice(0, 10)}</td>
+                      <td>
+                        {v.pickupCity} → {v.destinationCity}
+                      </td>
+                      <td>{v.status}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -213,14 +223,16 @@ export default function Driver() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>17 Oct</td>
-                  <td>Delivery to Warehouse X</td>
-                </tr>
-                <tr>
-                  <td>20 Oct</td>
-                  <td>Delivery to Client Y</td>
-                </tr>
+                {trips
+                  .filter((v) => v.dateAndTime.slice(0, 10) > today)
+                  .map((v) => (
+                    <tr key={v._id}>
+                      <td>{v.dateAndTime.slice(0, 10)}</td>
+                      <td>
+                        {v.pickupCity} → {v.destinationCity}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

@@ -11,12 +11,7 @@ driverRoutes.post(
   authorizeRoles("admin"),
   driverController.addDriver,
 );
-driverRoutes.get(
-  "/driver",
-  protect,
-  authorizeRoles("admin"),
-  driverController.getDrivers,
-);
+driverRoutes.get("/driver", protect, driverController.getDrivers);
 driverRoutes.put(
   "/update/:id",
   protect,
@@ -67,29 +62,26 @@ driverRoutes.get(
   authorizeRoles("driver"),
   driverController.getDriverProfile,
 );
-driverRoutes.patch("/driver/payroll/:id", protect, authorizeRoles("admin"), driverController.updatePayroll);
-driverRoutes.post(
-  "/online",
-  protect,    
-  authorizeRoles("driver"),
-  driverController.goOnline,
+
+driverRoutes.patch(
+  "/driver/payroll/:id",
+  protect,
+  authorizeRoles("admin"),
+  driverController.updatePayroll,
 );
-driverRoutes.post(
-  "/offline",
-  protect,  
-  authorizeRoles("driver"),
-  driverController.goOffline,
-);
+
 driverRoutes.get(
   "/online",
   protect,
   authorizeRoles("admin"),
   driverController.getOnlineDrivers,
 );
+
 driverRoutes.get(
   "/status/:status",
   protect,
   authorizeRoles("admin"),
-  driverController.getDriversByStatus
+  driverController.getDriversByStatus,
 );
+
 export default driverRoutes;

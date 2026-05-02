@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   FiUsers,
   FiDollarSign,
@@ -15,7 +15,10 @@ import "../../Styles/AdminPayroll.css";
 import API_BASE_URL from "../../config/api";
 
 const calcFinal = (d) =>
-  (d.baseSalary || 0) + (d.incentive || 0) + (d.bonus || 0) - (d.deductions || 0);
+  (d.baseSalary || 0) +
+  (d.incentive || 0) +
+  (d.bonus || 0) -
+  (d.deductions || 0);
 const fmt = (n) => `₹${Number(n).toLocaleString("en-IN")}`;
 const getCurrentMonth = () => {
   const now = new Date();
@@ -39,10 +42,10 @@ const generateMonthlyHistory = (drivers) => {
   ];
 };
 export default function AdminPayroll() {
-  const [drivers, setDrivers] = useState([])
+  const [drivers, setDrivers] = useState([]);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("All");
-  const [modal, setModal] = useState(null); 
+  const [modal, setModal] = useState(null);
   const [form, setForm] = useState({});
   const totalDrivers = drivers.length;
   const monthlySalary = drivers.reduce((s, d) => s + calcFinal(d), 0);
@@ -55,18 +58,18 @@ export default function AdminPayroll() {
     return matchSearch && matchFilter;
   });
   useEffect(() => {
-  fetchDriversPayroll();
-}, []);
+    fetchDriversPayroll();
+  }, []);
   const fetchDriversPayroll = async () => {
     try {
-    const response = await fetch(`${API_BASE_URL}/api/driver/driver`, {
-      method: "GET",
-      credentials: "include",
-    });
+      const response = await fetch(`${API_BASE_URL}/api/driver/driver`, {
+        method: "GET",
+        credentials: "include",
+      });
       if (!response.ok) {
-      throw new Error("Failed to fetch drivers");
-    }
-    const data = await response.json();
+        throw new Error("Failed to fetch drivers");
+      }
+      const data = await response.json();
       const payrollData = data.map((driver, index) => {
         const totalTrips = driver.totalTrips || 0;
         const baseSalary = 15000;
@@ -74,29 +77,29 @@ export default function AdminPayroll() {
         const bonus = totalTrips > 40 ? 3000 : 1000;
         const deductions = 500;
         const currentMonth = getCurrentMonth();
-return {
-  id: driver._id || `DRV${index + 1}`,
-  name: driver.name,
-  trips: totalTrips,
-  baseSalary: driver.payroll?.baseSalary || baseSalary,
-  incentive: driver.payroll?.incentive || incentive,
-  bonus: driver.payroll?.bonus || bonus,
-  deductions: driver.payroll?.deductions || deductions,
-  
-  status:
-    driver.payroll?.month === currentMonth
-      ? driver.payroll.status
-      : "Pending",
-  month: currentMonth,
-};
-    });
+        return {
+          id: driver._id || `DRV${index + 1}`,
+          name: driver.name,
+          trips: totalTrips,
+          baseSalary: driver.payroll?.baseSalary || baseSalary,
+          incentive: driver.payroll?.incentive || incentive,
+          bonus: driver.payroll?.bonus || bonus,
+          deductions: driver.payroll?.deductions || deductions,
 
-  setDrivers(payrollData);
-  } catch (error) {
-    console.error("Payroll Fetch Error:", error);
-  }
-};
- 
+          status:
+            driver.payroll?.month === currentMonth
+              ? driver.payroll.status
+              : "Pending",
+          month: currentMonth,
+        };
+      });
+
+      setDrivers(payrollData);
+    } catch (error) {
+      console.error("Payroll Fetch Error:", error);
+    }
+  };
+
   const openModal = (driver) => {
     setModal(driver);
     setForm({
@@ -104,7 +107,7 @@ return {
       incentive: driver.incentive,
       bonus: driver.bonus,
       deductions: driver.deductions,
-     month: getCurrentMonth(),
+      month: getCurrentMonth(),
     });
   };
 
@@ -114,53 +117,52 @@ return {
     setForm((prev) => ({ ...prev, [field]: Number(value) || 0 }));
   };
   const handleMarkPaid = async () => {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/driver/driver/payroll/${modal.id}`,
-      {
-        method: "PATCH",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/driver/driver/payroll/${modal.id}`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            month: getCurrentMonth(),
+            status: "Paid",
+            paidDate: new Date(),
+            baseSalary: form.baseSalary,
+            incentive: form.incentive,
+            bonus: form.bonus,
+            deductions: form.deductions,
+          }),
         },
-        body: JSON.stringify({
-          month: getCurrentMonth(),
-          status: "Paid",
-          paidDate: new Date(),
-         baseSalary: form.baseSalary,
-              incentive: form.incentive,
-              bonus: form.bonus,
-              deductions: form.deductions,
-        }),
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update payroll");
       }
-    );
 
-    if (!response.ok) {
-      throw new Error("Failed to update payroll");
+      setDrivers((prev) =>
+        prev.map((d) =>
+          d.id === modal.id
+            ? {
+                ...d,
+                baseSalary: form.baseSalary,
+                incentive: form.incentive,
+                bonus: form.bonus,
+                deductions: form.deductions,
+                status: "Paid",
+                month: getCurrentMonth(),
+              }
+            : d,
+        ),
+      );
+
+      closeModal();
+    } catch (error) {
+      console.error("Payroll Update Error:", error);
     }
-
-    setDrivers((prev) =>
-      prev.map((d) =>
-        d.id === modal.id
-          ? {
-              ...d,
-              baseSalary: form.baseSalary,
-              incentive: form.incentive,
-              bonus: form.bonus,
-              deductions: form.deductions,
-              status: "Paid",
-              month: getCurrentMonth(),
-             
-            }
-          : d
-      )
-    );
-
-    closeModal();
-  } catch (error) {
-    console.error("Payroll Update Error:", error);
-  }
-};
+  };
   const finalPreview = calcFinal(form);
   return (
     <div className="ap-page">
@@ -172,7 +174,7 @@ return {
           </p>
         </div>
       </div>
-    <div className="ap-cards">
+      <div className="ap-cards">
         <div className="ap-card ap-card--blue">
           <div className="ap-card__icon">
             <FiUsers />
@@ -191,10 +193,10 @@ return {
             <h2 className="ap-card__value">{fmt(monthlySalary)}</h2>
           </div>
         </div>
-          <div className="ap-card ap-card--green">
-            <div className="ap-card__icon">
+        <div className="ap-card ap-card--green">
+          <div className="ap-card__icon">
             <FiTrendingUp />
-            </div>
+          </div>
           <div>
             <p className="ap-card__label">Total Incentives</p>
             <h2 className="ap-card__value">{fmt(totalIncentives)}</h2>
@@ -221,7 +223,7 @@ return {
             className="ap-search__input"
           />
         </div>
-      <div className="ap-filters">
+        <div className="ap-filters">
           {["All", "Paid", "Pending"].map((opt) => (
             <button
               key={opt}
@@ -232,7 +234,7 @@ return {
             </button>
           ))}
         </div>
-         <button className="ap-export-btn">
+        <button className="ap-export-btn">
           <FiDownload /> Export Payroll
         </button>
       </div>
@@ -274,7 +276,9 @@ return {
                     <td>
                       <span
                         className={`ap-badge ${
-                          d.status === "Paid" ? "ap-badge--paid" : "ap-badge--pending"
+                          d.status === "Paid"
+                            ? "ap-badge--paid"
+                            : "ap-badge--pending"
                         }`}
                       >
                         {d.status === "Paid" ? (
@@ -286,21 +290,21 @@ return {
                       </span>
                     </td>
                     <td>
-                     <button
-  className="ap-update-btn"
-  onClick={() => openModal(d)}
-  disabled={d.status === "Paid"}
->
-  {d.status === "Paid" ? (
-    <>
-      <FiCheckCircle /> Paid
-    </>
-  ) : (
-    <>
-      <FiEdit2 /> Update
-    </>
-  )}
-</button>
+                      <button
+                        className="ap-update-btn"
+                        onClick={() => openModal(d)}
+                        disabled={d.status === "Paid"}
+                      >
+                        {d.status === "Paid" ? (
+                          <>
+                            <FiCheckCircle /> Paid
+                          </>
+                        ) : (
+                          <>
+                            <FiEdit2 /> Update
+                          </>
+                        )}
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -335,7 +339,7 @@ return {
         </div>
       </div>
 
-     {modal && (
+      {modal && (
         <div className="ap-overlay" onClick={closeModal}>
           <div className="ap-modal" onClick={(e) => e.stopPropagation()}>
             <div className="ap-modal__header">
@@ -347,7 +351,12 @@ return {
             <div className="ap-modal__body">
               <div className="ap-field">
                 <label>Driver Name</label>
-                <input type="text" value={modal.name} readOnly className="ap-input ap-input--readonly" />
+                <input
+                  type="text"
+                  value={modal.name}
+                  readOnly
+                  className="ap-input ap-input--readonly"
+                />
               </div>
               <div className="ap-field-row">
                 <div className="ap-field">
@@ -355,7 +364,9 @@ return {
                   <input
                     type="number"
                     value={form.baseSalary}
-                    onChange={(e) => handleFormChange("baseSalary", e.target.value)}
+                    onChange={(e) =>
+                      handleFormChange("baseSalary", e.target.value)
+                    }
                     className="ap-input"
                   />
                 </div>
@@ -364,7 +375,9 @@ return {
                   <input
                     type="number"
                     value={form.incentive}
-                    onChange={(e) => handleFormChange("incentive", e.target.value)}
+                    onChange={(e) =>
+                      handleFormChange("incentive", e.target.value)
+                    }
                     className="ap-input"
                   />
                 </div>
@@ -384,7 +397,9 @@ return {
                   <input
                     type="number"
                     value={form.deductions}
-                    onChange={(e) => handleFormChange("deductions", e.target.value)}
+                    onChange={(e) =>
+                      handleFormChange("deductions", e.target.value)
+                    }
                     className="ap-input"
                   />
                 </div>
@@ -394,19 +409,23 @@ return {
                 <input
                   type="text"
                   value={form.month}
-                  onChange={(e) => setForm((p) => ({ ...p, month: e.target.value }))}
+                  onChange={(e) =>
+                    setForm((p) => ({ ...p, month: e.target.value }))
+                  }
                   className="ap-input"
                 />
               </div>
               <div className="ap-final-box">
                 <span>Final Salary</span>
-                <span className="ap-final-box__amount">{fmt(finalPreview)}</span>
+                <span className="ap-final-box__amount">
+                  {fmt(finalPreview)}
+                </span>
               </div>
               <p className="ap-formula">
                 = Base Salary + Incentive + Bonus − Deductions
               </p>
             </div>
-           <div className="ap-modal__footer">
+            <div className="ap-modal__footer">
               <button className="ap-cancel-btn" onClick={closeModal}>
                 Cancel
               </button>

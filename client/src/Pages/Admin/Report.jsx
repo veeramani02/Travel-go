@@ -301,29 +301,12 @@ function Report() {
                   <Cell key={index} fill={COLORS[index]} />
                 ))}
               </Pie>
-
               <Tooltip />
-
               <Legend />
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
-      {/* <div>
-        <div className="detailed-header">
-          <h1>Detailed Report</h1>
-          <p>View All Data</p>
-        </div>
-        <div className="reportdata-card">
-          {reportData.map((card, index) => (
-            <div key={index} className="reportdatacard-value">
-              <p>{card.name}</p>
-              <h3>{card.value}</h3>
-              <p>{card.cost}</p>
-            </div>
-          ))}
-        </div>
-      </div> */}
       <CustomizedSnackbars
         open={snackbar.open}
         message={snackbar.message}

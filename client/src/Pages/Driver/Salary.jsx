@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -11,62 +11,70 @@ import {
 import "../../Styles/Salary.css";
 import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import { TbMoneybag } from "react-icons/tb";
+import API_BASE_URL from "../../config/api";
+import { TripsData } from "../../services/customerService";
 
 export default function Salary() {
-  const [selectedMonth, setSelectedMonth] = useState("October 2023");
-
-  const months = [
-    "August 2023",
-    "September 2023",
-    "October 2023",
-    "November 2023",
-    "December 2023",
-  ];
+  const now = new Date();
+  const year = now.getFullYear();
   const data = [
-    { name: "Week 1", earnings: 480, target: 410 },
-    { name: "Week 2", earnings: 510, target: 390 },
-    { name: "Week 3", earnings: 370, target: 440 },
-    { name: "Week 4", earnings: 430, target: 530 },
+    { name: "January", earnings: 1800, pendings: 2000 },
+    { name: "February", earnings: 2100, pendings: 2000 },
+    { name: "March", earnings: 1700, pendings: 2200 },
+    { name: "April", earnings: 2300, pendings: 2100 },
+    { name: "May", earnings: 2500, pendings: 2400 },
+    { name: "June", earnings: 2200, pendings: 2300 },
+    { name: "July", earnings: 1900, pendings: 2000 },
+    { name: "August", earnings: 2400, pendings: 2400 },
+    { name: "September", earnings: 2600, pendings: 2500 },
+    { name: "October", earnings: 2100, pendings: 2200 },
+    { name: "November", earnings: 2800, pendings: 2500 },
+    { name: "December", earnings: 3200, pendings: 3000 },
   ];
-
+  const yearly = [year, year + 1, year + 2, year + 3];
   const Money = 2400;
   const pendingpay = 450;
-  const mon = selectedMonth.slice(0, 3);
+  const [selectedMonth, setSelectedMonth] = useState(yearly[0]);
+  const mon = selectedMonth;
+  const [driver, setDriver] = useState([]);
+  const [trips, setTrips] = useState([]);
 
-  const tableData = [
-    {
-      date: "Oct 27, 2023",
-      description: "Weekly Payout",
-      amount: 850,
-      status: "Paid",
-    },
-    {
-      date: "Oct 20, 2023",
-      description: "Weekly Payout",
-      amount: 580,
-      status: "Paid",
-    },
-    {
-      date: "Oct 18, 2023",
-      description: "Weekly Payout",
-      amount: 340,
-      status: "Paid",
-    },
-  ];
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [res, trip] = await Promise.all([
+          fetch(`${API_BASE_URL}/api/driver/me`, {
+            credentials: "include",
+          }),
+          TripsData(),
+        ]);
+
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status}`);
+        }
+        const data = await res.json();
+        setDriver(data);
+        console.log(data);
+        setTrips(trip.filter((v) => v.driverId === data._id));
+        console.log("trips", data);
+      } catch (err) {
+        console.error("Fetch error:", err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="salary-page-wrapper">
-      {" "}
-      {/* Wrapper class name updated */}
       <h1 className="salary-main-title">Salary Tracking</h1>
       <div className="salary-filter-container">
-        <p>Filter by Month:</p>
+        <p>Filter by Year:</p>
         <select
           name="month"
           value={selectedMonth}
           onChange={(e) => setSelectedMonth(e.target.value)}
         >
-          {months.map((m) => (
+          {yearly.map((m) => (
             <option key={m} value={m}>
               {m}
             </option>
@@ -80,7 +88,7 @@ export default function Salary() {
           </div>
           <div>
             <p>Total Earnings ({mon})</p>
-            <h2>₹{Money}</h2>
+            <h2>₹{driver?.payroll?.paidAmount}</h2>
           </div>
         </div>
         <div className="salary-stat-card s-pending-money">
@@ -89,12 +97,14 @@ export default function Salary() {
           </div>
           <div>
             <p>Pending Money</p>
-            <h2>₹{pendingpay}</h2>
+            <h2>
+              ₹{driver?.payroll?.finalSalary - driver?.payroll?.paidAmount}
+            </h2>
           </div>
         </div>
       </div>
       <div className="salary-chart-section">
-        <h2 className="chart-heading">Weekly Earnings</h2>
+        <h2 className="chart-heading">Monthly Earnings</h2>
         <div className="salary-bar-chart">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -105,8 +115,16 @@ export default function Salary() {
               <XAxis dataKey="name" tick={{ fill: "#9ca3af", fontSize: 12 }} />
               <YAxis tick={{ fill: "#9ca3af", fontSize: 12 }} />
               <Tooltip />
-              <Bar dataKey="earnings" fill="#1e40af" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="target" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="earnings"
+                fill="rgb(34, 197, 94)"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey="pendings"
+                fill="rgb(239, 68, 68)"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -124,16 +142,16 @@ export default function Salary() {
               </tr>
             </thead>
             <tbody>
-              {tableData.map((val, idx) => (
-                <tr key={idx}>
-                  <td>{val.date}</td>
-                  <td>{val.description}</td>
-                  <td className="salary-amt">₹{val.amount}</td>
-                  <td>
-                    <span className="salary-status-badge">{val.status}</span>
-                  </td>
-                </tr>
-              ))}
+              <tr>
+                <td>{driver.payroll?.month}</td>
+                <td>Monthly Payout</td>
+                <td className="salary-amt">₹{driver?.payroll?.paidAmount}</td>
+                <td>
+                  <span className="salary-status-badge">
+                    {driver.payroll?.status}
+                  </span>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
