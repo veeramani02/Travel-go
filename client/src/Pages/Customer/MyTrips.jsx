@@ -261,20 +261,42 @@ function MyTrips() {
     }
   };
 
-  const getRemainingTime = (tripDate) => {
-    const now = new Date();
-    const start = new Date(tripDate);
+  // const getRemainingTime = (tripDate) => {
+  //   const now = new Date();
+  //   const start = new Date(tripDate);
 
-    if (now > start) return "Trip Started / Completed";
+  //   if (now > start) return "Trip Started / Completed";
 
-    const diff = start - now;
+  //   const diff = start - now;
 
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
+  //   const hours = Math.floor(diff / (1000 * 60 * 60));
+  //   const minutes = Math.floor((diff / (1000 * 60)) % 60);
 
-    return `${hours}h ${minutes}m left`;
-  };
+  //   return `${hours}h ${minutes}m left`;
+  // };
+const getTripTimerLabel = (trip) => {
+  if (trip.status === "cancelled") return "Trip Cancelled";
 
+  if (trip.status === "completed") return "Trip Completed";
+
+  if (trip.status === "current") return "Trip in Progress";
+
+  if (trip.status === "pending") return "Pending Assignment";
+
+  if (trip.status === "confirmed") return "Payment Confirmed";
+
+  if (trip.estimatedDuration != null && trip.estimatedDuration > 0) {
+    const hrs = Math.floor(trip.estimatedDuration);
+    const mins = Math.round((trip.estimatedDuration - hrs) * 60);
+
+    if (hrs > 0 && mins > 0) return `~${hrs}h ${mins}m estimated`;
+    if (hrs > 0) return `~${hrs}h estimated`;
+
+    return `~${mins}m estimated`;
+  }
+
+  return "Route ETA unavailable";
+};
   if (loading)
     return (
       <div className="loading-customerdashboard">
@@ -325,17 +347,8 @@ function MyTrips() {
                 <strong>Vehicle:</strong> {currentTrip.vehicleType}
               </p>
 
-              {/* <p>
-                <strong>Trip Timer:</strong>{" "}
-                {currentTrip.status === "assigned"
-                  ? getRemainingTime(currentTrip.dateAndTime)
-                  : currentTrip.status === "current"
-                  ? "Trip in Progress"
-                  : currentTrip.status === "completed"
-                  ? "Trip Completed"
-                  : "Trip Cancelled"}
-              </p> */}
-              <p>
+             
+           <p>
   <strong>Trip Timer:</strong>{" "}
   {currentTrip.status === "cancelled"
     ? "Trip Cancelled"

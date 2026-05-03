@@ -395,7 +395,10 @@ const handleSubmit = async (e) => {
 
     // ROUTE API
     const routeResponse = await fetch(
-      `${API_BASE_URL}/api/trip/route?start=${pickupCoords.lon},${pickupCoords.lat}&end=${destinationCoords.lon},${destinationCoords.lat}`
+      `${API_BASE_URL}/api/trip/route?start=${pickupCoords.lon},${pickupCoords.lat}&end=${destinationCoords.lon},${destinationCoords.lat}`,
+      {
+        credentials: "include",
+      }
     );
 
     const routeData = await routeResponse.json();
