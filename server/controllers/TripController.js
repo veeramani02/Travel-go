@@ -75,13 +75,10 @@ export const updateTripStatuses = async () => {
   for (let trip of trips) {
     const tripDate = new Date(trip.dateAndTime);
 
-    // Assigned → Current
     if (trip.status === "assigned" && tripDate <= now) {
       trip.status = "current";
     }
-
-    // Current → Completed (example: 4 hrs after start)
-   const endTime = new Date(
+    const endTime = new Date(
   tripDate.getTime() + (trip.estimatedDuration||4) * 60 * 60 * 1000
 );
 
@@ -141,23 +138,9 @@ export const getPastTrips = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
-// export const getTrips = async (req, res) => {
-//   try {
-//     const trip = await Trip.find();
-
-//     if (!trip) {
-//       return res.status(404).json({ message: "No trips found" });
-//     }
-
-//     res.json(trip);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 export const getTrips = async (req, res) => {
   try {
-    // AUTO STATUS UPDATE
+   
     await updateTripStatuses();
 
     const trip = await Trip.find();
@@ -189,42 +172,6 @@ export const getRoute = async (req, res) => {
     res.status(500).json({ error: "Route fetch failed" });
   }
 };
-
-// export const updateTrips = async (req, res) => {
-//   try {
-//     console.log(req.body);
-//     const { _id, driverId, vehicleId } = req.body;
-
-//     if (!driverId)
-//       return res.status(400).json({ message: "Assign driver require" });
-//     if (!vehicleId)
-//       return res.status(400).json({ message: "Assign vehicle require" });
-
-//     if (!_id) {
-//       return res.status(400).json({ message: "Trip ID is required" });
-//     }
-
-//     const updatedTrip = await Trip.findByIdAndUpdate(
-//       _id,
-//       {
-//         ...(driverId && { driverId }),
-//         ...(vehicleId && { vehicleId }),
-//       },
-//       { new: true },
-//     );
-
-//     if (!updatedTrip) {
-//       return res.status(404).json({ message: "Trip not found" });
-//     }
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Trip updated successfully",
-//       trip: updatedTrip,
-//     });
-//   } catch (e) {
-//     return res.status(500).json({ message: e.message });
-//   }
 export const updateTrips = async (req, res) => {
   try {
     console.log(req.body);
@@ -280,40 +227,7 @@ export const updateTrips = async (req, res) => {
     });
   }
 };
-// export const cancelTrip = async (req, res) => {
-//   try {
-//     const { tripId } = req.params;
 
-//     const trip = await Trip.findById(tripId);
-
-//     if (!trip) {
-//       return res.status(404).json({
-//         message: "Trip not found",
-//       });
-//     }
-
-//     // already completed trips cancel panna koodadhu
-//     if (trip.status === "completed") {
-//       return res.status(400).json({
-//         message: "Completed trip cannot be cancelled",
-//       });
-//     }
-
-//     trip.status = "cancelled";
-
-//     await trip.save();
-
-//     return res.status(200).json({
-//       success: true,
-//       message: "Trip cancelled successfully",
-//       trip,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// };
 export const cancelTrip = async (req, res) => {
   try {
     const { tripId } = req.params;
@@ -326,14 +240,12 @@ export const cancelTrip = async (req, res) => {
       });
     }
 
-    // Already completed trips cancel panna mudiyadhu
     if (trip.status === "completed") {
       return res.status(400).json({
         message: "Completed trip cannot be cancelled",
       });
     }
 
-    // Already cancelled check
     if (trip.status === "cancelled") {
       return res.status(400).json({
         message: "Trip is already cancelled",

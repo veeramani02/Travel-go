@@ -30,22 +30,7 @@ export default function Driver() {
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
   const [DeleteData, setDeletedata] = useState("");
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       setLoading(true);
-  //       const data = await getDriver();
-  //       setDrivers(data);
-  //     } catch (err) {
-  //       setSnackbarMessage("Failed to load drivers");
-  //       setSnackbarSeverity("error");
-  //       setSnackbarOpen(true);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
+
 useEffect(() => {
   const fetchData = async () => {
     try {
