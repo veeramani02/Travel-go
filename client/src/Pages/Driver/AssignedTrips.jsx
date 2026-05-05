@@ -3,6 +3,7 @@ import "../../Styles/Assignedtrips.css";
 import TripMap from "../Admin/TripMap";
 import API_BASE_URL from "../../config/api";
 import { PacmanLoader } from "react-spinners";
+import { FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 
 function AssignedTrips() {
   const [coords, setCoords] = useState(null);
@@ -23,9 +24,6 @@ function AssignedTrips() {
         }
 
         const data = await res.json();
-
-        console.log("DRIVER TRIPS:", data);
-
         const activeTrip = data.find(
           (trip) =>
             trip.status?.toLowerCase() === "assigned" ||
@@ -187,6 +185,11 @@ function AssignedTrips() {
                         <td>{trip.amount || 0}</td>
                         <td>
                           <span className="status-pill completed">
+                            {trip.status == "Completed" ? (
+                              <FiCheckCircle style={{ marginRight: 4 }} />
+                            ) : (
+                              <FiAlertCircle style={{ marginRight: 4 }} />
+                            )}
                             {trip.status}
                           </span>
                         </td>

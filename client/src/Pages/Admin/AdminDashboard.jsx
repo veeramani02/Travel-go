@@ -17,12 +17,14 @@ import { getDriver } from "../../services/driverService";
 import { TripsData, vehicleData } from "../../services/customerService";
 import { useAuth } from "../../Context/AuthContext";
 import { MdOutlinePendingActions } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminDashboard() {
   const [drivers, setDrivers] = useState([]);
   const [trips, setTrips] = useState([]);
   const [vehicles, setVehicles] = useState([]);
   const userdata = useAuth();
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,6 +62,7 @@ export default function AdminDashboard() {
       value: `Rs.6888.00`,
       color: "#22c55e",
       background: "#f0fdf4",
+      navfun: () => navigate("/admin/payroll"),
     },
     {
       symbol: <IoCarOutline />,
@@ -67,6 +70,7 @@ export default function AdminDashboard() {
       value: onTrip.length,
       color: "#3b82f6",
       background: "#eff6ff",
+     navfun: () => navigate("/admin/trips"),
     },
     {
       symbol: <TbUserCheck />,
@@ -74,6 +78,7 @@ export default function AdminDashboard() {
       value: activeDrivers.length,
       color: "#3b82f6",
       background: "#eff6ff",
+      navfun: () => navigate("/admin/driver"),
     },
     {
       symbol: <MdOutlinePendingActions />,
@@ -81,6 +86,7 @@ export default function AdminDashboard() {
       value: pendingRequest.length,
       color: "#ef4444",
       background: "#fef2f2",
+      navfun: () => navigate("/admin/customer"),
     },
   ];
 
@@ -152,6 +158,7 @@ export default function AdminDashboard() {
       <div className="card-container">
         {stats.map((item, index) => (
           <div
+            onClick={item.navfun}
             className="card-div"
             key={index}
             style={{ borderLeftColor: item.color }}

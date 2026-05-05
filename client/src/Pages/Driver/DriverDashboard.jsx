@@ -47,7 +47,6 @@ export default function Driver() {
         setDriver(data);
 
         setTrips(trip.filter((v) => v.driverId === data._id));
-        console.log("trips", trip);
         setCompletedTrips(
           trip.filter((v) => v.status.toLowerCase().trim() === "completed"),
         );

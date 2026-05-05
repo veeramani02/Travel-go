@@ -8,6 +8,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 import "../../Styles/Salary.css";
 import { RiMoneyRupeeCircleFill } from "react-icons/ri";
 import { TbMoneybag } from "react-icons/tb";
@@ -16,7 +17,11 @@ import { TripsData } from "../../services/customerService";
 
 export default function Salary() {
   const now = new Date();
-  const year = now.getFullYear();
+  const currentYear = now.getFullYear();
+  const [selectedYear, setSelectedYear] = useState(currentYear);
+  const mon = selectedYear;
+  const [driver, setDriver] = useState({});
+  const [trips, setTrips] = useState([]);
   const data = [
     { name: "January", earnings: 1800, pendings: 2000 },
     { name: "February", earnings: 2100, pendings: 2000 },
@@ -31,13 +36,55 @@ export default function Salary() {
     { name: "November", earnings: 2800, pendings: 2500 },
     { name: "December", earnings: 3200, pendings: 3000 },
   ];
-  const yearly = [year, year + 1, year + 2, year + 3];
-  const Money = 2400;
-  const pendingpay = 450;
-  const [selectedMonth, setSelectedMonth] = useState(yearly[0]);
-  const mon = selectedMonth;
-  const [driver, setDriver] = useState([]);
-  const [trips, setTrips] = useState([]);
+
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const years =
+    trips.length > 0
+      ? [
+          ...new Set(
+            trips.map((trip) => new Date(trip.dateAndTime).getFullYear()),
+          ),
+        ]
+      : [currentYear];
+
+  const chartData = months.map((month, index) => {
+    const monthlyTrips = trips.filter((trip) => {
+      const tripDate = new Date(trip.dateAndTime);
+      return (
+        tripDate.getMonth() === index && tripDate.getFullYear() === selectedYear
+      );
+    });
+
+    let earnings = 0;
+    let pendings = 0;
+
+    monthlyTrips.forEach((trip) => {
+      if (trip.paymentStatus === "paid") {
+        earnings += trip.amount;
+      } else {
+        pendings += trip.amount;
+      }
+    });
+
+    return {
+      name: month,
+      earnings,
+      pendings,
+    };
+  });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,9 +101,7 @@ export default function Salary() {
         }
         const data = await res.json();
         setDriver(data);
-        console.log(data);
         setTrips(trip.filter((v) => v.driverId === data._id));
-        console.log("trips", data);
       } catch (err) {
         console.error("Fetch error:", err.message);
       }
@@ -71,12 +116,12 @@ export default function Salary() {
         <p>Filter by Year:</p>
         <select
           name="month"
-          value={selectedMonth}
-          onChange={(e) => setSelectedMonth(e.target.value)}
+          value={selectedYear}
+          onChange={(e) => setSelectedYear(Number(e.target.value))}
         >
-          {yearly.map((m) => (
-            <option key={m} value={m}>
-              {m}
+          {years.map((y) => (
+            <option key={y} value={y}>
+              {y}
             </option>
           ))}
         </select>
@@ -98,7 +143,9 @@ export default function Salary() {
           <div>
             <p>Pending Money</p>
             <h2>
-              ₹{driver?.payroll?.finalSalary - driver?.payroll?.paidAmount}
+              ₹
+              {(driver?.payroll?.finalSalary || 0) -
+                (driver?.payroll?.paidAmount || 0)}
             </h2>
           </div>
         </div>
@@ -108,7 +155,7 @@ export default function Salary() {
         <div className="salary-bar-chart">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
-              data={data}
+              data={chartData}
               margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
             >
               <CartesianGrid vertical={false} stroke="#374151" />
@@ -147,7 +194,18 @@ export default function Salary() {
                 <td>Monthly Payout</td>
                 <td className="salary-amt">₹{driver?.payroll?.paidAmount}</td>
                 <td>
-                  <span className="salary-status-badge">
+                  <span
+                    className={`ap-badge ${
+                      driver.payroll?.status === "Paid"
+                        ? "ap-badge--paid"
+                        : "ap-badge--pending"
+                    }`}
+                  >
+                    {driver.payroll?.status === "Paid" ? (
+                      <FiCheckCircle style={{ marginRight: 4 }} />
+                    ) : (
+                      <FiAlertCircle style={{ marginRight: 4 }} />
+                    )}
                     {driver.payroll?.status}
                   </span>
                 </td>
