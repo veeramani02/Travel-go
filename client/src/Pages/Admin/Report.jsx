@@ -93,7 +93,7 @@ function Report() {
       if (trip.status === "completed") {
         result[dayName].completed++;
       } else if (trip.status === "cancelled") {
-        result[day].cancelled++;
+        result[dayName].cancelled++;
       }
     });
     return Object.values(result);
@@ -158,7 +158,7 @@ function Report() {
         if (trip.status === "completed") {
           result[monthName].completed++;
         } else if (trip.status === "cancelled") {
-          result[day].cancelled++;
+          result[monthName].cancelled++;
         }
       }
     });
