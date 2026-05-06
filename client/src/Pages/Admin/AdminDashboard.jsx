@@ -18,6 +18,7 @@ import { TripsData, vehicleData } from "../../services/customerService";
 import { useAuth } from "../../Context/AuthContext";
 import { MdOutlinePendingActions } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 export default function AdminDashboard() {
   const [drivers, setDrivers] = useState([]);
@@ -28,6 +29,12 @@ export default function AdminDashboard() {
   const [chartData, setChartData] = useState([]);
   const daysOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const [filter, setFilter] = useState("7");
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -39,9 +46,12 @@ export default function AdminDashboard() {
         setDrivers(driverRes || []);
         setTrips(tripRes || []);
         setVehicles(vehicleRes || []);
-        console.log(tripRes);
       } catch (e) {
-        console.error(e.message);
+        setSnackbar({
+          open: true,
+          message: e.message,
+          severity: "success",
+        });
       }
     };
     fetchData();
@@ -52,11 +62,8 @@ export default function AdminDashboard() {
       const completedTrips = trips.filter(
         (item) => item.status === "completed",
       );
-
       const filtered = filterDataByDate(completedTrips, filter);
-
       const formatted = formatRevenueData(filtered, filter);
-
       setChartData(formatted);
     }
   }, [trips, filter]);
@@ -72,11 +79,8 @@ export default function AdminDashboard() {
   const pendingRequest = trips.filter(
     (value) => value?.driverId?.toLowerCase().trim() === "",
   );
-
   const Revenue = trips.filter((v) => v.paymentStatus.toLowerCase() === "paid");
-
   const totalRevenue = Revenue.reduce((t, v) => t + v.amount, 0);
-
   const stats = [
     {
       symbol: <TbMoneybag />,
@@ -176,13 +180,13 @@ export default function AdminDashboard() {
 
       if (filter === "7") {
         key = date.toLocaleDateString("en-US", { weekday: "short" });
-        sortValue = date.getDay(); 
+        sortValue = date.getDay();
       } else if (filter === "30") {
         key = date.toLocaleDateString("en-US", {
           day: "numeric",
           month: "short",
         });
-        sortValue = date.getTime(); 
+        sortValue = date.getTime();
       } else if (filter === "year") {
         key = date.toLocaleDateString("en-US", { month: "short" });
         sortValue = date.getMonth();
@@ -191,7 +195,6 @@ export default function AdminDashboard() {
       if (!grouped[key]) {
         grouped[key] = { revenue: 0, sortValue };
       }
-
       grouped[key].revenue += item.amount;
     });
 
@@ -348,46 +351,6 @@ export default function AdminDashboard() {
           })}
         </div>
       </div>
-      {/* <div className="table-container">
-        <h2 className="table-title">Points History</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Trip ID</th>
-              <th>User</th>
-              <th>Destination</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {recentTripActivityData.map((value) => (
-              <tr key={value.tripId}>
-                <td>{value.tripId}</td>
-                <td>{value.user}</td>
-                <td>{value.destination}</td>
-                <td>{value.date}</td>
-                <td>
-                  <span className={`status-pill ${value.status.toLowerCase()}`}>
-                    {value.status}
-                  </span>
-                </td>
-                <td>
-                  <div className="button">
-                    <div>
-                      <button onClick={View}>View</button>
-                    </div>
-                    <div>
-                      <button onClick={Edit}>Edit</button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div> */}
     </div>
   );
 }

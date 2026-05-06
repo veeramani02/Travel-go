@@ -30,26 +30,23 @@ export default function Driver() {
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
   const [DeleteData, setDeletedata] = useState("");
 
-
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const data = await getDriver();
-      console.log("ALL DRIVERS:", data);
-
-    setDrivers(data);   
-      setFilteredDrivers(data);
-    } catch (err) {
-      setSnackbarMessage("Failed to load drivers");
-      setSnackbarSeverity("error");
-      setSnackbarOpen(true);
-    } finally {
-      setLoading(false);
-    }
-  };
-  fetchData();
-}, []);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const data = await getDriver();
+        setDrivers(data);
+        setFilteredDrivers(data);
+      } catch (err) {
+        setSnackbarMessage("Failed to load drivers");
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   useEffect(() => {
     handleFilter(active, searchText);
   }, [drivers, active, searchText]);
@@ -169,41 +166,40 @@ useEffect(() => {
       <div className="driver-button-container">
         {status.map((value, index) => (
           <div key={index}>
-           
-      <button
-   onClick={async () => {
-  setActive(value);
+            <button
+              onClick={async () => {
+                setActive(value);
 
-  try {
-    const allDrivers = await getDriver();
+                try {
+                  const allDrivers = await getDriver();
 
-    setDrivers(allDrivers);
+                  setDrivers(allDrivers);
 
-    let filtered = allDrivers;
+                  let filtered = allDrivers;
 
-    if (value.toLowerCase() !== "all") {
-      filtered = allDrivers.filter(
-        (d) =>
-          d.status &&
-          d.status.trim().toLowerCase() === value.trim().toLowerCase()
-      );
-    }
+                  if (value.toLowerCase() !== "all") {
+                    filtered = allDrivers.filter(
+                      (d) =>
+                        d.status &&
+                        d.status.trim().toLowerCase() ===
+                          value.trim().toLowerCase(),
+                    );
+                  }
 
-    setFilteredDrivers(filtered);
-
-    console.log("FILTERED:", filtered);
-  } catch (err) {
-    console.error(err);
-    setSnackbarMessage("Failed to filter drivers");
-    setSnackbarSeverity("error");
-    setSnackbarOpen(true);
-  }
-}}
-className={active === value ? "active-button" : "non-active-button"}
->
-  {value}
-</button>
-
+                  setFilteredDrivers(filtered);
+                } catch (err) {
+                  console.error(err);
+                  setSnackbarMessage("Failed to filter drivers");
+                  setSnackbarSeverity("error");
+                  setSnackbarOpen(true);
+                }
+              }}
+              className={
+                active === value ? "active-button" : "non-active-button"
+              }
+            >
+              {value}
+            </button>
           </div>
         ))}
       </div>

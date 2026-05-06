@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import "../../Styles/Dues.css";
 import API_BASE_URL from "../../config/api";
+import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 
 function Dues() {
   const [duesData, setDuesData] = useState([]);
   const [totalAmount, setTotalAmount] = useState(0);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
   const fetchDues = async () => {
     try {
       const res = await fetch(`${API_BASE_URL}/api/due/user-dues`, {
@@ -52,7 +58,12 @@ function Dues() {
       setDuesData(formatted);
       setTotalAmount(total);
     } catch (error) {
-      console.error("Fetch dues error:", error);
+      setSnackbar({
+        open: true,
+        message: "Fetch dues error:",
+        error,
+        severity: "error",
+      });
     }
   };
   useEffect(() => {
@@ -69,8 +80,11 @@ function Dues() {
       );
 
       const data = await res.json();
-
-      alert(data.message);
+      setSnackbar({
+        open: true,
+        message: data.message,
+        severity: "success",
+      });
       setDuesData((prev) => {
         const updated = prev.filter(
           (item) =>
@@ -96,8 +110,11 @@ function Dues() {
           },
         );
       }
-
-      alert("All dues paid successfully ✅");
+      setSnackbar({
+        open: true,
+        message: "All dues paid successfully ✅",
+        severity: "success",
+      });
 
       setDuesData([]);
       setTotalAmount(0);

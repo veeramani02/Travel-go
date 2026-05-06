@@ -102,7 +102,6 @@ function Vehicles() {
     let fetchData = async () => {
       const data = await getVehicle();
       setVehicleList(data);
-      console.log(data);
     };
     fetchData();
   }, []);
@@ -156,7 +155,6 @@ function Vehicles() {
 
   async function handleDeleteVehicle(value) {
     try {
-      console.log(value);
       if (!value._id) return null;
       setVehicleList((pre) => pre.filter((d) => d._id !== value._id));
       await deleteVehicle(value._id);
@@ -172,7 +170,6 @@ function Vehicles() {
         message: e.message,
         severity: "error",
       }));
-      console.log(e.message);
     }
   }
 
