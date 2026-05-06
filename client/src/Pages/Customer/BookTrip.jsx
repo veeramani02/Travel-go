@@ -413,8 +413,8 @@ const handleSubmit = async (e) => {
       routeData.routes &&
       routeData.routes.length > 0
     ) {
-      tripEstimatedDuration = routeData.routes[0].duration / 3600; // hrs
-      tripEstimatedDistance = routeData.routes[0].distance / 1000; // km
+      tripEstimatedDuration = Number((routeData.routes[0].duration / 3600).toFixed(2)); // hrs
+      tripEstimatedDistance = Number((routeData.routes[0].distance / 1000).toFixed(2)); // km
     }
 
     setEstimatedDuration(tripEstimatedDuration);

@@ -174,7 +174,7 @@ export const getUserPayments = async (req, res) => {
 
     const payments = await Payment.find({ userId })
       .populate("tripId")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }).limit(5);
 
     res.json({
       count: payments.length,

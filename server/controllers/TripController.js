@@ -48,8 +48,8 @@ export const createTrip = async (req, res) => {
       paymentStatus: "pending",
       driverId,
       vehicleId,
-      estimatedDuration,
-      estimatedDistance,
+      estimatedDuration:Number(estimatedDuration),
+      estimatedDistance:Number(estimatedDistance),
       pickupCoordinates,
       destinationCoordinates,
     });
@@ -67,28 +67,23 @@ export const createTrip = async (req, res) => {
 };
 export const updateTripStatuses = async () => {
   const now = new Date();
-
   const trips = await Trip.find({
     status: { $in: ["assigned", "current"] },
   });
-
   for (let trip of trips) {
     const tripDate = new Date(trip.dateAndTime);
-
     if (trip.status === "assigned" && tripDate <= now) {
       trip.status = "current";
     }
     const endTime = new Date(
-  tripDate.getTime() + (trip.estimatedDuration||4) * 60 * 60 * 1000
-);
-
-if (trip.status === "current" && now >= endTime) {
-  trip.status = "completed";
-}
-if (trip.isModified()) {
-  await trip.save();
-}
-
+    tripDate.getTime() + (Number(trip.estimatedDuration)||4) * 60 * 60 * 1000
+    );
+    if (trip.status === "current" && now >= endTime) {
+    trip.status = "completed";
+    }
+    if (trip.isModified()) {
+    await trip.save();  
+    }
   }
 };
 // export const getLatestTrip = async (req, res) => {
@@ -108,7 +103,7 @@ if (trip.isModified()) {
 // };
 export const getLatestTrip = async (req, res) => {
   try {
-    // AUTO STATUS UPDATE
+   
     await updateTripStatuses();
 
     const trip = await Trip.findOne({ userId: req.user._id }).sort({
@@ -140,35 +135,31 @@ export const getPastTrips = async (req, res) => {
 };
 export const getTrips = async (req, res) => {
   try {
-   
     await updateTripStatuses();
-
     const trip = await Trip.find();
-
-    if (!trip || trip.length === 0) {
-      return res.status(404).json({
+      if (!trip || trip.length === 0) {
+        return res.status(404).json({
         message: "No trips found",
       });
-    }
-
+      } 
     res.json(trip);
-  } catch (error) {
+  } 
+  catch (error) {
     res.status(500).json({
-      message: error.message,
+    message: error.message,
     });
   }
 };
 export const getRoute = async (req, res) => {
   const { start, end } = req.query;
-
   try {
     const response = await fetch(
       `https://router.project-osrm.org/route/v1/driving/${start};${end}?overview=full&geometries=geojson`,
     );
-
     const data = await response.json();
     res.json(data);
-  } catch (err) {
+  } 
+  catch (err) {
     res.status(500).json({ error: "Route fetch failed" });
   }
 };
@@ -193,16 +184,13 @@ export const updateTrips = async (req, res) => {
         message: "Trip ID is required",
       });
     }
-
     const updatedTrip = await Trip.findByIdAndUpdate(
       _id,
       {
         ...(driverId && {
           driverId: driverId.toString(),
         }),
-
         ...(vehicleId && { vehicleId }),
-
         ...(driverId && {
           status: "assigned",
         }),
@@ -231,37 +219,31 @@ export const updateTrips = async (req, res) => {
 export const cancelTrip = async (req, res) => {
   try {
     const { tripId } = req.params;
-
     const trip = await Trip.findById(tripId);
-
     if (!trip) {
       return res.status(404).json({
         message: "Trip not found",
       });
     }
-
     if (trip.status === "completed") {
       return res.status(400).json({
         message: "Completed trip cannot be cancelled",
       });
     }
-
     if (trip.status === "cancelled") {
       return res.status(400).json({
         message: "Trip is already cancelled",
       });
     }
-
     trip.status = "cancelled";
-
     await trip.save();
-
     return res.status(200).json({
       success: true,
       message: "Trip cancelled successfully",
       trip,
     });
-  } catch (error) {
+  } 
+  catch (error) {
     return res.status(500).json({
       message: error.message,
     });
