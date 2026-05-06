@@ -54,8 +54,12 @@ export default function Trips() {
   };
 
   function handleFilterChange(status) {
-    if (status.toLowerCase() === "all") setFilterData(trips);
-    else setFilterData(trips.filter((value) => value.status === status));
+    let valueStatus = status.toLowerCase();
+    if (valueStatus === "all") setFilterData(trips);
+    else
+      setFilterData(
+        trips.filter((value) => value.status.toLowerCase() === valueStatus),
+      );
   }
 
   const getCoordinates = async (value) => {

@@ -13,11 +13,10 @@ export const createDuePlan = async (req, res) => {
 
     const totalAmount = trip.totalAmount;
 
-
     const initialAmount = Math.floor(totalAmount * 0.3);
 
     const remainingAmount = totalAmount - initialAmount;
-   const monthlyDue = Math.floor(remainingAmount / months);
+    const monthlyDue = Math.floor(remainingAmount / months);
 
     const duesPlan = new Dues({
       user: userId,
@@ -36,7 +35,7 @@ export const createDuePlan = async (req, res) => {
         dueDate,
         amount:
           i === months - 1
-            ? remainingAmount - monthlyDue * (months - 1) 
+            ? remainingAmount - monthlyDue * (months - 1)
             : monthlyDue,
         status: "pending",
       });
@@ -48,30 +47,24 @@ export const createDuePlan = async (req, res) => {
       message: `₹${initialAmount} paid, remaining split into ${months} months`,
       duesPlan,
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 export const getUserDues = async (req, res) => {
   try {
     const userId = req.user._id;
 
-    const dues = await Dues.find({ user: userId })
-      .populate("tripId");
+    const dues = await Dues.find({ user: userId }).populate("tripId");
 
     return res.status(200).json({ dues });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
-
-
 
 export const payDue = async (req, res) => {
   try {
@@ -92,7 +85,7 @@ export const payDue = async (req, res) => {
     if (selectedDue.status === "Paid") {
       return res.status(400).json({ message: "Already paid" });
     }
-      selectedDue.status = "Paid";
+    selectedDue.status = "Paid";
     due.paidAmount += selectedDue.amount;
     due.remainingAmount -= selectedDue.amount;
 
@@ -102,7 +95,6 @@ export const payDue = async (req, res) => {
       message: "Due paid successfully",
       due,
     });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -129,34 +121,31 @@ export const getUpcomingDues = async (req, res) => {
     });
 
     return res.status(200).json({ upcomingDues });
-
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
 export const payAllDues = async (req, res) => {
-  try{
+  try {
     const { dueId } = req.params;
-    const   due=await Dues.findById(dueId);
-    if(!due)    {
+    const due = await Dues.findById(dueId);
+    if (!due) {
       return res.status(404).json({ message: "Due not found" });
     }
-    let totalPaid=0;
-    due .dueSchedule.forEach((schedule)=>{
-      if(schedule.status==="Pending"){
-        schedule.status="Paid";
-        totalPaid+=schedule.amount;
+    let totalPaid = 0;
+    due.dueSchedule.forEach((schedule) => {
+      if (schedule.status === "Pending") {
+        schedule.status = "Paid";
+        totalPaid += schedule.amount;
       }
-  });  due.paidAmount+=totalPaid;
-  due.remainingAmount-=totalPaid;
-  await due.save();
-  res.json({ message: "All dues paid successfully", due });
-  }
-
-  
-  catch(error){ 
+    });
+    due.paidAmount += totalPaid;
+    due.remainingAmount -= totalPaid;
+    await due.save();
+    res.json({ message: "All dues paid successfully", due });
+  } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};

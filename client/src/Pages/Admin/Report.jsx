@@ -177,9 +177,6 @@ function Report() {
         setCustomers(customer);
         setDrivers(driver);
         setVehicles(vehicle);
-        console.log(driver);
-        console.log(vehicle);
-        console.log(customer);
       } catch (e) {
         setSnackbar({
           open: true,

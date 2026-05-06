@@ -12,108 +12,101 @@ function Dues() {
       });
 
       const data = await res.json();
-      console.log("API RESPONSE:", data); 
-     
+      console.log("API RESPONSE:", data);
+
       let formatted = [];
       let total = 0;
-const today=new Date();
-today.setHours(0, 0, 0, 0);
-   data.dues.forEach((due) => {
-  const schedules = due.dueSchedule || [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      data.dues.forEach((due) => {
+        const schedules = due.dueSchedule || [];
 
-  const today = new Date().toISOString().split("T")[0];
+        const today = new Date().toISOString().split("T")[0];
 
-  const nextIndex = schedules.findIndex((schedule) => {
-    if (schedule.status !== "Pending") return false;
+        const nextIndex = schedules.findIndex((schedule) => {
+          if (schedule.status !== "Pending") return false;
 
-    if (!schedule.dueDate) return false;
+          if (!schedule.dueDate) return false;
 
-    const dueDate = schedule.dueDate.split("T")[0];
+          const dueDate = schedule.dueDate.split("T")[0];
+          return dueDate <= today;
+        });
 
-    return dueDate <= today;
-  });
+        if (nextIndex !== -1) {
+          const nextDue = schedules[nextIndex];
 
-  if (nextIndex !== -1) {
-    const nextDue = schedules[nextIndex];
+          formatted.push({
+            dueId: due._id,
+            tripId: due.tripId?._id,
+            scheduleIndex: nextIndex,
+            pickup: due.tripId?.pickupCity,
+            destination: due.tripId?.destinationCity,
+            travelDate: due.tripId?.dateAndTime,
+            amount: nextDue.amount,
+            status: nextDue.status,
+          });
 
-    formatted.push({
-      dueId: due._id,
-      tripId: due.tripId?._id,
-      scheduleIndex: nextIndex,
-      pickup: due.tripId?.pickupCity,
-      destination: due.tripId?.destinationCity,
-      travelDate: due.tripId?.dateAndTime,
-      amount: nextDue.amount,
-      status: nextDue.status,
-    });
-
-    total += nextDue.amount;
-  }
-});
+          total += nextDue.amount;
+        }
+      });
       setDuesData(formatted);
       setTotalAmount(total);
-
     } catch (error) {
       console.error("Fetch dues error:", error);
     }
   };
-useEffect(() => {
+  useEffect(() => {
     fetchDues();
   }, []);
-const handlePay = async (dueId, scheduleIndex) => {
-  try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/due/pay/${dueId}/${scheduleIndex}`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    );
-
-    const data = await res.json();
-
-    alert(data.message);
-    setDuesData((prev) => {
-  const updated = prev.filter(
-    (item) =>
-      !(item.dueId === dueId && item.scheduleIndex === scheduleIndex)
-  );
-   const newTotal = updated.reduce((sum, item) => sum + item.amount, 0);
-  setTotalAmount(newTotal);
-
-  return updated;
-});
-
-  } catch (error) {
-    console.error("Payment error:", error);
-  }
-  
-};
-const handlePayAll = async () => {
-  try {
-    for (let item of duesData) {
-      await fetch(
-        `${API_BASE_URL}/api/due/pay/${item.dueId}/${item.scheduleIndex}`,
+  const handlePay = async (dueId, scheduleIndex) => {
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/api/due/pay/${dueId}/${scheduleIndex}`,
         {
           method: "POST",
           credentials: "include",
-        }
+        },
       );
+
+      const data = await res.json();
+
+      alert(data.message);
+      setDuesData((prev) => {
+        const updated = prev.filter(
+          (item) =>
+            !(item.dueId === dueId && item.scheduleIndex === scheduleIndex),
+        );
+        const newTotal = updated.reduce((sum, item) => sum + item.amount, 0);
+        setTotalAmount(newTotal);
+
+        return updated;
+      });
+    } catch (error) {
+      console.error("Payment error:", error);
     }
+  };
+  const handlePayAll = async () => {
+    try {
+      for (let item of duesData) {
+        await fetch(
+          `${API_BASE_URL}/api/due/pay/${item.dueId}/${item.scheduleIndex}`,
+          {
+            method: "POST",
+            credentials: "include",
+          },
+        );
+      }
 
-    alert("All dues paid successfully ✅");
+      alert("All dues paid successfully ✅");
 
-   
-    setDuesData([]);
-    setTotalAmount(0);
-
-  } catch (error) {
-    console.error("Pay all error:", error);
-  }
-};
+      setDuesData([]);
+      setTotalAmount(0);
+    } catch (error) {
+      console.error("Pay all error:", error);
+    }
+  };
   return (
     <div className="due-container">
-
       <div className="due-title">
         <h1>Pending Dues</h1>
         <p>Manage your unpaid bookings</p>
@@ -125,8 +118,11 @@ const handlePayAll = async () => {
           <h2>₹{totalAmount}</h2>
         </div>
         <div className="total-buttonwrapper">
-          <button className="due-button" onClick={handlePayAll} disabled={duesData.length === 0}>
-
+          <button
+            className="due-button"
+            onClick={handlePayAll}
+            disabled={duesData.length === 0}
+          >
             Pay All
           </button>
         </div>
@@ -159,14 +155,10 @@ const handlePayAll = async () => {
                   <td>{value.tripId}</td>
                   <td>{value.pickup}</td>
                   <td>{value.destination}</td>
-                  <td>
-                    {new Date(value.travelDate).toDateString()}
-                  </td>
+                  <td>{new Date(value.travelDate).toDateString()}</td>
                   <td>₹{value.amount}</td>
                   <td>
-                    <span className="due-status">
-                      {value.status}
-                    </span>
+                    <span className="due-status">{value.status}</span>
                   </td>
                   <td>
                     <button
@@ -182,10 +174,8 @@ const handlePayAll = async () => {
               ))
             )}
           </tbody>
-
         </table>
       </div>
-
     </div>
   );
 }

@@ -25,6 +25,9 @@ export default function AdminDashboard() {
   const [vehicles, setVehicles] = useState([]);
   const userdata = useAuth();
   const navigate = useNavigate();
+  const [chartData, setChartData] = useState([]);
+  const daysOrder = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const [filter, setFilter] = useState("7");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,12 +39,27 @@ export default function AdminDashboard() {
         setDrivers(driverRes || []);
         setTrips(tripRes || []);
         setVehicles(vehicleRes || []);
+        console.log(tripRes);
       } catch (e) {
         console.error(e.message);
       }
     };
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (trips) {
+      const completedTrips = trips.filter(
+        (item) => item.status === "completed",
+      );
+
+      const filtered = filterDataByDate(completedTrips, filter);
+
+      const formatted = formatRevenueData(filtered, filter);
+
+      setChartData(formatted);
+    }
+  }, [trips, filter]);
 
   const activeDrivers = drivers.filter(
     (value) => value?.status?.toLowerCase().trim() === "online",
@@ -55,11 +73,15 @@ export default function AdminDashboard() {
     (value) => value?.driverId?.toLowerCase().trim() === "",
   );
 
+  const Revenue = trips.filter((v) => v.paymentStatus.toLowerCase() === "paid");
+
+  const totalRevenue = Revenue.reduce((t, v) => t + v.amount, 0);
+
   const stats = [
     {
       symbol: <TbMoneybag />,
       label: "Total Revenue",
-      value: `Rs.6888.00`,
+      value: totalRevenue,
       color: "#22c55e",
       background: "#f0fdf4",
       navfun: () => navigate("/admin/payroll"),
@@ -70,7 +92,7 @@ export default function AdminDashboard() {
       value: onTrip.length,
       color: "#3b82f6",
       background: "#eff6ff",
-     navfun: () => navigate("/admin/trips"),
+      navfun: () => navigate("/admin/trips"),
     },
     {
       symbol: <TbUserCheck />,
@@ -143,6 +165,72 @@ export default function AdminDashboard() {
     },
   ];
 
+  const formatRevenueData = (data, filter) => {
+    const grouped = {};
+
+    data.forEach((item) => {
+      const date = new Date(item.dateAndTime);
+
+      let key;
+      let sortValue;
+
+      if (filter === "7") {
+        key = date.toLocaleDateString("en-US", { weekday: "short" });
+        sortValue = date.getDay(); 
+      } else if (filter === "30") {
+        key = date.toLocaleDateString("en-US", {
+          day: "numeric",
+          month: "short",
+        });
+        sortValue = date.getTime(); 
+      } else if (filter === "year") {
+        key = date.toLocaleDateString("en-US", { month: "short" });
+        sortValue = date.getMonth();
+      }
+
+      if (!grouped[key]) {
+        grouped[key] = { revenue: 0, sortValue };
+      }
+
+      grouped[key].revenue += item.amount;
+    });
+
+    return Object.keys(grouped)
+      .map((key) => ({
+        day: key,
+        revenue: grouped[key].revenue,
+        sortValue: grouped[key].sortValue,
+      }))
+      .sort((a, b) => a.sortValue - b.sortValue)
+      .map(({ day, revenue }) => ({ day, revenue }));
+  };
+
+  const filterDataByDate = (data, filter) => {
+    const now = new Date();
+
+    return data.filter((item) => {
+      const itemDate = new Date(item.dateAndTime);
+
+      if (filter === "7") {
+        const last7Days = new Date();
+        last7Days.setDate(now.getDate() - 7);
+        return itemDate >= last7Days;
+      }
+
+      if (filter === "30") {
+        const last30Days = new Date();
+        last30Days.setDate(now.getDate() - 30);
+        return itemDate >= last30Days;
+      }
+
+      if (filter === "year") {
+        return itemDate.getFullYear() === now.getFullYear();
+      }
+
+      return true;
+    });
+  };
+
   return (
     <div className="admin-container">
       <div className="title-div">
@@ -181,7 +269,12 @@ export default function AdminDashboard() {
           <div className="title-div">
             <h2 className="chart-title">Revenue Analytics</h2>
             <div className="filter-div">
-              <select name="filter" id="filter">
+              <select
+                name="filter"
+                id="filter"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
                 <option value="7">Last 7 Days</option>
                 <option value="30">Last 30 Days</option>
                 <option value="year">This Year</option>
@@ -192,7 +285,7 @@ export default function AdminDashboard() {
             <div className="chart-div">
               <ResponsiveContainer width="100%" height={300}>
                 <AreaChart
-                  data={revenueData}
+                  data={chartData}
                   margin={{ top: 0, right: 15, left: 10, bottom: 10 }}
                 >
                   <defs>
