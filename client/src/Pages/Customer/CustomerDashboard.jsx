@@ -90,34 +90,50 @@ function CustomerDashboard() {
               onClick={() => navigate("/customer/my-trips")}
             >
               <div className="card-content">
-                <LuCalendarDays className="card-icon" />
-                <p className="card-main">Upcoming Trip</p>
-                <p className="card-sub">
-                  {dashboard?.upcomingTrip
-                    ? `${dashboard.upcomingTrip.from} → ${dashboard.upcomingTrip.to}`
-                    : "No upcoming trip"}
-                </p>
+                <div>
+                  <LuCalendarDays className="card-icon card1-icon" />
+                </div>
+                <div>
+                  <p className="card-main">Upcoming Trip</p>
+                  <p className="card-sub">
+                    {dashboard?.upcomingTrip
+                      ? `${dashboard.upcomingTrip.from} → ${dashboard.upcomingTrip.to}`
+                      : "No upcoming trip"}
+                  </p>
+                </div>
               </div>
             </div>
             <div className="card2">
               <div className="card-content">
-                <IoCarOutline className="card-icon" />
-                <p className="card-main">Total Trips</p>
-                <p className="card-sub">{dashboard?.totalTrips ?? 0}</p>
+                <div>
+                  <IoCarOutline className="card-icon card2-icon" />
+                </div>
+                <div>
+                  <p className="card-main">Total Trips</p>
+                  <p className="card-sub">{dashboard?.totalTrips ?? 0}</p>
+                </div>
               </div>
             </div>
             <div className="card3">
               <div className="card-content">
-                <FaRegStar className="card-icon" />
-                <p className="card-main">Loyalty Points</p>
-                <p className="card-sub">{dashboard?.loyaltyPoints ?? 0}</p>
+                <div>
+                  <FaRegStar className="card-icon card3-icon" />
+                </div>
+                <div>
+                  <p className="card-main">Loyalty Points</p>
+                  <p className="card-sub">{dashboard?.loyaltyPoints ?? 0}</p>
+                </div>
               </div>
             </div>
             <div className="card4">
               <div className="card-content">
-                <LuCalendarClock className="card-icon" />
-                <p className="card-main">Pending Dues</p>
-                <p className="card-sub">₹{dashboard?.pendingAmount ?? 0}</p>
+                <div>
+                  <LuCalendarClock className="card-icon card4-icon" />
+                </div>
+                <div>
+                  <p className="card-main">Pending Dues</p>
+                  <p className="card-sub">₹{dashboard?.pendingAmount ?? 0}</p>
+                </div>
               </div>
             </div>
           </div>

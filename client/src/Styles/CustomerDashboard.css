@@ -21,10 +21,24 @@
   padding: 10px;
   background-color: white;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
   transition: 0.3s ease;
+}
+
+.card1 {
+  border-left: 4px solid rgb(59, 130, 246);
+}
+
+.card2 {
+  border-left: 4px solid rgb(59, 130, 246);
+}
+
+.card3 {
+  border-left: 4px solid rgb(245, 158, 11);
+}
+
+.card4 {
+  border-left: 4px solid rgb(239, 68, 68);
 }
 
 .card1 img,
@@ -44,7 +58,7 @@
 .card2:hover,
 .card3:hover,
 .card4:hover {
-  transform: translateY(-5px);
+  transform: scale(1.05);
   cursor: pointer;
 }
 
@@ -235,9 +249,8 @@
 
 .card-content {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
+  gap: 16px;
 }
 
 .card-icon {
@@ -247,21 +260,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #3b82f6;
-  padding: 9px;
-  border-radius: 50%;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.card1-icon {
+  color: rgb(59, 130, 246);
+  background-color: rgb(239, 246, 255);
+}
+
+.card2-icon {
+  color: rgb(59, 130, 246);
+  background-color: rgb(239, 246, 255);
+}
+
+.card3-icon {
+  color: rgb(245, 158, 11);
+  background-color: rgb(255, 251, 235);
+}
+
+.card4-icon {
+  color: rgb(239, 68, 68);
+  background-color: rgb(254, 242, 242);
 }
 
 .card-main {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111;
-  margin-bottom: 4px;
+  font-size: 12px;
+  color: #64748b;
+  margin: 0 0 4px;
+  font-weight: 500;
 }
 
 .card-sub {
-  font-size: 14px;
-  color: #666;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
 }
 
 .loading-customerdashboard {
