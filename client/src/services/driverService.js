@@ -13,6 +13,18 @@ export const getDriver = async () => {
   }
 };
 
+export const TripsData = async () => {
+  try {
+    const latestRes = await fetch(`${API_BASE_URL}/api/trip/trip`, {
+      credentials: "include",
+    });
+    const res = await latestRes.json();
+    return res;
+  } catch (err) {
+    console.error("Fetch Trips Error:", err);
+  }
+};
+
 export const addDriver = async (formData) => {
   try {
     let res = await fetch(`${API_BASE_URL}/api/driver/add`, {
@@ -24,7 +36,7 @@ export const addDriver = async (formData) => {
         name: formData.name,
         phone: formData.phone,
         email: formData.email,
-        password:formData.password,
+        password: formData.password,
         profile: formData.profile,
         license: formData.license,
         vehicleNo: formData.vehicleNo,
@@ -53,17 +65,14 @@ export const addDriver = async (formData) => {
 
 export const updateDriver = async (_id, updatedData) => {
   try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/driver/update/${_id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(updatedData),
-        credentials: "include",
+    const res = await fetch(`${API_BASE_URL}/api/driver/update/${_id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(updatedData),
+      credentials: "include",
+    });
 
     const data = await res.json();
 
@@ -80,13 +89,23 @@ export const updateDriver = async (_id, updatedData) => {
 
 export const deleteDriver = async (_id) => {
   try {
-    const res = await fetch(
-      `${API_BASE_URL}/api/driver/delete/${_id}`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      },
-    );
+    const res = await fetch(`${API_BASE_URL}/api/driver/delete/${_id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (!res.ok) throw new Error("Delete failed");
+  } catch (e) {
+    console.log(e.message);
+  }
+};
+
+export const deleteUserDriver = async (email) => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/user/delete/${email}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     if (!res.ok) throw new Error("Delete failed");
   } catch (e) {

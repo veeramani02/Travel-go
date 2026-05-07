@@ -18,7 +18,7 @@ function BookTrip() {
 
   const [destinationStates, setDestinationStates] = useState([]);
   const [destinationCities, setDestinationCities] = useState([]);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -103,7 +103,8 @@ function BookTrip() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     let validationErrors = {};
 
     if (formData.name.trim().length < 3) {
@@ -235,6 +236,8 @@ function BookTrip() {
         message: error,
         severity: "error",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
   const renderError = (field) =>
@@ -397,8 +400,8 @@ function BookTrip() {
           />
         </div>
 
-        <button className="booktrip-btn" type="submit">
-          Proceed to Payment
+        <button className="booktrip-btn" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Processing..." : "Proceed to Payment"}
         </button>
       </form>
     </div>

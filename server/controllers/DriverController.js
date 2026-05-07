@@ -39,6 +39,8 @@ const driverController = {
       if (phone.toString().length !== 10 || !validateDigit.includes(firstDigit))
         errors.phone = "Invalid Phone Number";
 
+      if (!email) errors.email = "Email is required.";
+
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (email && !emailRegex.test(email))
         errors.email = "Invalid Email Address";

@@ -4,8 +4,10 @@ import { FaMagnifyingGlass } from "react-icons/fa6";
 import {
   deleteDriver,
   getDriver,
+  TripsData,
   getAvatarColor,
   updateDriver,
+  deleteUserDriver,
 } from "../../services/driverService.js";
 import AddDriver from "../../Pages/Admin/AddDriver";
 import DriverProfile from "./DriverProfile";
@@ -14,10 +16,12 @@ import CustomizedSnackbars from "../../Components/CustomizedSnackbars.jsx";
 import AlertDialogSlide from "../../Components/AlertDialogSlide.jsx";
 import { PacmanLoader } from "react-spinners";
 import API_BASE_URL from "../../config/api";
+
 export default function Driver() {
   const [openDriver, setOpenDriver] = useState(false);
   const status = ["All", "Online", "Offline", "On Trip"];
   const [drivers, setDrivers] = useState([]);
+  const [trips, setTrips] = useState([]);
   const [filteredDrivers, setFilteredDrivers] = useState([]);
   const [active, setActive] = useState("All");
   const [OpenProfile, setOpenProfile] = useState(false);
@@ -29,14 +33,17 @@ export default function Driver() {
   const [loading, setLoading] = useState(true);
   const [alertDialogOpen, setAlertDialogOpen] = useState(false);
   const [DeleteData, setDeletedata] = useState("");
+  const [driverAssigned, setDriverAssigned] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getDriver();
-        setDrivers(data);
-        setFilteredDrivers(data);
+        const [driver, trip] = await Promise.all([getDriver(), TripsData()]);
+        setDrivers(driver);
+        setFilteredDrivers(driver);
+        setTrips(trip);
+        console.log(trip);
       } catch (err) {
         setSnackbarMessage("Failed to load drivers");
         setSnackbarSeverity("error");
@@ -47,9 +54,11 @@ export default function Driver() {
     };
     fetchData();
   }, []);
+
   useEffect(() => {
     handleFilter(active, searchText);
   }, [drivers, active, searchText]);
+
   async function handleUpdateDriver(updatedvalue) {
     try {
       const oldvalue = drivers.find((d) => d._id === updatedvalue._id);
@@ -106,19 +115,29 @@ export default function Driver() {
   async function handleDeleteDriver(value) {
     if (!value) return null;
     try {
-      await deleteDriver(value._id);
-      setDrivers((prev) => prev.filter((d) => d._id !== value._id));
-      setSnackbarMessage(
-        `Driver "${value?.name || "Unknown"}" Deleted successfully!`,
-      );
-      setSnackbarSeverity("success");
-      setSnackbarOpen(true);
+      if (!trips.some((p) => p.driverId === value._id)) {
+        await deleteDriver(value._id);
+        await deleteUserDriver(value.email);
+        setDrivers((prev) => prev.filter((d) => d._id !== value._id));
+        setSnackbarMessage(
+          `Driver "${value?.name || "Unknown"}" Deleted successfully!`,
+        );
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+      } else {
+        setSnackbarMessage(
+          "Driver is assigned to a trip and cannot be deleted.",
+        );
+        setSnackbarSeverity("info");
+        setSnackbarOpen(true);
+      }
     } catch (err) {
       setSnackbarMessage(err?.message || "Failed to delete driver");
       setSnackbarSeverity("error");
       setSnackbarOpen(true);
     }
   }
+
   function handleFilter(active, search) {
     let filter = [...drivers];
     if (search)

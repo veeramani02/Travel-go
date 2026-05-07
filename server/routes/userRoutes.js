@@ -29,5 +29,6 @@ userRouter.post(
   userController.uploadFiles,
 );
 userRouter.post("/changepassword", protect, userController.changePassword);
+userRouter.delete("/delete/:email", protect, userController.deleteUser);
 
 export default userRouter;

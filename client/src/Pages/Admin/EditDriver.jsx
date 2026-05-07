@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../Styles/EditDriver.css";
-import {
-  getAvatarColor,
-  VEHICLE_TYPES,
-} from "../../services/driverService";
+import { getAvatarColor, VEHICLE_TYPES } from "../../services/driverService";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
 import { State, City } from "country-state-city";
 import API_BASE_URL from "../../config/api";
@@ -74,6 +71,7 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
   useEffect(() => {
     const indiaStates = State.getStatesOfCountry("IN");
     setState(indiaStates);
+    console.log(Data);
   }, []);
 
   function handlestateChange(e) {
@@ -294,9 +292,9 @@ export default function EditDriver({ Open, Close, Data, Onsave }) {
               onChange={handleChange}
             >
               <option value="">--select--</option>
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-              <option value="On Trip">On Trip</option>
+              <option value="offline">Offline</option>
+              <option value="online">Online</option>
+              <option value="on Trip">On Trip</option>
             </select>
           </div>
           <h3>Vehicle Info</h3>

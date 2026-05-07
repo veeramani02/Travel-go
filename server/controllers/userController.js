@@ -73,6 +73,21 @@ const userController = {
       res.status(500).send(err.message);
     }
   },
+
+  deleteUser: async (req, res) => {
+    try {
+      const { email } = req.params;
+      const user = await User.findOneAndDelete({ email });
+
+      if (!user) {
+        return res.status(404).send("User not found");
+      }
+
+      res.status(200).send("User deleted successfully");
+    } catch (e) {
+      res.status(500).send(e.message);
+    }
+  },
 };
 
 export default userController;
