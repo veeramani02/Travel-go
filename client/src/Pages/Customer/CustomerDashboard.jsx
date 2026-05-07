@@ -131,7 +131,7 @@ function CustomerDashboard() {
                   <LuCalendarClock className="card-icon card4-icon" />
                 </div>
                 <div>
-                  <p className="card-main">Pending Dues</p>
+                  <p className="card-main">Upcoming Dues</p>
                   <p className="card-sub">₹{dashboard?.pendingAmount ?? 0}</p>
                 </div>
               </div>
@@ -241,7 +241,7 @@ function CustomerDashboard() {
               </table>
             </div>
           </div>
-          <div className="popular-section">
+          {/* <div className="popular-section">
             <h2>Most Popular Destinations</h2>
             <div className="destination-wrapper">
               <div className="destination-card">
@@ -268,7 +268,7 @@ function CustomerDashboard() {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </main>
     </div>

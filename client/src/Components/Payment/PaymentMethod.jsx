@@ -1,7 +1,7 @@
 function PaymentMethod({ setPaymentMethod, setStep }) {
   const methods = [
     { id: "card",  label: "Card",  icon: "💳" },
-    { id: "upi",   label: "UPI",   icon: "📱" },
+    { id: "netbanking",   label: "Net Banking",   icon: "🏦" },
     { id: "cash",  label: "Cash",  icon: "💵" },
     { id: "dues",  label: "Dues",  icon: "🗓️" },
   ];

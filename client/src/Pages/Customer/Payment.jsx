@@ -261,7 +261,7 @@ function Payments() {
         <div className="payment-card success-card">
           <div className="card-header">
             <h2>Payment complete</h2>
-            <p>Thank you for booking with us</p>
+            <p className="greetings">Thank you for booking with us</p>
           </div>
           <div className="card-body">
             <div className="success-icon">✓</div>
@@ -403,8 +403,8 @@ function Payments() {
                   ← Back
                 </button>
                 <span className="step2-title">
-                  {paymentMethod === "card" && "Card details"}
-                  {paymentMethod === "upi" && "UPI payment"}
+                  {paymentMethod === "card" && " pay with card"}
+                  {paymentMethod === "netbanking" && "Net Banking"}
                   {paymentMethod === "cash" && "Cash payment"}
                   {paymentMethod === "dues" && "Pay in instalments"}
                 </span>
@@ -417,7 +417,7 @@ function Payments() {
                   loading={loading}
                 />
               )}
-              {paymentMethod === "upi" && (
+              {paymentMethod === "netbanking" && (
                 <UpiPayment
                   handlePayment={handlePaymentByMethod}
                   loading={loading}
