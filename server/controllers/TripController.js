@@ -1,4 +1,5 @@
 import Trip from "../models/Trip.js";
+
 export const createTrip = async (req, res) => {
   try {
     const {
@@ -48,8 +49,8 @@ export const createTrip = async (req, res) => {
       paymentStatus: "pending",
       driverId,
       vehicleId,
-      estimatedDuration:Number(estimatedDuration),
-      estimatedDistance:Number(estimatedDistance),
+      estimatedDuration: Number(estimatedDuration),
+      estimatedDistance: Number(estimatedDistance),
       pickupCoordinates,
       destinationCoordinates,
     });
@@ -59,12 +60,12 @@ export const createTrip = async (req, res) => {
       trip,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: "Failed to create trip",
     });
   }
 };
+
 export const updateTripStatuses = async () => {
   const now = new Date();
   const trips = await Trip.find({
@@ -76,34 +77,20 @@ export const updateTripStatuses = async () => {
       trip.status = "current";
     }
     const endTime = new Date(
-    tripDate.getTime() + (Number(trip.estimatedDuration)||4) * 60 * 60 * 1000
+      tripDate.getTime() +
+        (Number(trip.estimatedDuration) || 4) * 60 * 60 * 1000,
     );
     if (trip.status === "current" && now >= endTime) {
-    trip.status = "completed";
+      trip.status = "completed";
     }
     if (trip.isModified()) {
-    await trip.save();  
+      await trip.save();
     }
   }
 };
-// export const getLatestTrip = async (req, res) => {
-//   try {
-//     const trip = await Trip.findOne({ userId: req.user._id }).sort({
-//       createdAt: -1,
-//     });
 
-//     if (!trip) {
-//       return res.status(404).json({ message: "No trips found" });
-//     }
-
-//     res.json(trip);
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 export const getLatestTrip = async (req, res) => {
   try {
-   
     await updateTripStatuses();
 
     const trip = await Trip.findOne({ userId: req.user._id }).sort({
@@ -119,6 +106,7 @@ export const getLatestTrip = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 export const getPastTrips = async (req, res) => {
   try {
     await updateTripStatuses();
@@ -133,23 +121,24 @@ export const getPastTrips = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 export const getTrips = async (req, res) => {
   try {
     await updateTripStatuses();
     const trip = await Trip.find();
-      if (!trip || trip.length === 0) {
-        return res.status(404).json({
+    if (!trip || trip.length === 0) {
+      return res.status(404).json({
         message: "No trips found",
       });
-      } 
+    }
     res.json(trip);
-  } 
-  catch (error) {
+  } catch (error) {
     res.status(500).json({
-    message: error.message,
+      message: error.message,
     });
   }
 };
+
 export const getRoute = async (req, res) => {
   const { start, end } = req.query;
   try {
@@ -158,11 +147,11 @@ export const getRoute = async (req, res) => {
     );
     const data = await response.json();
     res.json(data);
-  } 
-  catch (err) {
+  } catch (err) {
     res.status(500).json({ error: "Route fetch failed" });
   }
 };
+
 export const updateTrips = async (req, res) => {
   try {
     console.log(req.body);
@@ -195,7 +184,7 @@ export const updateTrips = async (req, res) => {
           status: "assigned",
         }),
       },
-      { new: true }
+      { new: true },
     );
 
     if (!updatedTrip) {
@@ -242,8 +231,7 @@ export const cancelTrip = async (req, res) => {
       message: "Trip cancelled successfully",
       trip,
     });
-  } 
-  catch (error) {
+  } catch (error) {
     return res.status(500).json({
       message: error.message,
     });

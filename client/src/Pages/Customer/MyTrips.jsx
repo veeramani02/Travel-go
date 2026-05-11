@@ -24,7 +24,7 @@ function MyTrips() {
   const fetchTrips = async () => {
     try {
       setLoading(true);
-
+      
       // CURRENT TRIP
       const latestRes = await fetch(`${API_BASE_URL}/api/trip/latest`, {
         credentials: "include",
@@ -68,7 +68,7 @@ function MyTrips() {
         {
           method: "PATCH",
           credentials: "include",
-        }
+        },
       );
 
       const data = await res.json();
@@ -96,42 +96,29 @@ function MyTrips() {
     }
   };
 
-  // const getRemainingTime = (tripDate) => {
-  //   const now = new Date();
-  //   const start = new Date(tripDate);
+  const getTripTimerLabel = (trip) => {
+    if (trip.status === "cancelled") return "Trip Cancelled";
 
-  //   if (now > start) return "Trip Started / Completed";
+    if (trip.status === "completed") return "Trip Completed";
 
-  //   const diff = start - now;
+    if (trip.status === "current") return "Trip in Progress";
 
-  //   const hours = Math.floor(diff / (1000 * 60 * 60));
-  //   const minutes = Math.floor((diff / (1000 * 60)) % 60);
+    if (trip.status === "pending") return "Pending Assignment";
 
-  //   return `${hours}h ${minutes}m left`;
-  // };
-const getTripTimerLabel = (trip) => {
-  if (trip.status === "cancelled") return "Trip Cancelled";
+    if (trip.status === "confirmed") return "Payment Confirmed";
 
-  if (trip.status === "completed") return "Trip Completed";
+    if (trip.estimatedDuration != null && trip.estimatedDuration > 0) {
+      const hrs = Math.floor(trip.estimatedDuration);
+      const mins = Math.round((trip.estimatedDuration - hrs) * 60);
 
-  if (trip.status === "current") return "Trip in Progress";
+      if (hrs > 0 && mins > 0) return `~${hrs}h ${mins}m estimated`;
+      if (hrs > 0) return `~${hrs}h estimated`;
 
-  if (trip.status === "pending") return "Pending Assignment";
+      return `~${mins}m estimated`;
+    }
 
-  if (trip.status === "confirmed") return "Payment Confirmed";
-
-  if (trip.estimatedDuration != null && trip.estimatedDuration > 0) {
-    const hrs = Math.floor(trip.estimatedDuration);
-    const mins = Math.round((trip.estimatedDuration - hrs) * 60);
-
-    if (hrs > 0 && mins > 0) return `~${hrs}h ${mins}m estimated`;
-    if (hrs > 0) return `~${hrs}h estimated`;
-
-    return `~${mins}m estimated`;
-  }
-
-  return "Route ETA unavailable";
-};
+    return "Route ETA unavailable";
+  };
   if (loading)
     return (
       <div className="loading-customerdashboard">
@@ -160,8 +147,8 @@ const getTripTimerLabel = (trip) => {
                   currentTrip.status === "cancelled"
                     ? "cancelled-status"
                     : currentTrip.status === "completed"
-                    ? "completed-status"
-                    : "active-status"
+                      ? "completed-status"
+                      : "active-status"
                 }`}
               >
                 {currentTrip.status}
@@ -182,23 +169,22 @@ const getTripTimerLabel = (trip) => {
                 <strong>Vehicle:</strong> {currentTrip.vehicleType}
               </p>
 
-             
-           <p>
-  <strong>Trip Timer:</strong>{" "}
-  {currentTrip.status === "cancelled"
-    ? "Trip Cancelled"
-    : currentTrip.status === "completed"
-    ? "Trip Completed"
-    : currentTrip.status === "current"
-    ? "Trip in Progress"
-    : `${currentTrip.estimatedDuration?.toFixed(1)} hrs`}
-</p>
+              <p>
+                <strong>Trip Timer:</strong>{" "}
+                {currentTrip.status === "cancelled"
+                  ? "Trip Cancelled"
+                  : currentTrip.status === "completed"
+                    ? "Trip Completed"
+                    : currentTrip.status === "current"
+                      ? "Trip in Progress"
+                      : `${currentTrip.estimatedDuration?.toFixed(1)} hrs`}
+              </p>
             </div>
 
             <div className="trip-btn-group">
               {currentTrip.status !== "cancelled" &&
                 currentTrip.status !== "completed" && (
-                  <>
+                  <div className="mt-button">
                     <button
                       className="track-btn"
                       onClick={() =>
@@ -214,13 +200,10 @@ const getTripTimerLabel = (trip) => {
                       Track My Trip
                     </button>
 
-                    <button
-                      className="cancel-btn"
-                      onClick={handleCancelTrip}
-                    >
+                    <button className="cancel-btn" onClick={handleCancelTrip}>
                       Cancel Trip
                     </button>
-                  </>
+                  </div>
                 )}
             </div>
           </div>

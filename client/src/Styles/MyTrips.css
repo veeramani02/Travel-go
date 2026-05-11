@@ -1,4 +1,4 @@
- .mytrips-page {
+.mytrips-page {
   background: var(--background);
   min-height: 100vh;
 }
@@ -25,7 +25,7 @@
   background: white;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
 }
 
 .trip-card.highlight {
@@ -66,16 +66,27 @@
   border-radius: 10px;
   text-align: center;
 }
-.track-btn{
-  width:max-content;
+
+.track-btn {
+  width: max-content;
   background-color: var(--primary);
-  color:white;
+  color: white;
   border-radius: 10px;
-  padding:10px;
+  border-style: none;
+  padding: 10px;
+}
+
+.track-btn:hover {
+  cursor: pointer;
+}
+
+.mt-button {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
 @media (max-width: 768px) {
-
   .mytrips-title {
     font-size: 20px;
     margin-bottom: 20px;
@@ -86,7 +97,6 @@
   }
 
   .trip-header {
-    
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
@@ -102,7 +112,7 @@
   }
 
   .track-btn {
-    width: 100%; 
+    width: 100%;
     margin-top: 15px;
     padding: 12px;
     text-align: center;
@@ -110,16 +120,13 @@
   }
 }
 
-
 @media (max-width: 480px) {
-
   .trip-details p {
-    font-size: 13px; 
+    font-size: 13px;
     display: flex;
     justify-content: space-between;
   }
-  
- 
+
   .trip-details p:not(:last-child) {
     border-bottom: 1px dashed #eee;
     padding-bottom: 6px;

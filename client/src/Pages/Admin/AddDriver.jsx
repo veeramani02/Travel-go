@@ -7,7 +7,7 @@ import { State, City } from "country-state-city";
 import API_BASE_URL from "../../config/api";
 
 export default function AddDriver({ openDriver, closeDriver }) {
-  const [isOn, setIsOn] = useState(true);
+  const [isOn, setIsOn] = useState(false);
   const [loading, setLoading] = useState(false);
   const Profileref = useRef();
   const LicenseRef = useRef();
@@ -25,13 +25,13 @@ export default function AddDriver({ openDriver, closeDriver }) {
     name: "",
     phone: "",
     email: "",
-    password:"",
+    password: "",
     profile: "",
     vehicleType: "",
     vehicleNo: "",
     license: "",
     vehicleColor: "",
-    status: "Active",
+    status: "Offline",
     state: "",
     city: "",
   });
@@ -75,8 +75,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
         ...formData,
         profile: imageurl || formData.profile,
         license: licenseurl || formData.license,
-        status: isOn ? "Active" : "Inactive",
+        status: isOn ? "online" : "offline",
       };
+
       await addDriver(newData);
       setSnackbar({
         open: true,
@@ -119,6 +120,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
     }
     setLicenseFile(file);
   };
+  
   const handleProfileFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -149,7 +151,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
       name: "",
       phone: "",
       email: "",
-      password:"",
+      password: "",
       profile: "",
       vehicleType: "",
       vehicleNo: "",
@@ -175,7 +177,6 @@ export default function AddDriver({ openDriver, closeDriver }) {
   function handleRemoveProfileFile() {
     setProfilePreview(null);
     setProfileFile(null);
-   
   }
 
   function handleRemoveLicenseFile() {
@@ -202,58 +203,58 @@ export default function AddDriver({ openDriver, closeDriver }) {
         <p>Personal Details</p>
         <div className="personal-details">
           <div className="details">
-          <div className="input">
-            <label htmlFor="name">Full Name</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              placeholder="e.g John Doe"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="input">
-            <label htmlFor="phone">Phone Number</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              placeholder="e.g 987654321"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-          </div>
+            <div className="input">
+              <label htmlFor="name">Full Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                placeholder="e.g John Doe"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="input">
+              <label htmlFor="phone">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                placeholder="e.g 987654321"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
           </div>
           <div className="validation">
-          <div className="input">
-            <label htmlFor="email">Email Address</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="e.g JohnDoe@gmail.com"
-              value={formData.email}
-              onChange={handleChange}
-            />
-          </div>
-          
-           <div className="input">
-            <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Enter password"
-              value={formData.password}
-              onChange={handleChange}
-            />
-          </div>
+            <div className="input">
+              <label htmlFor="email">Email Address</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="e.g JohnDoe@gmail.com"
+                value={formData.email}
+                onChange={handleChange}
+              />
+            </div>
+
+            <div className="input">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+            </div>
           </div>
         </div>
-        
+
         <div className="addDriver-upload-picture">
           <h3>Profile Picture</h3>
           <div className="driver-profile-picture-section">
@@ -440,7 +441,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
                   }}
                 />
               </div>
-              <span>Active/Inactive</span>
+              <span>Offline/Online</span>
             </div>
           </div>
         </div>
