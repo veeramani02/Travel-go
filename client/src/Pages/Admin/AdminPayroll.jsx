@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   FiUsers,
   FiDollarSign,
@@ -13,6 +13,7 @@ import {
 } from "react-icons/fi";
 import "../../Styles/AdminPayroll.css";
 import API_BASE_URL from "../../config/api";
+import { CSVLink } from "react-csv";
 
 const calcFinal = (d) =>
   (d.baseSalary || 0) +
@@ -57,6 +58,8 @@ export default function AdminPayroll() {
     const matchFilter = filter === "All" || d.status === filter;
     return matchSearch && matchFilter;
   });
+  const csvRef = useRef();
+
   useEffect(() => {
     fetchDriversPayroll();
   }, []);
@@ -164,6 +167,24 @@ export default function AdminPayroll() {
     }
   };
   const finalPreview = calcFinal(form);
+
+  const handleDownload = () => {
+    csvRef.current.link.click();
+  };
+
+  const exportData = () => {
+    return visible.map((v) => ({
+      DriverName: v.name,
+      Trips: v.trips,
+      BaseSalary: v.baseSalary,
+      Incentive: v.incentive,
+      Bonus: v.bonus,
+      Deductions: v.deductions,
+      FinalSalary: calcFinal(v),
+      Status: v.status,
+    }));
+  };
+
   return (
     <div className="ap-page">
       <div className="ap-header">
@@ -234,7 +255,7 @@ export default function AdminPayroll() {
             </button>
           ))}
         </div>
-        <button className="ap-export-btn">
+        <button className="ap-export-btn" onClick={handleDownload}>
           <FiDownload /> Export Payroll
         </button>
       </div>
@@ -265,7 +286,7 @@ export default function AdminPayroll() {
               ) : (
                 visible.map((d) => (
                   <tr key={d.id}>
-                    <td className="ap-id">{d.id}</td>
+                    <td className="ap-id">{d.id.slice(4, 8).toUpperCase()}</td>
                     <td className="ap-name">{d.name}</td>
                     <td>{d.trips}</td>
                     <td>{fmt(d.baseSalary)}</td>
@@ -436,6 +457,12 @@ export default function AdminPayroll() {
           </div>
         </div>
       )}
+      <CSVLink
+        data={exportData()}
+        filename="export.csv"
+        ref={csvRef}
+        style={{ display: "none" }}
+      />
     </div>
   );
 }

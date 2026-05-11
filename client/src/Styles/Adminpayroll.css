@@ -1,8 +1,3 @@
-/* ═══════════════════════════════════════════════════
-   AdminPayroll.css — TravelGo Admin Panel Theme
-   ═══════════════════════════════════════════════════ */
-
-/* ── Page Root ───────────────────────────────────── */
 .ap-page {
   padding: 24px;
   background: var(--background);
@@ -10,7 +5,6 @@
   font-family: "Segoe UI", sans-serif;
 }
 
-/* ── Page Header ─────────────────────────────────── */
 .ap-header {
   margin-bottom: 24px;
 }
@@ -28,7 +22,6 @@
   margin: 0;
 }
 
-/* ── Summary Cards ───────────────────────────────── */
 .ap-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -107,7 +100,6 @@
   margin: 0;
 }
 
-/* ── Controls Row ────────────────────────────────── */
 .ap-controls {
   display: flex;
   align-items: center;
@@ -167,7 +159,6 @@
 
 .ap-filter-btn:hover {
   border-color: #f59e0b;
-  color: #f59e0b;
 }
 
 .ap-filter-btn--active {
@@ -181,7 +172,7 @@
   align-items: center;
   gap: 6px;
   padding: 9px 18px;
-  background: #1e293b;
+  background: var(--primary);
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -193,10 +184,9 @@
 }
 
 .ap-export-btn:hover {
-  background: #0f172a;
+  opacity: 0.85;
 }
 
-/* ── Table Card ──────────────────────────────────── */
 .ap-table-card {
   background: #fff;
   border-radius: 12px;
@@ -270,7 +260,6 @@
   font-size: 14px;
 }
 
-/* ── Status Badge ────────────────────────────────── */
 .ap-badge {
   display: inline-flex;
   align-items: center;
@@ -290,14 +279,13 @@
   color: #d97706;
 }
 
-/* ── Update Button ───────────────────────────────── */
 .ap-update-btn {
   display: inline-flex;
   align-items: center;
   gap: 5px;
   padding: 6px 12px;
   background: #eff6ff;
-  color: #3b82f6;
+  color: var(--primary);
   border: 1px solid #bfdbfe;
   border-radius: 6px;
   font-size: 12.5px;
@@ -307,12 +295,10 @@
 }
 
 .ap-update-btn:hover {
-  background: #3b82f6;
+  background: var(--primary);
   color: #fff;
-  border-color: #3b82f6;
 }
 
-/* ── Monthly History ─────────────────────────────── */
 .ap-history {
   margin-bottom: 24px;
 }
@@ -324,7 +310,6 @@
   margin: 0 0 12px;
 }
 
-/* ── Modal Overlay ───────────────────────────────── */
 .ap-overlay {
   position: fixed;
   inset: 0;
@@ -396,7 +381,6 @@
   gap: 14px;
 }
 
-/* ── Form Fields ─────────────────────────────────── */
 .ap-field {
   display: flex;
   flex-direction: column;
@@ -440,7 +424,6 @@
   cursor: not-allowed;
 }
 
-/* ── Final Salary Preview ────────────────────────── */
 .ap-final-box {
   background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
   border: 1.5px solid #fde68a;
@@ -470,7 +453,6 @@
   text-align: center;
 }
 
-/* ── Modal Footer ────────────────────────────────── */
 .ap-modal__footer {
   display: flex;
   gap: 10px;
@@ -518,7 +500,6 @@
   cursor: not-allowed;
 }
 
-/* ── Responsive ──────────────────────────────────── */
 @media (max-width: 1024px) {
   .ap-cards {
     grid-template-columns: repeat(2, 1fr);

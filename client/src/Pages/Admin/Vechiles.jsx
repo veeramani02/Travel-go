@@ -102,6 +102,7 @@ function Vehicles() {
     let fetchData = async () => {
       const data = await getVehicle();
       setVehicleList(data);
+      console.log(vehicleList);
     };
     fetchData();
   }, []);
@@ -226,77 +227,82 @@ function Vehicles() {
           </button>
         ))}
       </div>
-
-      <div className="vehicle-list">
-        {filteredVehicles.map((vehicle) => (
-          <div className="vehicle-card" key={vehicle._id}>
-            <div className="vehicle-status">
-              <div>
-                <span className={vehicle.status}>{vehicle.status}</span>
+      {filteredVehicles.length > 0 ? (
+        <div className="vehicle-list">
+          {filteredVehicles.map((vehicle) => (
+            <div className="vehicle-card" key={vehicle._id}>
+              <div className="vehicle-status">
+                <div>
+                  <span className={vehicle.status}>{vehicle.status}</span>
+                </div>
+                <div className="driver-DeleteButton">
+                  <button
+                    className="btnDelete"
+                    title="Delete Vehicle"
+                    onClick={() => {
+                      setDeletedata(vehicle);
+                      setAlertDialogOpen(true);
+                    }}
+                  >
+                    <MdDelete />
+                  </button>
+                </div>
               </div>
-              <div className="driver-DeleteButton">
+
+              <div className="vehicle-info">
+                <div className="vehicle-image">
+                  {vehicle?.frontView ? (
+                    <img src={vehicle.frontView} alt="vehicle" />
+                  ) : (
+                    <FaCarSide className="vehicle-icon" />
+                  )}
+                </div>
+                <h3>{vehicle.vehicleModel}</h3>
+                <p>{vehicle.vehicleNo}</p>
+                <span className="vehicle-type">{vehicle.vehicleType}</span>
+              </div>
+
+              <div className="vehicle-data">
+                <p>
+                  <span>KM:</span> {vehicle.km || 15}
+                </p>
+                <p>
+                  <span>Fuel:</span> {vehicle.fuelType}
+                </p>
+                <p>
+                  <span>AC:</span> {vehicle.AC ? "Yes" : "No"}
+                </p>
+                <p>
+                  <span>Service:</span> {vehicle?.lastService || "Nil"}
+                </p>
+                <p>
+                  <span>Avaliable Seats:</span> {vehicle.seatCapacity}
+                </p>
+              </div>
+
+              <div className="vehicle-action">
                 <button
-                  className="btnDelete"
-                  title="Delete Vehicle"
+                  className="view-btn"
                   onClick={() => {
-                    setDeletedata(vehicle);
-                    setAlertDialogOpen(true);
+                    navigate("/vehicle-details", { state: vehicle });
                   }}
                 >
-                  <MdDelete />
+                  View Details
                 </button>
+
+                <HiOutlineWrenchScrewdriver
+                  className="screwicon"
+                  onClick={() => toggleStatus(vehicle)}
+                />
               </div>
             </div>
-
-            <div className="vehicle-info">
-              <div className="vehicle-image">
-                {vehicle?.frontView ? (
-                  <img src={vehicle.frontView} alt="vehicle" />
-                ) : (
-                  <FaCarSide className="vehicle-icon" />
-                )}
-              </div>
-              <h3>{vehicle.vehicleModel}</h3>
-              <p>{vehicle.vehicleNo}</p>
-              <span className="vehicle-type">{vehicle.vehicleType}</span>
-            </div>
-
-            <div className="vehicle-data">
-              <p>
-                <span>KM:</span> {vehicle.km || 15}
-              </p>
-              <p>
-                <span>Fuel:</span> {vehicle.fuelType}
-              </p>
-              <p>
-                <span>AC:</span> {vehicle.AC ? "Yes" : "No"}
-              </p>
-              <p>
-                <span>Service:</span> {vehicle?.lastService || "Nil"}
-              </p>
-              <p>
-                <span>Avaliable Seats:</span> {vehicle.seatCapacity}
-              </p>
-            </div>
-
-            <div className="vehicle-action">
-              <button
-                className="view-btn"
-                onClick={() => {
-                  navigate("/vehicle-details", { state: vehicle });
-                }}
-              >
-                View Details
-              </button>
-
-              <HiOutlineWrenchScrewdriver
-                className="screwicon"
-                onClick={() => toggleStatus(vehicle)}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <div className="v-vehicle-empty">
+          <p>No Vehicles Found</p>
+        </div>
+      )}
 
       {showForm && (
         <VechileModal

@@ -362,3 +362,23 @@
   font-size: 32px;
   color: #64748b;
 }
+
+.v-vehicle-empty{
+  height: 150px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.v-vehicle-empty p{
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #6b7280;
+  letter-spacing: 0.5px;
+  text-align: center;
+  background: #f9fafb;
+  padding: 14px 22px;
+  border-radius: 12px;
+  border: 2px dashed #d1d5db;
+}

@@ -7,7 +7,6 @@ import { State, City } from "country-state-city";
 import API_BASE_URL from "../../config/api";
 
 export default function AddDriver({ openDriver, closeDriver }) {
-  const [isOn, setIsOn] = useState(false);
   const [loading, setLoading] = useState(false);
   const Profileref = useRef();
   const LicenseRef = useRef();
@@ -31,10 +30,10 @@ export default function AddDriver({ openDriver, closeDriver }) {
     vehicleNo: "",
     license: "",
     vehicleColor: "",
-    status: "Offline",
     state: "",
     city: "",
   });
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const indiaStates = State.getStatesOfCountry("IN");
@@ -42,10 +41,22 @@ export default function AddDriver({ openDriver, closeDriver }) {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: validateField(name, value),
+    }));
   };
 
   const handleSubmit = async () => {
+    if (loading) return;
+    if (!validateForm()) return;
     setLoading(true);
     let imageurl = "";
     let licenseurl = "";
@@ -75,9 +86,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
         ...formData,
         profile: imageurl || formData.profile,
         license: licenseurl || formData.license,
-        status: isOn ? "online" : "offline",
       };
-
       await addDriver(newData);
       setSnackbar({
         open: true,
@@ -119,8 +128,12 @@ export default function AddDriver({ openDriver, closeDriver }) {
       return;
     }
     setLicenseFile(file);
+    setErrors((prev) => ({
+      ...prev,
+      license: "",
+    }));
   };
-  
+
   const handleProfileFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -135,6 +148,10 @@ export default function AddDriver({ openDriver, closeDriver }) {
       return;
     }
     setProfileFile(file);
+    if (profilePreview) {
+      URL.revokeObjectURL(profilePreview);
+    }
+
     setProfilePreview(URL.createObjectURL(file));
   };
 
@@ -157,14 +174,12 @@ export default function AddDriver({ openDriver, closeDriver }) {
       vehicleNo: "",
       license: "",
       vehicleColor: "",
-      status: "Active",
       state: "",
       city: "",
     });
     setProfilePreview(null);
     setProfileFile(null);
     setLicenseFile(null);
-    setIsOn(true);
     Profileref.current.value = "";
     LicenseRef.current.value = "";
     setSnackbar({
@@ -177,23 +192,127 @@ export default function AddDriver({ openDriver, closeDriver }) {
   function handleRemoveProfileFile() {
     setProfilePreview(null);
     setProfileFile(null);
+    if (Profileref.current) {
+      Profileref.current.value = "";
+    }
   }
 
   function handleRemoveLicenseFile() {
     setLicenseFile(null);
+    if (LicenseRef.current) {
+      LicenseRef.current.value = "";
+    }
   }
 
   function handlestateChange(e) {
     const state = e.target.value;
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       state: state,
       city: "",
-    });
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      state: "",
+      city: "",
+    }));
+
     const cities = City.getCitiesOfState("IN", state);
     setCities(cities);
   }
+
+  const validateForm = () => {
+    let newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    }
+
+    if (!formData.phone.trim()) {
+      newErrors.phone = "Phone number is required";
+    } else if (!/^[6-9]\d{9}$/.test(formData.phone)) {
+      newErrors.phone = "Enter valid phone number";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(formData.email)
+    ) {
+      newErrors.email = "Invalid email address";
+    }
+
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Minimum 6 characters required";
+    }
+
+    if (!formData.state) {
+      newErrors.state = "Select state";
+    }
+
+    if (!formData.city) {
+      newErrors.city = "Select city";
+    }
+
+    if (!formData.vehicleType) {
+      newErrors.vehicleType = "Select vehicle type";
+    }
+
+    if (!formData.vehicleNo.trim()) {
+      newErrors.vehicleNo = "Vehicle number required";
+    }
+
+    if (!formData.vehicleColor.trim()) {
+      newErrors.vehicleColor = "Vehicle color required";
+    }
+
+    if (!licenseFile) {
+      newErrors.license = "Upload license file";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateField = (name, value) => {
+    switch (name) {
+      case "name":
+        return value.trim() ? "" : "Name is required";
+
+      case "phone":
+        if (!value.trim()) return "Phone number is required";
+        if (!/^[6-9]\d{9}$/.test(value)) {
+          return "Enter valid phone number";
+        }
+        return "";
+
+      case "email":
+        if (!value.trim()) return "Email is required";
+
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value)) {
+          return "Invalid email address";
+        }
+
+        return "";
+
+      case "password":
+        if (!value.trim()) return "Password is required";
+
+        if (value.length < 6) {
+          return "Minimum 6 characters required";
+        }
+
+        return "";
+
+      default:
+        return "";
+    }
+  };
 
   if (!openDriver) return null;
   return (
@@ -212,8 +331,8 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 placeholder="e.g John Doe"
                 value={formData.name}
                 onChange={handleChange}
-                required
               />
+              {errors.name && <span className="ad-error">{errors.name}</span>}
             </div>
             <div className="input">
               <label htmlFor="phone">Phone Number</label>
@@ -224,8 +343,8 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 placeholder="e.g 987654321"
                 value={formData.phone}
                 onChange={handleChange}
-                required
               />
+              {errors.phone && <span className="ad-error">{errors.phone}</span>}
             </div>
           </div>
           <div className="validation">
@@ -239,6 +358,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 value={formData.email}
                 onChange={handleChange}
               />
+              {errors.email && <span className="ad-error">{errors.email}</span>}
             </div>
 
             <div className="input">
@@ -251,6 +371,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 value={formData.password}
                 onChange={handleChange}
               />
+              {errors.password && (
+                <span className="ad-error">{errors.password}</span>
+              )}
             </div>
           </div>
         </div>
@@ -313,6 +436,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
                     </option>
                   ))}
                 </select>
+                {errors.state && (
+                  <span className="ad-error">{errors.state}</span>
+                )}
               </div>
               <div className="input">
                 <label htmlFor="city">City</label>
@@ -330,6 +456,7 @@ export default function AddDriver({ openDriver, closeDriver }) {
                     </option>
                   ))}
                 </select>
+                {errors.city && <span className="ad-error">{errors.city}</span>}
               </div>
             </div>
           </div>
@@ -351,6 +478,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 </option>
               ))}
             </select>
+            {errors.vehicleType && (
+              <span className="ad-error">{errors.vehicleType}</span>
+            )}
           </div>
           <div className="input">
             <label htmlFor="vehicleNo">Vehicle No</label>
@@ -359,10 +489,13 @@ export default function AddDriver({ openDriver, closeDriver }) {
               id="vehicleNo"
               name="vehicleNo"
               placeholder="e.g TN-01-XXXX"
-              value={formData.licensePlate}
+              value={formData.vehicleNo}
               onChange={handleChange}
               disabled={!formData.vehicleType ? true : false}
             />
+            {errors.vehicleNo && (
+              <span className="ad-error">{errors.vehicleNo}</span>
+            )}
           </div>
           <div className="input">
             <label htmlFor="vehicleColor">Vehicle Color</label>
@@ -375,6 +508,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
               onChange={handleChange}
               disabled={!formData.vehicleType ? true : false}
             />
+            {errors.vehicleColor && (
+              <span className="ad-error">{errors.vehicleColor}</span>
+            )}
           </div>
         </div>
         <p>Document & Status</p>
@@ -401,6 +537,9 @@ export default function AddDriver({ openDriver, closeDriver }) {
               >
                 Remove
               </button>
+              {errors.license && (
+                <span className="ad-error">{errors.license}</span>
+              )}
             </div>
             {licenseFile && (
               <p
@@ -411,38 +550,6 @@ export default function AddDriver({ openDriver, closeDriver }) {
                 {licenseFile.name}
               </p>
             )}
-          </div>
-          <div className="input">
-            <label htmlFor="status">Status</label>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <div
-                id="status"
-                onClick={() => setIsOn(!isOn)}
-                style={{
-                  width: "46px",
-                  height: "24px",
-                  borderRadius: "50px",
-                  backgroundColor: isOn ? "var(--primary)" : "#ccc",
-                  position: "relative",
-                  cursor: "pointer",
-                  transition: "background-color 0.3s",
-                }}
-              >
-                <div
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
-                    backgroundColor: "white",
-                    position: "absolute",
-                    top: "3px",
-                    left: isOn ? "25px" : "3px",
-                    transition: "left 0.3s",
-                  }}
-                />
-              </div>
-              <span>Offline/Online</span>
-            </div>
           </div>
         </div>
         <div className="btn-div">

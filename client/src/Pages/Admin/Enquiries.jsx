@@ -227,24 +227,24 @@ export default function Enquiries() {
                       </span>
                     </td> */}
                     <td>
-  <span
-    className={`status-pill ${value.status.toLowerCase().split(" ")}`}
-  >
-    {["confirmed", "assigned", "completed"].includes(
-      value.status.toLowerCase()
-    ) ? (
-      <>
-        <FiCheckCircle style={{ marginRight: "5px" }} />
-        {value.status}
-      </>
-    ) : (
-      <>
-        <FiAlertCircle style={{ marginRight: "5px" }} />
-        {value.status}
-      </>
-    )}
-  </span>
-</td>
+                      <span
+                        className={`status-pill ${value.status.toLowerCase().split(" ")}`}
+                      >
+                        {["confirmed", "assigned", "completed"].includes(
+                          value.status.toLowerCase(),
+                        ) ? (
+                          <>
+                            <FiCheckCircle style={{ marginRight: "5px" }} />
+                            {value.status}
+                          </>
+                        ) : (
+                          <>
+                            <FiAlertCircle style={{ marginRight: "5px" }} />
+                            {value.status}
+                          </>
+                        )}
+                      </span>
+                    </td>
                     <td>
                       <div className="button-container">
                         <button

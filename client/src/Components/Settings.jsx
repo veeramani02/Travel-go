@@ -265,8 +265,9 @@ function Settings() {
               name="email"
               id="email"
               placeholder="admin@fleetpro.com"
-              disabled={true}
+              disabled={isEditing}
               value={user?.email}
+              onChange={handleInputChange}
             />
           </div>
         </div>

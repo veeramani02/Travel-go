@@ -69,8 +69,6 @@ export default function EditTrip({ isOpen, onClose, trip, onsave, isClose }) {
         return;
       }
       const isChanged = JSON.stringify(formData) !== JSON.stringify(oldData);
-      console.log(isChanged);
-      console.log(formData, oldData);
       if (!isChanged) {
         onClose();
         return;

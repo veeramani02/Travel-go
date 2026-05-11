@@ -43,7 +43,6 @@ export default function Driver() {
         setDrivers(driver);
         setFilteredDrivers(driver);
         setTrips(trip);
-        console.log(trip);
       } catch (err) {
         setSnackbarMessage("Failed to load drivers");
         setSnackbarSeverity("error");

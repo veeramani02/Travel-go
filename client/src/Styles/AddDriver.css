@@ -165,6 +165,13 @@
     justify-content: space-around;
 }
 
+.ad-error {
+  color: #ef4444;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
+}
+
 @media (max-width: 768px) {
     .addDriver-body {
         padding: 16px;
