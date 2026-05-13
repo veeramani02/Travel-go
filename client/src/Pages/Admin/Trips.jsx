@@ -15,6 +15,7 @@ import {
   TripsData,
 } from "../../services/customerService";
 import { getAvatarColor } from "../../services/driverService";
+import BookTrip from "./BookTrip";
 
 export default function Trips() {
   const status = ["All", "Active", "Pending", "Completed"];
@@ -28,6 +29,7 @@ export default function Trips() {
     color: "gray",
     fontSize: "0.7rem",
   };
+  const [openTrip, setOpenTrip] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -108,7 +110,7 @@ export default function Trips() {
         </div>
         <div className="trips-button-div">
           <div className="trips-button">
-            <button>+ New Trip</button>
+            <button onClick={() => setOpenTrip(true)}>+ New Trip</button>
           </div>
           <div className="trips-group-button-div">
             {status.map((value, index) => (
@@ -256,6 +258,7 @@ export default function Trips() {
           <TripMap Coords={coords} />
         </div>
       </div>
+      <BookTrip Open={openTrip} Close={() => setOpenTrip(false)} />
     </div>
   );
 }

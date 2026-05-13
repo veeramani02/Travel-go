@@ -1,0 +1,156 @@
+.bt-booktrip-page {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  overflow-y: auto;
+  min-height: 100vh;
+  backdrop-filter: blur(3px);
+  box-sizing: border-box;
+  z-index: 99999;
+}
+
+.bt-booktrip-form {
+  width: 100%;
+  background: white;
+  max-width: 500px;
+  padding: 30px;
+  border-radius: 14px;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.bt-booktrip-title {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.bt-booktrip-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.bt-booktrip-group label {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-dark);
+}
+
+.bt-booktrip-group input,
+.bt-booktrip-group select,
+.bt-booktrip-group textarea {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.bt-booktrip-group input:focus,
+.bt-booktrip-group select:focus,
+.bt-booktrip-group textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  background: white;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.bt-booktrip-btn {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background: var(--primary);
+  color: white;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.bt-btn-cancel {
+  width: 100%;
+  padding: 14px;
+  margin-top: 10px;
+  color: #333;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 15px;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.bt-booktrip-btn:hover,
+.bt-btn-cancel:hover {
+  cursor: pointer;
+  opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.bt-booktrip-group p {
+  color: var(--accent);
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.bt-btn-div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+@media (max-width: 768px) {
+  .bt-booktrip-page {
+    padding: 20px 15px;
+  }
+
+  .bt-booktrip-form {
+    padding: 25px 20px;
+    border-radius: 12px;
+  }
+
+  .bt-booktrip-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .bt-booktrip-group input,
+  .bt-booktrip-group select,
+  .bt-booktrip-group textarea {
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .bt-booktrip-btn {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bt-booktrip-form {
+    padding: 20px 15px;
+    box-shadow: none;
+    border: 1px solid #eee;
+  }
+
+  .bt-booktrip-title {
+    font-size: 18px;
+  }
+
+  .bt-booktrip-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

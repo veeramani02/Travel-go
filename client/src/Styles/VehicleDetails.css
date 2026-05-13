@@ -1,7 +1,6 @@
 .vehicleDetailsPage {
   padding: 25px;
   background: #f6f8fb;
-  /* font-family:Arial, Helvetica, sans-serif; */
 }
 
 .vehicleDetailsTitle {
@@ -18,15 +17,11 @@
   font-size: 13px;
 }
 
-/* layout */
-
 .vehicleDetailsContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
-
-/* image section */
 
 .vehicleImageSection {
   background: white;
@@ -63,8 +58,6 @@
   border-color: var(--primary);
 }
 
-/* info section */
-
 .vehicleInfoSection {
   display: flex;
   flex-direction: column;
@@ -82,8 +75,6 @@
   margin-bottom: 10px;
   font-size: 16px;
 }
-
-/* rows */
 
 .vehicleInfoRow {
   display: grid;
@@ -106,8 +97,6 @@
   border: 1px solid #ddd;
   border-radius: 6px;
 }
-
-/* buttons */
 
 .vehicleButtonRow {
   margin-top: 10px;
@@ -142,17 +131,11 @@
   background: #f3f4f6;
   color: #333;
   border: 1px solid #d1d5db;
-
   padding: 8px 16px;
-
   border-radius: 6px;
-
   cursor: pointer;
-
   font-size: 14px;
-
   margin-left: 10px;
-
   transition: all 0.2s ease;
 }
 

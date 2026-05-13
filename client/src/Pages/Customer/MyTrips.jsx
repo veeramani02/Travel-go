@@ -24,15 +24,11 @@ function MyTrips() {
   const fetchTrips = async () => {
     try {
       setLoading(true);
-      
-      // CURRENT TRIP
       const latestRes = await fetch(`${API_BASE_URL}/api/trip/latest`, {
         credentials: "include",
       });
 
       const latestData = await latestRes.json();
-
-      console.log("Latest Trip:", latestData);
 
       if (latestRes.ok && latestData) {
         setCurrentTrip(latestData);
@@ -40,7 +36,6 @@ function MyTrips() {
         setCurrentTrip(null);
       }
 
-      // PAST TRIPS
       const pastRes = await fetch(`${API_BASE_URL}/api/trip/past-trips`, {
         credentials: "include",
       });
@@ -85,7 +80,6 @@ function MyTrips() {
         severity: "success",
       });
 
-      // refresh trips
       fetchTrips();
     } catch (err) {
       setSnackbar({
@@ -130,7 +124,6 @@ function MyTrips() {
     <div className="mytrips-page">
       <h1 className="mytrips-title">My Trips</h1>
 
-      {/* CURRENT TRIP */}
       {currentTrip && (
         <div className="current-trip-section">
           <h2>Current Trip</h2>
@@ -250,7 +243,6 @@ function MyTrips() {
           </div>
         )}
       </div>
-
       <CustomizedSnackbars
         open={snackbar.open}
         message={snackbar.message}

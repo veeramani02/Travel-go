@@ -179,6 +179,11 @@ td.datetime {
 
 .button-container button:hover {
   opacity: 0.85;
+  transform: translateY(-2px);
+}
+
+.button-container button:active {
+  transform: scale(0.98);
 }
 
 .status-pill {
@@ -207,7 +212,7 @@ td.datetime {
   background: #fef2f2;
   color: #dc2626;
 }
-.status-pill.assigned{
+.status-pill.assigned {
   background: #e0f2fe;
   color: #0284c7;
 }

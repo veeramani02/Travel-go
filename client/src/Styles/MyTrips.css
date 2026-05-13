@@ -74,10 +74,20 @@
   border-radius: 10px;
   border-style: none;
   padding: 10px;
+  transition: all 0.3s ease;
 }
 
-.track-btn:hover {
+.cancel-btn{
+  transition: all 0.3s ease;
+}
+
+.track-btn:hover, .cancel-btn:hover {
   cursor: pointer;
+  transform: translateY(-2px);
+}
+
+.track-btn:active, .cancel-btn:active{
+  transform: scale(0.98);
 }
 
 .mt-button {

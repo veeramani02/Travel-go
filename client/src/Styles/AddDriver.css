@@ -1,168 +1,165 @@
 .addDriver-container {
-    min-height: 100vh;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-sizing: border-box;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 999;
-    padding: 15px; 
-    backdrop-filter: blur(3px);
+  min-height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  padding: 15px;
+  backdrop-filter: blur(3px);
 }
 
 .addDriver-body {
-    max-width: 750px;
-    max-height: 100vh;       
-    background-color: rgb(238, 237, 237);
-    padding: 25px;
-    border-radius: 12px;
-    width: 100%;
-    overflow-y: auto;
-    animation: fadeIn 0.2s ease forwards;
+  max-width: 750px;
+  max-height: 100vh;
+  background-color: rgb(238, 237, 237);
+  padding: 25px;
+  border-radius: 12px;
+  width: 100%;
+  overflow-y: auto;
+  animation: fadeIn 0.2s ease forwards;
 }
 
 .addDriver-title {
-    color: var(--primary);
-    margin-bottom: 16px;
+  color: var(--primary);
+  margin-bottom: 16px;
 }
 
 .personal-details,
 .document-info,
 .vehicle-details {
-    display: flex;
-    gap:15px;
-    flex-wrap: wrap; 
-     
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
 }
-.details,.validation{
-   
-    flex:1;
+.details,
+.validation {
+  flex: 1;
 }
 .input select,
-.input input {            
-    padding: 6px 14px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.3);
-    width: 100%;          
+.input input {
+  padding: 6px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  width: 100%;
 }
 
 .input {
-    flex: 1;              
-    min-width: 150px;     
-    margin-bottom: 12px;
+  flex: 1;
+  min-width: 150px;
+  margin-bottom: 12px;
 }
 
 .input label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 8px;
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 .input span {
-    font-size: 0.9rem;
+  font-size: 0.9rem;
 }
 
 .input button {
-    background-color: var(--primary);
-    border-style: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
+  background-color: var(--primary);
+  border-style: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
 }
 
 .input button:hover {
-    opacity: 0.85;
+  opacity: 0.85;
 }
 
-.file-content{
-    width: 300px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+.file-content {
+  width: 300px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .btn-div {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    align-items: center;
-    margin-top: 10px;
-    width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
 }
 
 .btn button {
-    background-color: var(--primary);
-    border-style: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
+  background-color: var(--primary);
+  border-style: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
 }
 
 .btn button:hover {
-    opacity: 0.85;
+  opacity: 0.85;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-.addDriver-image{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 110px;
-    width: 110px;
-    border-radius: 50%;
+.addDriver-image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;
+  width: 110px;
+  border-radius: 50%;
 }
 
-.adddriverimage{
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    color: rgba(0, 0, 0, 0.2);
+.adddriverimage {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  color: rgba(0, 0, 0, 0.2);
 }
 
-.driver-profile-picture{
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
+.driver-profile-picture {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .addDriver-upload-button,
-.addDriver-remove-button{
-    background-color: var(--primary);
-    border-style: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
+.addDriver-remove-button {
+  background-color: var(--primary);
+  border-style: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
 }
 
-
-.upload-remove-container-div{
-    display: flex;
-    gap: 10px;
+.upload-remove-container-div {
+  display: flex;
+  gap: 10px;
 }
 
-.adddriver-location-details{
-    display: flex;
-    gap: 15px;
-    justify-content: space-around;
+.adddriver-location-details {
+  display: flex;
+  gap: 15px;
+  justify-content: space-around;
 }
 
 .ad-error {
@@ -173,18 +170,18 @@
 }
 
 @media (max-width: 768px) {
-    .addDriver-body {
-        padding: 16px;
-        max-height: 95vh;
-    }
+  .addDriver-body {
+    padding: 16px;
+    max-height: 95vh;
+  }
 
-    .personal-details,
-    .document-info,
-    .vehicle-details {
-        flex-direction: column; 
-    }
+  .personal-details,
+  .document-info,
+  .vehicle-details {
+    flex-direction: column;
+  }
 
-    .btn button {
-        width: 100%;
-    }
+  .btn button {
+    width: 100%;
+  }
 }
