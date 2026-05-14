@@ -8,7 +8,8 @@ import { PacmanLoader } from "react-spinners";
 function MyTrips() {
   const navigate = useNavigate();
 
-  const [currentTrip, setCurrentTrip] = useState(null);
+  const [currentTrip, setCurrentTrip] = useState([]);
+  const [upcomingTrips, setUpcomingTrips] = useState([]);
   const [pastTrips, setPastTrips] = useState([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState({
@@ -24,14 +25,30 @@ function MyTrips() {
   const fetchTrips = async () => {
     try {
       setLoading(true);
-      const latestRes = await fetch(`${API_BASE_URL}/api/trip/latest`, {
+      const latestRes = await fetch(`${API_BASE_URL}/api/trip/upcoming`, {
         credentials: "include",
       });
 
       const latestData = await latestRes.json();
-
+      console.log(latestData);
       if (latestRes.ok && latestData) {
-        setCurrentTrip(latestData);
+        const today = new Date().toISOString().split("T")[0];
+        setCurrentTrip(
+          latestData.filter((v) => {
+            const tripDate = new Date(v.dateAndTime)
+              .toISOString()
+              .split("T")[0];
+            return tripDate === today;
+          }),
+        );
+        setUpcomingTrips(
+          latestData.filter((v) => {
+            const tripDate = new Date(v.dateAndTime)
+              .toISOString()
+              .split("T")[0];
+            return tripDate > today;
+          }),
+        );
       } else {
         setCurrentTrip(null);
       }
@@ -56,15 +73,12 @@ function MyTrips() {
     }
   };
 
-  const handleCancelTrip = async () => {
+  const handleCancelTrip = async (id) => {
     try {
-      const res = await fetch(
-        `${API_BASE_URL}/api/trip/cancel/${currentTrip._id}`,
-        {
-          method: "PATCH",
-          credentials: "include",
-        },
-      );
+      const res = await fetch(`${API_BASE_URL}/api/trip/cancel/${id}`, {
+        method: "PATCH",
+        credentials: "include",
+      });
 
       const data = await res.json();
 
@@ -124,68 +138,67 @@ function MyTrips() {
     <div className="mytrips-page">
       <h1 className="mytrips-title">My Trips</h1>
 
-      {currentTrip && (
+      {currentTrip.length !== 0 ? (
         <div className="current-trip-section">
           <h2>Current Trip</h2>
 
-          <div className="trip-card highlight">
-            <div className="trip-header">
-              <span className="route">
-                {currentTrip.pickupCity} ({currentTrip.pickupState}) →{" "}
-                {currentTrip.destinationCity} ({currentTrip.destinationState})
-              </span>
+          {currentTrip.map((trip) => (
+            <div className="trip-card highlight" key={trip._id}>
+              <div className="trip-header">
+                <span className="route">
+                  {trip.pickupCity} ({trip.pickupState}) →{" "}
+                  {trip.destinationCity} ({trip.destinationState})
+                </span>
 
-              <span
-                className={`status ${
-                  currentTrip.status === "cancelled"
-                    ? "cancelled-status"
-                    : currentTrip.status === "completed"
-                      ? "completed-status"
-                      : "active-status"
-                }`}
-              >
-                {currentTrip.status}
-              </span>
-            </div>
+                <span
+                  className={`status ${
+                    trip.status === "cancelled"
+                      ? "cancelled-status"
+                      : trip.status === "completed"
+                        ? "completed-status"
+                        : "active-status"
+                  }`}
+                >
+                  {trip.status}
+                </span>
+              </div>
 
-            <div className="trip-details">
-              <p>
-                <strong>Date:</strong>{" "}
-                {new Date(currentTrip.dateAndTime).toLocaleString()}
-              </p>
+              <div className="trip-details">
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(trip.dateAndTime).toLocaleString()}
+                </p>
 
-              <p>
-                <strong>Passengers:</strong> {currentTrip.passengers}
-              </p>
+                <p>
+                  <strong>Passengers:</strong> {trip.passengers}
+                </p>
 
-              <p>
-                <strong>Vehicle:</strong> {currentTrip.vehicleType}
-              </p>
+                <p>
+                  <strong>Vehicle:</strong> {trip.vehicleType}
+                </p>
 
-              <p>
-                <strong>Trip Timer:</strong>{" "}
-                {currentTrip.status === "cancelled"
-                  ? "Trip Cancelled"
-                  : currentTrip.status === "completed"
-                    ? "Trip Completed"
-                    : currentTrip.status === "current"
-                      ? "Trip in Progress"
-                      : `${currentTrip.estimatedDuration?.toFixed(1)} hrs`}
-              </p>
-            </div>
+                <p>
+                  <strong>Trip Timer:</strong>{" "}
+                  {trip.status === "cancelled"
+                    ? "Trip Cancelled"
+                    : trip.status === "completed"
+                      ? "Trip Completed"
+                      : trip.status === "current"
+                        ? "Trip in Progress"
+                        : `${trip.estimatedDuration?.toFixed(1)} hrs`}
+                </p>
+              </div>
 
-            <div className="trip-btn-group">
-              {currentTrip.status !== "cancelled" &&
-                currentTrip.status !== "completed" && (
+              <div className="trip-btn-group">
+                {trip.status !== "cancelled" && trip.status !== "completed" && (
                   <div className="mt-button">
                     <button
                       className="track-btn"
                       onClick={() =>
-                        navigate(`/customer/track/${currentTrip._id}`, {
+                        navigate(`/customer/track/${trip._id}`, {
                           state: {
-                            pickupCoords: currentTrip.pickupCoordinates,
-                            destinationCoords:
-                              currentTrip.destinationCoordinates,
+                            pickupCoords: trip.pickupCoordinates,
+                            destinationCoords: trip.destinationCoordinates,
                           },
                         })
                       }
@@ -193,12 +206,88 @@ function MyTrips() {
                       Track My Trip
                     </button>
 
-                    <button className="cancel-btn" onClick={handleCancelTrip}>
+                    <button
+                      className="cancel-btn"
+                      onClick={() => handleCancelTrip(trip._id)}
+                    >
                       Cancel Trip
                     </button>
                   </div>
                 )}
+              </div>
             </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ marginBottom: "20px" }}>
+          <div>
+            <h2 style={{ marginBottom: "20px" }}>Current Trips</h2>
+            <div className="mt-upcoming-empty">
+              <h3>"No Current Trips"</h3>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {upcomingTrips.length == 0 ? (
+        <div className="mt-upcoming-items">
+          <h2>Upcoming Trip</h2>
+          {upcomingTrips.map((v) => (
+            <div className="mt-upcoming-item">
+              <div className="mt-upcoming-d-s">
+                <div>
+                  <span className="route">
+                    {v.pickupCity} ({v.pickupState}) → {v.destinationCity} (
+                    {v.destinationState})
+                  </span>
+                </div>
+                <div>
+                  <span
+                    className={`status ${
+                      v.status === "cancelled"
+                        ? "cancelled-status"
+                        : currentTrip.status === "completed"
+                          ? "completed-status"
+                          : "active-status"
+                    }`}
+                  >
+                    {v.status}
+                  </span>
+                </div>
+              </div>
+              <div className="trip-details">
+                <p>
+                  <strong>Date:</strong>{" "}
+                  {new Date(v.dateAndTime).toLocaleString()}
+                </p>
+
+                <p>
+                  <strong>Passengers:</strong> {v.passengers}
+                </p>
+
+                <p>
+                  <strong>Vehicle:</strong> {v.vehicleType}
+                </p>
+
+                <p>
+                  <strong>Trip Timer:</strong>{" "}
+                  {v.status === "cancelled"
+                    ? "Trip Cancelled"
+                    : v.status === "completed"
+                      ? "Trip Completed"
+                      : v.status === "current"
+                        ? "Trip in Progress"
+                        : `${v.estimatedDuration?.toFixed(1)} hrs`}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div>
+          <h2 style={{ marginBottom: "20px" }}>Upcoming Trip</h2>
+          <div className="mt-upcoming-empty">
+            <h3>"No Upcoming Trips"</h3>
           </div>
         </div>
       )}
@@ -208,8 +297,8 @@ function MyTrips() {
         <h2>Past Trips</h2>
 
         {pastTrips.length === 0 ? (
-          <div className="no-trip-card">
-            <p>No past trips available.</p>
+          <div className="mt-upcoming-empty">
+            <h3>"No past trips available"</h3>
           </div>
         ) : (
           <div className="trips-wrapper">

@@ -1,6 +1,6 @@
 .mytrips-page {
   background: var(--background);
-  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .mytrips-title {
@@ -10,9 +10,16 @@
   color: var(--primary);
 }
 
+.past-trips-section,
+.current-trip-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
 .current-trip-section,
 .past-trips-section {
-  margin-bottom: 40px;
+  margin: 20px 0;
 }
 
 .trips-wrapper {
@@ -25,7 +32,7 @@
   background: white;
   padding: 20px;
   border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
 .trip-card.highlight {
@@ -60,11 +67,16 @@
   margin-bottom: 6px;
 }
 
-.no-trip-card {
+.no-trip-card,
+.mt-upcoming-empty {
   background: white;
-  padding: 20px;
+  padding: 40px;
   border-radius: 10px;
   text-align: center;
+}
+
+.mt-upcoming-empty h3{
+  color: gray;
 }
 
 .track-btn {
@@ -72,21 +84,23 @@
   background-color: var(--primary);
   color: white;
   border-radius: 10px;
-  border-style: none;
+  border: none;
   padding: 10px;
   transition: all 0.3s ease;
 }
 
-.cancel-btn{
+.cancel-btn {
   transition: all 0.3s ease;
 }
 
-.track-btn:hover, .cancel-btn:hover {
+.track-btn:hover,
+.cancel-btn:hover {
   cursor: pointer;
   transform: translateY(-2px);
 }
 
-.track-btn:active, .cancel-btn:active{
+.track-btn:active,
+.cancel-btn:active {
   transform: scale(0.98);
 }
 
@@ -94,6 +108,34 @@
   display: flex;
   align-items: center;
   gap: 15px;
+}
+
+.mt-upcoming-items {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.mt-upcoming-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.mt-upcoming-d-s {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 @media (max-width: 768px) {
@@ -140,5 +182,11 @@
   .trip-details p:not(:last-child) {
     border-bottom: 1px dashed #eee;
     padding-bottom: 6px;
+  }
+
+  .mt-upcoming-d-s {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
   }
 }

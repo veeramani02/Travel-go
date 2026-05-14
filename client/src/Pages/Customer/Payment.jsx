@@ -41,7 +41,7 @@ function Payments() {
           credentials: "include",
         });
         const data = await res.json();
-      console.log("KEY:", import.meta.env.VITE_RAZORPAY_KEY_ID);
+        console.log("KEY:", import.meta.env.VITE_RAZORPAY_KEY_ID);
         if (!res.ok) throw new Error(data.message);
         setTrip(data);
         setFinalAmount(data.price || 1000);
@@ -94,7 +94,7 @@ function Payments() {
           transactionId,
           voucherCode: voucherCode || null,
         }),
-      }
+      },
     );
     const updateData = await updateRes.json();
     if (!updateRes.ok) throw new Error(updateData.message);
@@ -120,7 +120,7 @@ function Payments() {
           headers: { "Content-Type": "application/json" },
           credentials: "include",
           body: JSON.stringify({ amount: finalAmount, tripId: trip._id }),
-        }
+        },
       );
       const orderData = await orderRes.json();
       if (!orderRes.ok) throw new Error(orderData.message);
@@ -128,21 +128,17 @@ function Payments() {
       // 3. Open Razorpay checkout
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: orderData.order.amount,             
+        amount: orderData.order.amount,
         currency: orderData.order.currency,
         name: "Trip Booking",
         description: `${trip.pickupCity} → ${trip.destinationCity}`,
         order_id: orderData.order.id,
         method: paymentMethod === "upi" ? { upi: true } : undefined,
-        prefill: {
-          
-        },
+        prefill: {},
         theme: { color: "#2563eb" },
-        
-       
+
         handler: async function (response) {
           try {
-           
             const verifyRes = await fetch(
               `${API_BASE_URL}/api/payments/verify-payment`,
               {
@@ -154,14 +150,14 @@ function Payments() {
                   razorpay_payment_id: response.razorpay_payment_id,
                   razorpay_signature: response.razorpay_signature,
                 }),
-              }
+              },
             );
             const verifyData = await verifyRes.json();
             if (!verifyData.success) throw new Error("Signature mismatch");
 
             // Record in your DB
             const updateData = await createAndCompletePayment(
-              response.razorpay_payment_id
+              response.razorpay_payment_id,
             );
             setPoints(updateData.earnedPoints || 0);
             setPaymentSuccess(true);
@@ -230,7 +226,7 @@ function Payments() {
             transactionId: "TXN" + Date.now(),
             voucherCode: voucherCode || null,
           }),
-        }
+        },
       );
       const updateData = await updateRes.json();
       if (!updateRes.ok) throw new Error(updateData.message);
@@ -245,7 +241,6 @@ function Payments() {
     }
   };
 
- 
   const handlePaymentByMethod = () => {
     if (paymentMethod === "card" || paymentMethod === "upi") {
       handleRazorpayPayment();
@@ -254,7 +249,6 @@ function Payments() {
     }
   };
 
- 
   if (paymentSuccess) {
     return (
       <div className="payment-page">
@@ -283,7 +277,6 @@ function Payments() {
     );
   }
 
- 
   if (!trip) {
     return (
       <div className="payment-page">
@@ -306,7 +299,6 @@ function Payments() {
     );
   }
 
- 
   return (
     <div className="payment-page">
       <div className="payment-card">
@@ -410,7 +402,6 @@ function Payments() {
                 </span>
               </div>
 
-            
               {paymentMethod === "card" && (
                 <CardPayment
                   handlePayment={handlePaymentByMethod}
@@ -424,7 +415,6 @@ function Payments() {
                 />
               )}
 
-             
               {paymentMethod === "cash" && (
                 <CashPayment
                   handlePayment={handlePaymentByMethod}

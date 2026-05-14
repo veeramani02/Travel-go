@@ -107,6 +107,30 @@ export const getLatestTrip = async (req, res) => {
   }
 };
 
+export const getUpcomingTrips = async (req, res) => {
+  try {
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    const trips = await Trip.find({
+      userId: req.user._id,
+      dateAndTime: {
+        $gte: today,
+      },
+    })
+      .sort({ dateAndTime: 1 })
+      .lean();
+
+    if (!trips) {
+      return res.status(404).json({ message: "No trips found" });
+    }
+
+    res.json(trips);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const getPastTrips = async (req, res) => {
   try {
     await updateTripStatuses();

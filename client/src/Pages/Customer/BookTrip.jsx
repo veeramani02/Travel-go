@@ -103,8 +103,6 @@ function BookTrip() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isSubmitting) return;
-    setIsSubmitting(true);
     let validationErrors = {};
 
     if (formData.name.trim().length < 3) {
@@ -149,6 +147,9 @@ function BookTrip() {
       setErrors(validationErrors);
       return;
     }
+
+    if (isSubmitting) return;
+    setIsSubmitting(true);
 
     try {
       const pickupCityData = pickupCities.find(

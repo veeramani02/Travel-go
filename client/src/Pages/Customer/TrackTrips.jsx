@@ -8,6 +8,7 @@ import API_BASE_URL from "../../config/api";
 import { Skeleton } from "@mui/material";
 import { PacmanLoader } from "react-spinners";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { useNavigate } from "react-router-dom";
 
 function TrackTrip() {
   const { tripId } = useParams();
@@ -21,6 +22,7 @@ function TrackTrip() {
     message: "",
     severity: "success",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -166,7 +168,12 @@ function TrackTrip() {
 
   return (
     <div className="track-page">
-      <h1>Track My Trip</h1>
+      <div className="tt-btn-container">
+        <h1>Track My Trip</h1>
+        <button type="button" onClick={() => navigate("/customer/my-trips")}>
+          → Back to My Trip
+        </button>
+      </div>
 
       <div className="trip-info-card">
         <div className="trip-row">

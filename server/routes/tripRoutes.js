@@ -7,11 +7,13 @@ import {
   getTrips,
   updateTrips,
   cancelTrip,
+  getUpcomingTrips,
 } from "../controllers/TripController.js";
 import { protect } from "../middleware/authMiddleware.js";
 const triprouter = express.Router();
 triprouter.post("/create", protect, createTrip);
 triprouter.get("/latest", protect, getLatestTrip);
+triprouter.get("/upcoming", protect, getUpcomingTrips);
 triprouter.get("/past-trips", protect, getPastTrips);
 triprouter.get("/route", protect, getRoute);
 triprouter.get("/trip", protect, getTrips);
