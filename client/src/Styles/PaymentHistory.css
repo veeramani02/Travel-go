@@ -28,7 +28,7 @@
 }
 
 .payment-card:hover {
-  transform: translateY(-4px);
+  transform: scale(1.02);
 }
 
 .payment-left {

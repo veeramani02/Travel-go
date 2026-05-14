@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../../Styles/Dues.css";
 import API_BASE_URL from "../../config/api";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { LuCalendarClock } from "react-icons/lu";
 
 function Dues() {
   const [duesData, setDuesData] = useState([]);
@@ -131,8 +132,13 @@ function Dues() {
 
       <div className="due-total">
         <div className="total-title">
-          <p>Total Pending Amount</p>
-          <h2>₹{totalAmount}</h2>
+          <div className="d-pending-div">
+            <LuCalendarClock className="d-pending-icon" />
+          </div>
+          <div>
+            <p>Total Pending Amount</p>
+            <h2>₹{totalAmount}</h2>
+          </div>
         </div>
         <div className="total-buttonwrapper">
           <button

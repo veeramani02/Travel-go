@@ -21,31 +21,35 @@
   gap: 20px;
   padding: 30px;
   border-radius: 14px;
+  border-left: 4px solid rgb(245, 158, 11);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .reward-card,
 .redeem-info {
-  transition: 0.3s ease;
+  transition: all 0.3s ease;
 }
 
 .reward-card:hover,
 .redeem-info:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .circle {
-  width: 60px;
-  height: 60px;
-  background-color: var(--secondary);
+  width: 50px;
+  height: 50px;
+  padding: 10px;
+  background-color: rgb(255, 251, 235);
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 12px;
 }
 
-.circle img {
-  width: 28px;
+.reward-star{
+  color: rgb(245, 158, 11);
+  font-size: 30px;
 }
 
 .info p {

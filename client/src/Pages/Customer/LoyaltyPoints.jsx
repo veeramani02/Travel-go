@@ -3,6 +3,7 @@ import StarImage from "../../assets/star2.png";
 import "../../Styles/LoyaltyPoints.css";
 import API_BASE_URL from "../../config/api";
 import CustomizedSnackbars from "../../Components/CustomizedSnackbars";
+import { FaRegStar } from "react-icons/fa6";
 
 function LoyaltyPoints() {
   const [points, setPoints] = useState(0);
@@ -89,7 +90,7 @@ function LoyaltyPoints() {
       {/*  Reward Balance Card */}
       <div className="reward-card">
         <div className="circle">
-          <img src={StarImage} alt="reward-star" />
+          <FaRegStar className="reward-star" />
         </div>
 
         <div className="info">
@@ -167,7 +168,7 @@ function LoyaltyPoints() {
               history.map((item) => (
                 <tr key={item._id}>
                   <td>{new Date(item.createdAt).toDateString()}</td>
-                  <td>{item.activity}</td>
+                  <td>{item.activity.toUpperCase()}</td>
                   <td
                     className={
                       item.points < 0 ? "points-negative" : "points-positive"

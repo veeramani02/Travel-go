@@ -29,7 +29,20 @@
   border-radius: 8px;
   margin-bottom: 20px;
   flex-wrap: wrap;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-left: 4px solid rgb(239, 68, 68);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.due-total:hover {
+  transform: scale(1.03);
+}
+
+.total-title {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 15px;
 }
 
 .total-title h2 {
@@ -43,25 +56,31 @@
   padding: 8px 18px;
   border-radius: 6px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .due-button:hover {
   opacity: 0.85;
+  transform: scale(1.05);
 }
 
+.due-button:active {
+  transform: scale(0.98);
+}
 
 .table-container {
   width: 100%;
-  overflow-x: auto;  
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 700px;   
+  min-width: 700px;
 }
 
-th, td {
+th,
+td {
   padding: 12px;
   text-align: left;
 }
@@ -84,7 +103,7 @@ tbody tr:nth-child(odd) {
 }
 
 .pay-now-btn {
-  background-color:var(--primary);
+  background-color: var(--primary);
   color: white;
   border: none;
   padding: 6px 14px;
@@ -92,8 +111,23 @@ tbody tr:nth-child(odd) {
   cursor: pointer;
 }
 
-@media (max-width: 768px) {
+.d-pending-div {
+  height: 45px;
+  width: 45px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background-color: rgb(254, 242, 242);
+}
 
+.d-pending-icon {
+  font-size: 25px;
+  color: rgb(239, 68, 68);
+}
+
+@media (max-width: 768px) {
   .due-total {
     flex-direction: column;
     align-items: flex-start;
@@ -103,5 +137,4 @@ tbody tr:nth-child(odd) {
   .due-title h1 {
     font-size: 22px;
   }
-
 }

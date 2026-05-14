@@ -6,17 +6,19 @@
   justify-content: center;
   padding: 2.5rem 1rem;
 }
+
 .payment-card {
   background: #ffffff;
   border-radius: 16px;
   border: 0.5px solid #e0e0e0;
-  max-width: 700px;
   width: 100%;
   overflow: hidden;
+  border-left: 4px solid var(--accent);
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
 }
+
 .card-header {
-  background:var(--primary);
+  background: var(--primary);
   padding: 1.5rem 1.75rem;
 }
 
@@ -50,20 +52,24 @@
   color: rgba(255, 255, 255, 0.6);
   font-size: 14px;
 }
+
 .card-body {
   padding: 1.5rem 1.75rem;
 }
+
 .summary-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 8px;
   margin-bottom: 1.25rem;
 }
+
 .summary-item {
   background: #f7f8f7;
   border-radius: 8px;
   padding: 10px 12px;
 }
+
 .summary-label {
   font-size: 11px;
   color: #888;
@@ -71,19 +77,23 @@
   letter-spacing: 0.04em;
   margin-bottom: 3px;
 }
+
 .summary-value {
   font-size: 13px;
   font-weight: 500;
   color: #1a1a1a;
 }
+
 .payment-divider {
   border: none;
   border-top: 0.5px solid #ebebeb;
   margin: 1.25rem 0;
 }
+
 .price-box {
   margin-bottom: 1.25rem;
 }
+
 .price-row {
   display: flex;
   justify-content: space-between;
@@ -91,19 +101,22 @@
   margin-bottom: 7px;
   font-size: 13px;
 }
+
 .price-row .price-label {
   color: #666;
 }
+
 .price-row .price-val {
   color: #1a1a1a;
 }
+
 .price-row .price-discount {
-  color:var(--secondary);
+  color: var(--secondary);
 }
 
 .discount-badge {
   display: inline-block;
-  background: #E1F5EE;
+  background: #e1f5ee;
   color: var(--primary);
   border-radius: 6px;
   padding: 2px 8px;
@@ -131,13 +144,15 @@
 .price-total-amount {
   font-size: 20px;
   font-weight: 500;
-  color:var(--primary);
+  color: var(--primary);
 }
+
 .voucher-box {
   display: flex;
   gap: 8px;
   margin-bottom: 1.25rem;
 }
+
 .voucher-box input {
   flex: 1;
   padding: 9px 12px;
@@ -149,12 +164,15 @@
   outline: none;
   transition: border-color 0.15s;
 }
+
 .voucher-box input:focus {
   border-color: var(--primary);
 }
+
 .voucher-box input::placeholder {
   color: #aaa;
 }
+
 .voucher-apply-btn {
   padding: 9px 18px;
   border-radius: 8px;
@@ -169,14 +187,16 @@
 }
 
 .voucher-apply-btn:hover {
-  background: #E1F5EE;
+  background: #e1f5ee;
 }
+
 .section-label {
   font-size: 13px;
   font-weight: 500;
   color: #1a1a1a;
   margin-bottom: 12px;
 }
+
 .steps-indicator {
   display: flex;
   align-items: center;
@@ -205,6 +225,7 @@
 .step-line.active {
   background: var(--primary);
 }
+
 .payment-methods {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -222,7 +243,9 @@
   border-radius: 10px;
   cursor: pointer;
   background: #ffffff;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .method-btn:hover {
@@ -232,7 +255,7 @@
 
 .method-btn.active {
   border: 1.5px solid var(--primary);
-  background: #E1F5EE;
+  background: #e1f5ee;
 }
 
 .method-icon {
@@ -247,7 +270,7 @@
 }
 
 .method-btn.active .method-name {
-  color: #0F6E56;
+  color: #0f6e56;
 }
 
 .step2-header {
@@ -277,7 +300,6 @@
   font-weight: 500;
   color: #1a1a1a;
 }
-
 
 .field-group {
   margin-bottom: 12px;
@@ -330,16 +352,18 @@
   cursor: pointer;
   background: #ffffff;
   color: #666;
-  transition: border-color 0.15s, color 0.15s;
+  transition:
+    border-color 0.15s,
+    color 0.15s;
 }
 
 .upi-app-btn:hover {
   border-color: var(--primary);
-  color: #0F6E56;
+  color: #0f6e56;
 }
 .cash-info-box {
-  background: #E1F5EE;
-  border: 0.5px solid #5DCAA5;
+  background: #e1f5ee;
+  border: 0.5px solid #5dcaa5;
   border-radius: 10px;
   padding: 14px 16px;
   margin-bottom: 12px;
@@ -347,7 +371,7 @@
 
 .cash-info-box p {
   font-size: 13px;
-  color: #0F6E56;
+  color: #0f6e56;
   margin-bottom: 4px;
 }
 
@@ -378,7 +402,9 @@
   text-align: center;
   cursor: pointer;
   background: #ffffff;
-  transition: border-color 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 .plan-option:hover {
@@ -387,7 +413,7 @@
 
 .plan-option.selected {
   border: 1.5px solid var(--primary);
-  background: #E1F5EE;
+  background: #e1f5ee;
 }
 
 .plan-months {
@@ -397,7 +423,7 @@
 }
 
 .plan-option.selected .plan-months {
-  color: #0F6E56;
+  color: #0f6e56;
 }
 
 .plan-emi {
@@ -420,7 +446,9 @@
   font-weight: 500;
   cursor: pointer;
   margin-top: 6px;
-  transition: background 0.15s, transform 0.1s;
+  transition:
+    background 0.15s,
+    transform 0.1s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -428,9 +456,9 @@
 }
 
 .pay-btn:hover {
-  background: #0F6E56;
+  background: #0f6e56;
 }
-.greetings{
+.greetings {
   color: white;
 }
 .pay-btn:active {
@@ -442,6 +470,7 @@
   cursor: not-allowed;
   transform: none;
 }
+
 .success-card {
   text-align: center;
 }
@@ -454,7 +483,7 @@
   width: 64px;
   height: 64px;
   border-radius: 50%;
-  background: #E1F5EE;
+  background: #e1f5ee;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -473,8 +502,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #E1F5EE;
-  border: 0.5px solid #5DCAA5;
+  background: #e1f5ee;
+  border: 0.5px solid #5dcaa5;
   border-radius: 10px;
   padding: 12px 20px;
   margin-bottom: 1.5rem;
@@ -483,12 +512,12 @@
 .points-badge .points-count {
   font-size: 22px;
   font-weight: 500;
-  color: #0F6E56;
+  color: #0f6e56;
 }
 
 .points-badge .points-label {
   font-size: 13px;
-  color: #0F6E56;
+  color: #0f6e56;
 }
 
 .no-trip-card {
@@ -506,14 +535,12 @@
   margin-bottom: 1rem;
 }
 
-
 .payment-title {
   font-size: 18px;
   font-weight: 500;
   color: #1a1a1a;
   margin-bottom: 1.25rem;
 }
-
 
 @media (max-width: 480px) {
   .payment-page {
