@@ -229,7 +229,7 @@ function MyTrips() {
         </div>
       )}
 
-      {upcomingTrips.length == 0 ? (
+      {upcomingTrips.length !== 0 ? (
         <div className="mt-upcoming-items">
           <h2>Upcoming Trip</h2>
           {upcomingTrips.map((v) => (
