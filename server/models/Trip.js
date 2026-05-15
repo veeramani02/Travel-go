@@ -19,7 +19,7 @@ const tripSchema = new mongoose.Schema(
     specialRequest: { type: String },
     status: {
       type: String,
-      enum: ["pending","assigned", "current", "completed", "cancelled"],
+      enum: ["pending", "assigned", "current", "completed", "cancelled"],
       default: "pending",
     },
     paymentStatus: {
@@ -27,46 +27,46 @@ const tripSchema = new mongoose.Schema(
       enum: ["pending", "paid", "failed"],
       default: "pending",
     },
+    paymentExpiresAt: String,
     amount: { type: Number, default: 0 },
     driverId: String,
     vehicleId: String,
     paymentId: {
-    type: String,
+      type: String,
     },
     orderId: {
-    type: String,
+      type: String,
     },
-    estimatedDuration:{
-    type: Number,
-    default: 0,
+    estimatedDuration: {
+      type: Number,
+      default: 0,
     },
-    estimatedDistance:{  
-    type: Number,
-    default: 0,
+    estimatedDistance: {
+      type: Number,
+      default: 0,
     },
     pickupCoordinates: {
-    lat: {
-    type: Number,
-    default: 0,
+      lat: {
+        type: Number,
+        default: 0,
+      },
+      lon: {
+        type: Number,
+        default: 0,
+      },
     },
-    lon: {
-    type: Number,
-    default: 0,
+
+    destinationCoordinates: {
+      lat: {
+        type: Number,
+        default: 0,
+      },
+      lon: {
+        type: Number,
+        default: 0,
+      },
     },
-},
-
-  destinationCoordinates: {
-  lat: {
-    type: Number,
-    default: 0,
   },
-  lon: {
-    type: Number,
-    default: 0,
-  },
-},
-  },
-
 
   { timestamps: true },
 );

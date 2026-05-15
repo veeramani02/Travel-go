@@ -51,15 +51,45 @@
 }
 
 .status {
-  background: var(--accent);
-  color: white;
-  padding: 4px 10px;
-  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 12px;
+  border-radius: 999px;
   font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: #fff;
+  text-transform: capitalize;
+  letter-spacing: 0.3px;
 }
 
-.active-status {
-  background: var(--primary);
+.status-pending {
+  background: #f59e0b;
+}
+
+.status-confirmed {
+  background: #14b8a6;
+}
+
+.status-assigned {
+  background: #3b82f6;
+}
+
+.status-current {
+  background: #8b5cf6;
+}
+
+.status-completed {
+  background: #22c55e;
+}
+
+.status-cancelled {
+  background: #6b7280;
+}
+
+.status-failed {
+  background: #ef4444;
 }
 
 .trip-details p {
@@ -69,14 +99,20 @@
 
 .no-trip-card,
 .mt-upcoming-empty {
-  background: white;
-  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 60px;
   border-radius: 10px;
   text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 }
 
-.mt-upcoming-empty h3{
+.mt-upcoming-empty h3 {
   color: gray;
+  width: 100%;
+  border-radius: 12px;
 }
 
 .track-btn {

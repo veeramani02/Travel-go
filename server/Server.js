@@ -17,6 +17,8 @@ import custRouter from "./routes/custRoutes.js";
 import NotifyRoutes from "./routes/NotifyRoutes.js";
 import startDriverStatusChecker from "./utils/driverStatusChecker.js";
 import driverRoutes from "./routes/driverRoutes.js";
+import "./jobs/paymentExpiryJob.js";
+
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;

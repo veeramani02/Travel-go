@@ -47,6 +47,7 @@ export const createTrip = async (req, res) => {
       amount,
       status: "pending",
       paymentStatus: "pending",
+      paymentExpiresAt: new Date(Date.now() + 15 * 60 * 1000),
       driverId,
       vehicleId,
       estimatedDuration: Number(estimatedDuration),
@@ -121,7 +122,7 @@ export const getUpcomingTrips = async (req, res) => {
       .sort({ dateAndTime: 1 })
       .lean();
 
-    if (!trips) {
+    if (trips.length === 0) {
       return res.status(404).json({ message: "No trips found" });
     }
 

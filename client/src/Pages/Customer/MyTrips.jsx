@@ -223,7 +223,7 @@ function MyTrips() {
           <div>
             <h2 style={{ marginBottom: "20px" }}>Current Trips</h2>
             <div className="mt-upcoming-empty">
-              <h3>"No Current Trips"</h3>
+              <h3>No Current Trips</h3>
             </div>
           </div>
         </div>
@@ -242,15 +242,7 @@ function MyTrips() {
                   </span>
                 </div>
                 <div>
-                  <span
-                    className={`status ${
-                      v.status === "cancelled"
-                        ? "cancelled-status"
-                        : currentTrip.status === "completed"
-                          ? "completed-status"
-                          : "active-status"
-                    }`}
-                  >
+                  <span className={`status status-${v.status}`}>
                     {v.status}
                   </span>
                 </div>
@@ -287,7 +279,7 @@ function MyTrips() {
         <div>
           <h2 style={{ marginBottom: "20px" }}>Upcoming Trip</h2>
           <div className="mt-upcoming-empty">
-            <h3>"No Upcoming Trips"</h3>
+            <h3>No Upcoming Trips</h3>
           </div>
         </div>
       )}
@@ -298,7 +290,7 @@ function MyTrips() {
 
         {pastTrips.length === 0 ? (
           <div className="mt-upcoming-empty">
-            <h3>"No past trips available"</h3>
+            <h3>No past trips available</h3>
           </div>
         ) : (
           <div className="trips-wrapper">
@@ -310,7 +302,9 @@ function MyTrips() {
                     {trip.destinationCity} ({trip.destinationState})
                   </span>
 
-                  <span className="status">{trip.status}</span>
+                  <span className={`status status-${trip.status}`}>
+                    {trip.status}
+                  </span>
                 </div>
 
                 <div className="trip-details">
