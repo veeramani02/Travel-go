@@ -11,7 +11,6 @@ import { FaRegStar } from "react-icons/fa6";
 import { LuCalendarClock } from "react-icons/lu";
 import API_BASE_URL from "../../config/api";
 import { PacmanLoader } from "react-spinners";
-
 function CustomerDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -30,10 +29,12 @@ function CustomerDashboard() {
         }
         const data = await res.json();
         setDashboard(data);
-      } catch (err) {
+      } 
+      catch (err) {
         console.log(err);
         setError(err.message);
-      } finally {
+      } 
+      finally {
         setLoading(false);
       }
     };
@@ -241,34 +242,6 @@ function CustomerDashboard() {
               </table>
             </div>
           </div>
-          {/* <div className="popular-section">
-            <h2>Most Popular Destinations</h2>
-            <div className="destination-wrapper">
-              <div className="destination-card">
-                <img src={ooty} alt="Ooty" />
-                <h4>Ooty</h4>
-                <button onClick={() => navigate("/customer/book-trip")}>
-                  Try Now
-                </button>
-              </div>
-
-              <div className="destination-card">
-                <img src={kodaikanal} alt="Kodaikanal" />
-                <h4>Kodaikanal</h4>
-                <button onClick={() => navigate("/customer/book-trip")}>
-                  Try Now
-                </button>
-              </div>
-
-              <div className="destination-card">
-                <img src={mahabalipuram} alt="Mahabalipuram" />
-                <h4>Mahabalipuram</h4>
-                <button onClick={() => navigate("/customer/book-trip")}>
-                  Try Now
-                </button>
-              </div>
-            </div>
-          </div> */}
         </div>
       </main>
     </div>
