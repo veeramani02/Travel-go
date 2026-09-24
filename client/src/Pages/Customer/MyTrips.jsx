@@ -138,7 +138,7 @@ function MyTrips() {
     <div className="mytrips-page">
       <h1 className="mytrips-title">My Trips</h1>
 
-      {currentTrip.length !== 0 ? (
+      {currentTrip?.length>0 ? (
         <div className="current-trip-section">
           <h2>Current Trip</h2>
 

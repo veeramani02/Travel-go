@@ -104,7 +104,7 @@ function CustomerDashboard() {
                 </div>
               </div>
             </div>
-            <div className="card2">
+            <div className="card2" onClick={()=>navigate("/customer/my-trips")}>
               <div className="card-content">
                 <div>
                   <IoCarOutline className="card-icon card2-icon" />
@@ -115,7 +115,7 @@ function CustomerDashboard() {
                 </div>
               </div>
             </div>
-            <div className="card3">
+            <div className="card3" onClick={()=>navigate("/customer/LoyaltyPoints")}>
               <div className="card-content">
                 <div>
                   <FaRegStar className="card-icon card3-icon" />
@@ -126,7 +126,7 @@ function CustomerDashboard() {
                 </div>
               </div>
             </div>
-            <div className="card4">
+            <div className="card4" onClick={()=>navigate("/customer/dues")}>
               <div className="card-content">
                 <div>
                   <LuCalendarClock className="card-icon card4-icon" />
