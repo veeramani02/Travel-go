@@ -190,23 +190,23 @@ export default function Salary() {
             </thead>
             <tbody>
               <tr>
-                <td>{driver.payroll?.month}</td>
+                <td>{driver?.payroll?.month}</td>
                 <td>Monthly Payout</td>
                 <td className="salary-amt">₹{driver?.payroll?.paidAmount}</td>
                 <td>
                   <span
                     className={`ap-badge ${
-                      driver.payroll?.status === "Paid"
+                      driver?.payroll?.status === "Paid"
                         ? "ap-badge--paid"
                         : "ap-badge--pending"
                     }`}
                   >
-                    {driver.payroll?.status === "Paid" ? (
+                    {driver?.payroll?.status === "Paid" ? (
                       <FiCheckCircle style={{ marginRight: 4 }} />
                     ) : (
                       <FiAlertCircle style={{ marginRight: 4 }} />
                     )}
-                    {driver.payroll?.status}
+                    {driver?.payroll?.status}
                   </span>
                 </td>
               </tr>
